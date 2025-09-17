@@ -5,37 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CivicVoice | Your Community, Your Voice</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            /* UPDATED: Added a background image with a semi-transparent overlay */
-            background-image: 
-                linear-gradient(to bottom, rgba(250, 249, 246, 0.95), rgba(250, 249, 246, 0.98)),
-                url('https://images.unsplash.com/photo-1627525895922-8165b4c4815b?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
+            background-color: #f8fafc; /* A neutral light gray background */
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
         }
         
-        /* New Color Palette */
+        /* Color Palette */
         :root {
-            --primary: #0d9488; /* Teal */
-            --primary-hover: #0f766e;
-            --secondary: #f97316; /* Orange */
-            --accent: #f59e0b; /* Amber */
-            --text-dark: #1f2937;
-            --text-light: #4b5563;
+            --primary: #0d9488; /* Teal-600 */
+            --primary-hover: #0f766e; /* Teal-700 */
+            --secondary: #f97316; /* Orange-500 */
+            --accent: #f59e0b; /* Amber-500 */
+            --text-dark: #1f2937; /* Gray-800 */
+            --text-light: #4b5563; /* Gray-600 */
         }
 
         .hero-bg {
-            background-color: #f0fdfa; /* A very light teal */
+            background-color: #f0fdfa; /* Teal-50 */
             background-image: radial-gradient(#ccfbf1 1px, transparent 1px);
-            background-size: 16px 16px;
+            background-size: 20px 20px;
         }
         
         .cta-button {
@@ -83,6 +77,7 @@
             font-weight: 800;
             color: rgba(255, 255, 255, 0.1);
             line-height: 1;
+            z-index: 1;
         }
 
         /* Scroll Animation */
@@ -102,29 +97,23 @@
         header {
             background-color: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
         }
         
         /* SVG Animation */
         .svg-draw-path {
             stroke-dasharray: 1000;
             stroke-dashoffset: 1000;
-            animation: draw 3s ease-in-out forwards;
+            animation: draw 2s ease-in-out 1s forwards;
         }
         .svg-fade-in {
             opacity: 0;
             animation: fadeIn 1s ease-in-out forwards;
         }
 
-        @keyframes draw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         .process-flow-arrow {
             position: absolute;
@@ -134,15 +123,11 @@
             color: #cbd5e1; /* slate-300 */
         }
          @media (max-width: 767px) {
-            .process-flow-arrow {
-                display: none;
-            }
+            .process-flow-arrow { display: none; }
         }
         
         /* FAQ Accordion */
-        .faq-question {
-            cursor: pointer;
-        }
+        .faq-question { cursor: pointer; }
         .faq-answer {
             max-height: 0;
             overflow: hidden;
@@ -151,83 +136,89 @@
         .faq-item.open .faq-answer {
             max-height: 200px; /* Adjust as needed */
         }
-         .faq-item.open .faq-arrow {
-            transform: rotate(180deg);
-        }
-        .faq-arrow {
-            transition: transform 0.3s ease;
-        }
+         .faq-item.open .faq-arrow { transform: rotate(180deg); }
+        .faq-arrow { transition: transform 0.3s ease; }
         
         /* Modal Styles */
-        .modal-overlay {
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
+        .modal-overlay { transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
         
         /* Report Modal Step Indicator */
-        .step-indicator {
-            transition: all 0.3s ease;
-        }
+        .step-indicator { transition: all 0.3s ease; }
         
         /* Live Reports Tab Styling */
-        .tab-btn {
-            transition: all 0.3s ease;
-        }
+        .tab-btn { transition: all 0.3s ease; }
         .tab-btn.active {
             color: var(--primary);
             border-color: var(--primary);
             background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         /* Voice Recording Animation */
-        .mic-pulse {
-            animation: pulse 1.5s infinite;
-        }
+        .mic-pulse { animation: pulse 1.5s infinite; }
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 20px rgba(13, 148, 136, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(13, 148, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
         }
 
         /* Tracking Modal Step Progress */
         .tracking-step {
             transition: all 0.5s ease;
+            position: relative;
+            padding-left: 3.5rem; /* Space for icon circle */
         }
+        .tracking-step .step-circle {
+            transition: all 0.3s ease;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .tracking-step::before { /* The line connecting steps */
+            content: '';
+            position: absolute;
+            left: 1.25rem; /* center of the 2.5rem (w-10) circle */
+            top: 2.5rem; /* bottom of the circle */
+            height: calc(100% + 2rem); /* 100% of height + h-8 gap */
+            width: 2px;
+            background-color: #e5e7eb; /* gray-200 */
+            transition: background-color 0.5s ease;
+        }
+        .tracking-step:last-child::before { display: none; }
         .tracking-step.completed .step-circle {
             background-color: var(--primary);
             color: white;
         }
-        .tracking-step.completed .step-line {
-            background-color: var(--primary);
-        }
+        .tracking-step.completed::before { background-color: var(--primary); }
+        .tracking-step.completed .step-label { color: var(--text-dark); }
         .tracking-step.active .step-circle {
             background-color: var(--primary);
             color: white;
             transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.3);
         }
         .tracking-step.active .step-label {
             font-weight: 600;
             color: var(--text-dark);
         }
-
+        .report-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
 
     </style>
 </head>
-<body class="text-gray-700">
+<body class="text-gray-700 bg-slate-50">
 
     <!-- Header -->
     <header class="shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
-                <div class="bg-teal-600 p-2 rounded-lg">
+                <div class="bg-teal-600 p-2 rounded-lg shadow-md">
                     <i data-lucide="megaphone" class="text-white"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800" data-translate="appName">CivicVoice</h1>
@@ -238,21 +229,19 @@
                 <a href="#live-reports" class="hover:text-teal-600 transition duration-300" data-translate="navReports">Reports</a>
                 <a href="#rewards" class="hover:text-teal-600 transition duration-300" data-translate="navRewards">Rewards</a>
                 <a href="#impact" class="hover:text-teal-600 transition duration-300" data-translate="navImpact">Impact</a>
-                <a href="#testimonials" class="hover:text-teal-600 transition duration-300" data-translate="navVoices">Voices</a>
                 <a href="#faq" class="hover:text-teal-600 transition duration-300" data-translate="navFaq">FAQ</a>
             </nav>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 sm:space-x-4">
                  <!-- Language Selector -->
                 <div class="relative">
-                    <select id="language-selector" class="appearance-none bg-transparent border-none text-gray-600 font-semibold py-2 pr-8 focus:outline-none">
+                    <select id="language-selector" class="appearance-none bg-transparent border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm font-medium text-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500">
                         <option value="en">English</option>
                         <option value="hi">हिन्दी</option>
                     </select>
-                    <i data-lucide="languages" class="absolute right-0 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"></i>
+                    <i data-lucide="languages" class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"></i>
                 </div>
                  <a href="#" id="track-report-btn-desktop" class="hidden sm:block text-sm font-semibold text-gray-600 hover:text-teal-600" data-translate="trackReportNav">Track Report</a>
-                 <button id="citizen-login-btn-desktop" class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLogin">Citizen Login</button>
-                 <a href="#" id="official-login-btn-desktop" class="hidden sm:block text-sm font-semibold text-gray-600 hover:text-teal-600" data-translate="officialLogin">Official Login</a>
+                 <button id="citizen-login-btn-desktop" class="hidden sm:block bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLogin">Login</button>
             </div>
              <button id="mobile-menu-button" class="md:hidden text-gray-700">
                  <i data-lucide="menu"></i>
@@ -268,9 +257,9 @@
              <a href="#testimonials" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navVoicesMobile">Voices</a>
              <a href="#faq" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFaqMobile">FAQ</a>
              <div class="border-t mt-4 pt-4 space-y-2">
-                <button id="track-report-btn-mobile" class="w-full text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition duration-300" data-translate="trackReportNavMobile">Track Report</button>
-                <button id="citizen-login-btn-mobile" class="w-full bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLoginMobile">Citizen Login</button>
-                <button id="official-login-btn-mobile" class="w-full text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition duration-300" data-translate="officialLoginMobile">Official Login</button>
+                 <button id="track-report-btn-mobile" class="w-full text-left text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300" data-translate="trackReportNavMobile">Track Report</button>
+                 <button id="citizen-login-btn-mobile" class="w-full bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLoginMobile">Citizen Login</button>
+                 <button id="official-login-btn-mobile" class="w-full text-left text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300" data-translate="officialLoginMobile">Official Login</button>
             </div>
         </div>
     </header>
@@ -278,59 +267,14 @@
     <main>
         <!-- Hero Section -->
         <section class="hero-bg overflow-hidden">
-            <div class="container mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col lg:flex-row items-center">
-                <div class="lg:w-1/2 text-center lg:text-left">
+            <div class="container mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start">
                     <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight" data-translate="heroTitle">Your Voice, <br><span class="text-teal-600">Our City's Future.</span></h2>
-                    <p class="mt-6 text-lg text-text-light max-w-xl mx-auto lg:mx-0" data-translate="heroSubtitle">Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.</p>
-                </div>
-                <div class="lg:w-1/2 mt-12 lg:mt-0 flex flex-col items-center justify-center">
-                    <!-- Creative SVG Illustration -->
-                    <svg viewBox="0 0 500 400" class="w-full max-w-lg h-auto">
-                        <defs>
-                            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                        </defs>
-                        <!-- Abstract City background -->
-                        <path d="M 50 400 Q 150 300 250 350 T 450 300" fill="none" stroke="#e0f2f1" stroke-width="20" stroke-linecap="round" />
-                        <path d="M 20 380 Q 120 280 220 330 T 420 280" fill="none" stroke="#e0f2f1" stroke-width="15" stroke-linecap="round" />
-
-                        <!-- Central element: phone/app -->
-                        <rect x="200" y="150" width="100" height="150" rx="15" fill="#fff" stroke="#9ca3af" stroke-width="2" class="svg-fade-in" style="animation-delay: 1s;"/>
-                        <circle cx="250" cy="165" r="3" fill="#d1d5db"/>
-                        <rect x="215" y="180" width="70" height="10" rx="5" fill="#a7f3d0"/>
-                        <rect x="215" y="200" width="70" height="40" rx="5" fill="#f3f4f6"/>
-                         <rect x="225" y="210" width="50" height="5" rx="2" fill="#d1d5db"/>
-                         <rect x="225" y="220" width="30" height="5" rx="2" fill="#d1d5db"/>
-
-
-                        <!-- Issue Pins -->
-                        <g class="svg-fade-in" style="animation-delay: 1.5s;">
-                            <circle cx="100" cy="150" r="15" fill="var(--secondary)" filter="url(#glow)"/>
-                            <path d="M96 146 L104 154 M96 154 L104 146" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                        </g>
-                        <g class="svg-fade-in" style="animation-delay: 1.8s;">
-                            <circle cx="380" cy="100" r="15" fill="var(--accent)" filter="url(#glow)"/>
-                            <rect x="375" y="95" width="10" height="10" fill="white" stroke="var(--accent)" stroke-width="1"/>
-                        </g>
-                         <g class="svg-fade-in" style="animation-delay: 2.1s;">
-                            <circle cx="400" cy="250" r="15" fill="var(--primary)" filter="url(#glow)"/>
-                             <path d="M400 242 L 400 258 M392 250 L 408 250" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                        </g>
-
-                        <!-- Connecting Lines -->
-                        <path d="M115 155 Q 180 180 200 190" fill="none" stroke="var(--secondary)" stroke-width="2" class="svg-draw-path" style="animation-delay: 2.5s;"/>
-                        <path d="M365 105 Q 300 140 295 180" fill="none" stroke="var(--accent)" stroke-width="2" class="svg-draw-path" style="animation-delay: 2.8s;"/>
-                        <path d="M385 245 Q 320 230 298 210" fill="none" stroke="var(--primary)" stroke-width="2" class="svg-draw-path" style="animation-delay: 3.1s;"/>
-                    </svg>
-
-                    <!-- LOCATION SELECTOR & BUTTON MOVED HERE -->
-                    <div class="mt-8 w-full max-w-xl">
-                        <label class="block text-sm font-medium text-text-light mb-2 text-center" data-translate="locationLabel">Select your location to get started</label>
+                    <p class="mt-6 text-lg text-text-light max-w-xl" data-translate="heroSubtitle">Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.</p>
+                    
+                    <!-- ENHANCED: Location selector and CTA moved here -->
+                    <div class="mt-10 w-full max-w-xl bg-white/60 backdrop-blur-sm p-6 rounded-2xl border shadow-sm">
+                        <label class="block text-sm font-semibold text-text-dark mb-3 text-center" data-translate="locationLabel">Select your location to get started</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="relative">
                                 <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
@@ -378,23 +322,63 @@
                                  <i data-lucide="map" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
                                 <select id="city-select" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition" disabled>
                                     <option selected disabled data-translate="selectCity">Select Area/City</option>
-                                    <!-- Options will be populated by JavaScript -->
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="mt-8">
-                        <button id="make-report-btn" class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button">
+                         <button id="make-report-btn" class="mt-4 w-full bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg cta-button">
                             <span class="flex items-center justify-center"><i data-lucide="plus-circle" class="mr-2"></i><span data-translate="makeReport">Make a Report</span></span>
                         </button>
                     </div>
+                </div>
+                <div class="lg:w-1/2 mt-12 lg:mt-0 flex items-center justify-center">
+                    <!-- Creative SVG Illustration -->
+                    <svg viewBox="0 0 500 400" class="w-full max-w-lg h-auto">
+                        <defs>
+                            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Abstract City background -->
+                        <path d="M 50 400 Q 150 300 250 350 T 450 300" fill="none" stroke="#e0f2f1" stroke-width="20" stroke-linecap="round" />
+                        <path d="M 20 380 Q 120 280 220 330 T 420 280" fill="none" stroke="#e0f2f1" stroke-width="15" stroke-linecap="round" />
+
+                        <!-- Central element: phone/app -->
+                        <rect x="200" y="150" width="100" height="150" rx="15" fill="#fff" stroke="#9ca3af" stroke-width="2" class="svg-fade-in" style="animation-delay: 0.5s;"/>
+                        <circle cx="250" cy="165" r="3" fill="#d1d5db"/>
+                        <rect x="215" y="180" width="70" height="10" rx="5" fill="#a7f3d0"/>
+                        <rect x="215" y="200" width="70" height="40" rx="5" fill="#f3f4f6"/>
+                         <rect x="225" y="210" width="50" height="5" rx="2" fill="#d1d5db"/>
+                         <rect x="225" y="220" width="30" height="5" rx="2" fill="#d1d5db"/>
+
+                        <!-- Issue Pins -->
+                        <g class="svg-fade-in" style="animation-delay: 1s;">
+                            <circle cx="100" cy="150" r="15" fill="var(--secondary)" filter="url(#glow)"/>
+                            <path d="M96 146 L104 154 M96 154 L104 146" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <g class="svg-fade-in" style="animation-delay: 1.3s;">
+                            <circle cx="380" cy="100" r="15" fill="var(--accent)" filter="url(#glow)"/>
+                            <rect x="375" y="95" width="10" height="10" fill="white" stroke="var(--accent)" stroke-width="1"/>
+                        </g>
+                         <g class="svg-fade-in" style="animation-delay: 1.6s;">
+                            <circle cx="400" cy="250" r="15" fill="var(--primary)" filter="url(#glow)"/>
+                             <path d="M400 242 L 400 258 M392 250 L 408 250" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+
+                        <!-- Connecting Lines -->
+                        <path d="M115 155 Q 180 180 200 190" fill="none" stroke="var(--secondary)" stroke-width="2" class="svg-draw-path" />
+                        <path d="M365 105 Q 300 140 295 180" fill="none" stroke="var(--accent)" stroke-width="2" class="svg-draw-path" style="animation-delay: 1.2s;"/>
+                        <path d="M385 245 Q 320 230 298 210" fill="none" stroke="var(--primary)" stroke-width="2" class="svg-draw-path" style="animation-delay: 1.4s;"/>
+                    </svg>
                 </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="py-24 bg-transparent">
+        <section id="features" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="featuresTag">WHY CIVICVOICE?</span>
@@ -457,7 +441,7 @@
         <section id="process" class="py-24">
             <div class="container mx-auto px-6">
                  <div class="text-center mb-20">
-                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY STEPS</span>
+                      <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY STEPS</span>
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="processTitle">See It. Report It. Get It Fixed.</h3>
                     <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="processSubtitle">We've designed a simple, transparent process to connect you directly with the departments that can make a difference.</p>
                  </div>
@@ -517,8 +501,8 @@
                 <!-- Issues Grid -->
                 <div id="ongoing-issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Report Card 1 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden reveal-on-scroll">
-                        <img src="https://placehold.co/400x250/orange/white?text=Pothole" alt="Pothole" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll">
+                        <img src="https://images.unsplash.com/photo-1515224526905-56c8a7c25f46?q=80&w=2070&auto=format&fit=crop" alt="Pothole on a city street" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -530,7 +514,7 @@
                                     <span class="font-bold">128</span>
                                 </button>
                             </div>
-                             <p class="text-sm text-gray-500 mt-2">Reported 2 days ago</p>
+                             <p class="text-sm text-gray-500 mt-2">Reported 2 days ago in <span class="font-medium">South Delhi</span></p>
                             <div class="mt-4">
                                 <p class="text-sm font-semibold text-gray-600">Status: In Progress</p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
@@ -540,8 +524,8 @@
                         </div>
                     </div>
                     <!-- Report Card 2 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden reveal-on-scroll" style="transition-delay: 150ms;">
-                        <img src="https://placehold.co/400x250/red/white?text=Garbage" alt="Garbage Overflow" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 150ms;">
+                        <img src="https://images.unsplash.com/photo-1574716474199-653e020504a2?q=80&w=2070&auto=format&fit=crop" alt="Overflowing garbage bin" class="w-full h-48 object-cover">
                         <div class="p-6">
                              <div class="flex justify-between items-start">
                                 <div>
@@ -553,7 +537,7 @@
                                     <span class="font-bold">97</span>
                                 </button>
                             </div>
-                            <p class="text-sm text-gray-500 mt-2">Reported 1 day ago</p>
+                            <p class="text-sm text-gray-500 mt-2">Reported 1 day ago in <span class="font-medium">Mumbai</span></p>
                             <div class="mt-4">
                                 <p class="text-sm font-semibold text-gray-600">Status: Acknowledged</p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
@@ -562,13 +546,59 @@
                             </div>
                         </div>
                     </div>
+                     <!-- Report Card 3 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 300ms;">
+                        <img src="https://images.unsplash.com/photo-1616467339809-7b3b7b2b7b2c?q=80&w=2070&auto=format&fit=crop" alt="A waterlogged street" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                             <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-semibold bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full">Water</span>
+                                    <h4 class="text-lg font-bold mt-2 text-text-dark">Water Logging after rain</h4>
+                                </div>
+                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                    <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
+                                    <span class="font-bold">54</span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Reported 8 hours ago in <span class="font-medium">Bengaluru</span></p>
+                            <div class="mt-4">
+                                <p class="text-sm font-semibold text-gray-600">Status: Reported</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                    <div class="bg-cyan-500 h-2.5 rounded-full" style="width: 10%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- NEW Report Card 4 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 450ms;">
+                        <img src="https://images.unsplash.com/photo-1569330751688-693a7905393a?q=80&w=1974&auto=format&fit=crop" alt="A broken wooden fence in a park" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                             <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-semibold bg-purple-100 text-purple-800 px-2 py-1 rounded-full" data-translate="categoryProperty">Property</span>
+                                    <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="ongoingReport4Title">Damaged fence at garden</h4>
+                                </div>
+                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                    <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
+                                    <span class="font-bold">42</span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Reported 3 days ago in <span class="font-medium">Noida</span></p>
+                            <div class="mt-4">
+                                <p class="text-sm font-semibold text-gray-600">Status: Acknowledged</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                    <div class="bg-purple-500 h-2.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="solved-issues-grid" class="hidden grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div id="solved-issues-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Solved Card 1 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                        <img src="https://placehold.co/400x250/blue/white?text=Streetlight" alt="Streetlight" class="w-full h-48 object-cover">
-                        <div class="p-6 opacity-80">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
+                        <img src="https://images.unsplash.com/photo-1560970997-3f9502b74790?q=80&w=1974&auto=format&fit=crop" alt="A working streetlight at dusk" class="w-full h-48 object-cover">
+                        <div class="p-6">
                             <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full" data-translate="categoryInfrastructure">Infrastructure</span>
                             <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport1Title">Broken Streetlight Fixed</h4>
                             <div class="mt-4 flex items-center space-x-2">
@@ -577,12 +607,24 @@
                             </div>
                         </div>
                     </div>
+                    <!-- NEW Solved Card 2 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
+                        <img src="https://images.unsplash.com/photo-1597517109228-dd362c476908?q=80&w=2070&auto=format&fit=crop" alt="A clean park pathway" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full" data-translate="categoryParks">Parks</span>
+                            <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport2Title">Park pathway cleaned</h4>
+                            <div class="mt-4 flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="h-6 w-6 text-green-500"></i>
+                                <p class="font-semibold text-green-600" data-translate="statusResolved2">Resolved 1 week ago</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Rewards Section -->
-        <section id="rewards" class="py-24 bg-transparent">
+        <section id="rewards" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="grid lg:grid-cols-2 gap-16 items-center">
                     <div class="reveal-on-scroll text-center lg:text-left">
@@ -620,7 +662,7 @@
                         </div>
                     </div>
                     <div class="hidden lg:flex items-center justify-center reveal-on-scroll" style="transition-delay: 150ms;">
-                        <img src="https://placehold.co/500x500/f0fdfa/0d9488?text=Rewards" alt="Illustration of a trophy and rewards" class="rounded-2xl shadow-xl">
+                        <img src="https://placehold.co/500x500/f0fdfa/0d9488?text=Rewards+Trophy" alt="Illustration of a trophy and rewards" class="rounded-2xl shadow-xl">
                     </div>
                 </div>
             </div>
@@ -652,23 +694,26 @@
         </section>
 
         <!-- Impact Section -->
-        <section id="impact" class="py-24 bg-transparent">
+        <section id="impact" class="py-24 bg-white">
              <div class="container mx-auto px-6 text-center">
                  <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="impactTitle">Our Community's Scoreboard</h3>
                  <p class="mt-3 max-w-2xl mx-auto text-text-light" data-translate="impactSubtitle">Small actions, when multiplied by thousands of people, can transform a city.</p>
                  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                     <div class="bg-white p-8 rounded-2xl shadow-md border">
-                         <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
-                         <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
-                     </div>
-                      <div class="bg-white p-8 rounded-2xl shadow-md border">
-                         <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
-                         <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
-                     </div>
-                      <div class="bg-white p-8 rounded-2xl shadow-md border">
-                         <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
-                         <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
-                     </div>
+                      <div class="bg-slate-50 p-8 rounded-2xl border">
+                           <i data-lucide="check-badge" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
+                           <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
+                           <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
+                      </div>
+                       <div class="bg-slate-50 p-8 rounded-2xl border">
+                           <i data-lucide="users" class="h-12 w-12 text-orange-500 mx-auto mb-4"></i>
+                           <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
+                           <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
+                      </div>
+                       <div class="bg-slate-50 p-8 rounded-2xl border">
+                           <i data-lucide="star" class="h-12 w-12 text-amber-500 mx-auto mb-4 fill-amber-400"></i>
+                           <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
+                           <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
+                      </div>
                  </div>
              </div>
         </section>
@@ -710,7 +755,7 @@
         </section>
         
         <!-- FAQ Section -->
-        <section id="faq" class="py-24 bg-transparent">
+        <section id="faq" class="py-24 bg-white">
             <div class="container mx-auto px-6 max-w-4xl">
                 <div class="text-center mb-16">
                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="faqTag">HAVE QUESTIONS?</span>
@@ -787,7 +832,7 @@
         <!-- CTA Section -->
         <section class="reveal-on-scroll">
             <div class="container mx-auto px-6 py-20">
-                <div class="bg-white rounded-3xl shadow-xl p-10 md:p-16 text-center">
+                <div class="bg-gradient-to-br from-teal-50 to-orange-50 rounded-3xl shadow-lg p-10 md:p-16 text-center">
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="ctaTitle">Ready to Make a Difference?</h3>
                     <p class="mt-4 text-text-light max-w-2xl mx-auto text-lg" data-translate="ctaSubtitle">Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.</p>
                     <div class="mt-8">
@@ -1095,10 +1140,96 @@
         </div>
     </div>
 
+    <!-- Track Report Modal -->
+    <div id="track-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white w-full max-w-lg p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+                <button id="close-track-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+                
+                <!-- Initial View: Enter ID -->
+                <div id="track-input-view">
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackModalTitle">Track Your Report</h3>
+                    <p class="text-center text-gray-500 mt-2" data-translate="trackModalSubtitle">Enter the tracking ID you received after submission.</p>
+                    <form id="track-id-form" class="mt-8 space-y-4">
+                        <div>
+                            <label for="tracking-id" class="block text-sm font-medium text-gray-700" data-translate="trackModalInputLabel">Tracking ID</label>
+                            <input type="text" name="tracking-id" id="tracking-id" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., CIVIC-XYZ-123">
+                        </div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button" data-translate="trackModalButton">
+                            Track Status
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Status View: Timeline -->
+                <div id="track-status-view" class="hidden">
+                     <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackStatusTitle">Report Status</h3>
+                     <p class="text-center text-gray-500 mt-2">Tracking ID: <span id="display-tracking-id" class="font-semibold text-teal-600"></span></p>
+                     <div class="mt-8">
+                        <!-- Step 1: Reported -->
+                        <div id="tracking-step-1" class="tracking-step">
+                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                                <i data-lucide="file-plus-2" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep1">Reported</h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep1Desc">Your report has been successfully submitted.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="h-8"></div> <!-- Spacer -->
+
+                        <!-- Step 2: Acknowledged -->
+                        <div id="tracking-step-2" class="tracking-step">
+                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                                 <i data-lucide="clipboard-check" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep2">Acknowledged</h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep2Desc">The relevant department has received your report.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="h-8"></div> <!-- Spacer -->
+
+                        <!-- Step 3: In Progress -->
+                        <div id="tracking-step-3" class="tracking-step">
+                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                                 <i data-lucide="wrench" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep3">In Progress</h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep3Desc">Work has begun to resolve the issue.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="h-8"></div> <!-- Spacer -->
+
+                        <!-- Step 4: Resolved -->
+                        <div id="tracking-step-4" class="tracking-step">
+                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                               <i data-lucide="check-circle-2" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep4">Resolved</h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep4Desc">The issue has been fixed. Thank you!</p>
+                            </div>
+                        </div>
+                     </div>
+                     <button id="track-another-btn" class="mt-8 w-full text-center text-sm font-semibold text-teal-600 hover:text-teal-800" data-translate="trackAnotherButton">Track Another Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         lucide.createIcons();
         
-        // Translations object (with new translations for report modal)
+        // Translations object
         const translations = {
             en: {
                 appName: "CivicVoice",
@@ -1109,7 +1240,7 @@
                 navImpact: "Impact",
                 navVoices: "Voices",
                 navFaq: "FAQ",
-                citizenLogin: "Citizen Login",
+                citizenLogin: "Login",
                 officialLogin: "Official Login",
                 navFeaturesMobile: "Features",
                 navProcessMobile: "Process",
@@ -1158,9 +1289,14 @@
                 ongoingReport1Title: "Large Pothole on Main St.",
                 categoryWaste: "Waste",
                 ongoingReport2Title: "Garbage Overflow near Park",
+                categoryProperty: "Property",
+                ongoingReport4Title: "Damaged fence at garden",
                 categoryInfrastructure: "Infrastructure",
                 solvedReport1Title: "Broken Streetlight Fixed",
+                categoryParks: "Parks",
+                solvedReport2Title: "Park pathway cleaned",
                 statusResolved: "Resolved 4 days ago",
+                statusResolved2: "Resolved 1 week ago",
                 rewardsTag: "BECOME A CHAMPION",
                 rewardsTitle: "Earn Rewards for Your Contribution",
                 rewardsSubtitle: "We believe active citizenship should be recognized. Our rewards system encourages you to make a tangible impact on your community.",
@@ -1256,7 +1392,23 @@
                 reportSuccessSub: "Thank you for helping improve your community. Your report has been sent to the relevant department.",
                 reportSuccessID: "Your Tracking ID is:",
                 reportByVoice: "Record by Voice",
-                listening: "Listening..."
+                listening: "Listening...",
+                trackReportNav: "Track Report",
+                trackReportNavMobile: "Track Report",
+                trackModalTitle: "Track Your Report",
+                trackModalSubtitle: "Enter the tracking ID you received after submission.",
+                trackModalInputLabel: "Tracking ID",
+                trackModalButton: "Track Status",
+                trackStatusTitle: "Report Status",
+                trackStep1: "Reported",
+                trackStep1Desc: "Your report has been successfully submitted.",
+                trackStep2: "Acknowledged",
+                trackStep2Desc: "The relevant department has received your report.",
+                trackStep3: "In Progress",
+                trackStep3Desc: "Work has begun to resolve the issue.",
+                trackStep4: "Resolved",
+                trackStep4Desc: "The issue has been fixed. Thank you!",
+                trackAnotherButton: "Track Another Report",
             },
             hi: {
                 appName: "सिविकवॉइस",
@@ -1267,7 +1419,7 @@
                 navImpact: "प्रभाव",
                 navVoices: "आवाज़ें",
                 navFaq: "FAQ",
-                citizenLogin: "नागरिक लॉगिन",
+                citizenLogin: "लॉगिन",
                 officialLogin: "आधिकारिक लॉगिन",
                 navFeaturesMobile: "विशेषताएँ",
                 navProcessMobile: "प्रक्रिया",
@@ -1316,9 +1468,14 @@
                 ongoingReport1Title: "मुख्य सड़क पर बड़ा गड्ढा।",
                 categoryWaste: "कचरा",
                 ongoingReport2Title: "पार्क के पास कचरा ओवरफ्लो",
+                categoryProperty: "संपत्ति",
+                ongoingReport4Title: "बगीचे में टूटी बाड़",
                 categoryInfrastructure: "आधारभूत संरचना",
                 solvedReport1Title: "टूटी स्ट्रीटलाइट ठीक हुई",
+                categoryParks: "पार्क",
+                solvedReport2Title: "पार्क का रास्ता साफ किया गया",
                 statusResolved: "4 दिन पहले हल किया गया",
+                statusResolved2: "1 सप्ताह पहले हल किया गया",
                 rewardsTag: "एक चैंपियन बनें",
                 rewardsTitle: "अपने योगदान के लिए पुरस्कार अर्जित करें",
                 rewardsSubtitle: "हमारा मानना ​​है कि सक्रिय नागरिकता को मान्यता मिलनी चाहिए। हमारी पुरस्कार प्रणाली आपको अपने समुदाय पर एक ठोस प्रभाव डालने के लिए प्रोत्साहित करती है।",
@@ -1345,7 +1502,7 @@
                 impact3: "औसत रेटिंग",
                 testimonialsTag: "असली कहानियाँ, असली प्रभाव",
                 testimonialsTitle: "हमारे उपयोगकर्ता क्या कह रहे हैं",
-                testimonial1: "\"मेरे समाज के पास ओवरफ्लो हो रहा कूड़ेदान एक निरंतर समस्या थी। सिविकवॉइस के माध्यम से इसकी सूचना दी, और अगले ही दिन नगर निगम की टीम ने इसे साफ कर दिया। यह मंच वास्तव में काम करता है!\"",
+                testimonial1: "\"मेरे समाज के पास ओवरफ्लो हो रहा कूड़ेदान एक निरंतर समस्या थी। सिविकवॉइस के माध्यम से इसकी सूचना दी, और अगले ही दिन नगर निगम की टीम ਨੇ इसे साफ कर दिया। यह मंच वास्तव में काम करता है!\"",
                 testimonial1Location: "मयूर विहार निवासी, दिल्ली",
                 testimonial2: "\"एक नगर निगम अधिकारी के रूप में, सिविकवॉइस हमारे वर्कफ़्लो को सुव्यवस्थित करता है। जियोटैग किए गए, फोटोग्राफिक सबूत अमूल्य हैं। यह हमें नागरिक शिकायतों को प्राथमिकता देने और तेजी से हल करने में मदद करता है।\"",
                 testimonial2Role: "नगर निगम अधिकारी",
@@ -1360,7 +1517,7 @@
                 faq3Question: "क्या यह सेवा मेरे शहर में उपलब्ध है?",
                 faq3Answer: "हम सक्रिय रूप से अपने भागीदार नगर पालिकाओं के नेटवर्क का विस्तार कर रहे हैं। वर्तमान में, हम दिल्ली, मुंबई और बैंगलोर में चालू हैं। जब हम आपके शहर में लॉन्च करेंगे तो अधिसूचित होने के लिए साइन अप करें!",
                 askTitle: "अभी भी प्रश्न हैं?",
-                askSubtitle: "यदि आपको हमारे FAQ में कोई उत्तर नहीं मिला, तो बेझižक हमसे सीधे पूछें।",
+                askSubtitle: "यदि आपको हमारे FAQ में कोई उत्तर नहीं मिला, तो बेझिझक हमसे सीधे पूछें।",
                 formName: "आपका नाम",
                 formEmail: "ईमेल पता",
                 formQuestion: "आपका सवाल",
@@ -1414,7 +1571,23 @@
                 reportSuccessSub: "अपने समुदाय को बेहतर बनाने में मदद करने के लिए धन्यवाद। आपकी रिपोर्ट संबंधित विभाग को भेज दी गई है।",
                 reportSuccessID: "आपका ट्रैकिंग आईडी है:",
                 reportByVoice: "आवाज़ से रिकॉर्ड करें",
-                listening: "सुन रहा है..."
+                listening: "सुन रहा है...",
+                trackReportNav: "रिपोर्ट ट्रैक करें",
+                trackReportNavMobile: "रिपोर्ट ट्रैक करें",
+                trackModalTitle: "अपनी रिपोर्ट ट्रैक करें",
+                trackModalSubtitle: "सबमिशन के बाद प्राप्त ट्रैकिंग आईडी दर्ज करें।",
+                trackModalInputLabel: "ट्रैकिंग आईडी",
+                trackModalButton: "स्थिति ट्रैक करें",
+                trackStatusTitle: "रिपोर्ट की स्थिति",
+                trackStep1: "रिपोर्ट किया गया",
+                trackStep1Desc: "आपकी रिपोर्ट सफलतापूर्वक सबमिट कर दी गई है।",
+                trackStep2: "स्वीकृत",
+                trackStep2Desc: "संबंधित विभाग को आपकी रिपोर्ट मिल गई है।",
+                trackStep3: "प्रगति में है",
+                trackStep3Desc: "समस्या को हल करने के लिए काम शुरू हो गया है।",
+                trackStep4: "हल हो गया",
+                trackStep4Desc: "समस्या ठीक कर दी गई है। धन्यवाद!",
+                trackAnotherButton: "दूसरी रिपोर्ट ट्रैक करें",
             },
         };
 
@@ -1442,8 +1615,7 @@
         // FAQ Accordion
         document.querySelectorAll('.faq-question').forEach(button => {
             button.addEventListener('click', () => {
-                const faqItem = button.parentElement;
-                faqItem.classList.toggle('open');
+                button.parentElement.classList.toggle('open');
             });
         });
 
@@ -1492,13 +1664,9 @@
 
         stateSelect.addEventListener('change', (e) => {
             const selectedState = e.target.value;
-            // Clear previous options
             citySelect.innerHTML = '<option selected disabled>Select Area/City</option>';
-
             if (selectedState && locations[selectedState]) {
-                // Enable the city dropdown
                 citySelect.disabled = false;
-                // Populate new options
                 locations[selectedState].forEach(city => {
                     const option = document.createElement('option');
                     option.value = city;
@@ -1506,7 +1674,6 @@
                     citySelect.appendChild(option);
                 });
             } else {
-                // Disable if no state is selected
                 citySelect.disabled = true;
             }
         });
@@ -1516,6 +1683,7 @@
         // Generic Modal Open/Close
         const setupModal = (modalId, openBtns, closeBtnId) => {
             const modal = document.getElementById(modalId);
+            if (!modal) return {};
             const modalOverlay = modal.querySelector('.modal-overlay');
             const modalContent = modal.querySelector('.modal-content');
             const closeModalBtn = document.getElementById(closeBtnId);
@@ -1550,44 +1718,31 @@
         // Login Modal Specific Logic
         const citizenLoginBtns = [document.getElementById('citizen-login-btn-desktop'), document.getElementById('citizen-login-btn-mobile')];
         const officialLoginBtns = [document.getElementById('official-login-btn-desktop'), document.getElementById('official-login-btn-mobile')];
-        const { modal: loginModal, openModal: openLoginModal } = setupModal('login-modal', [], 'close-login-modal-btn');
+        const { openModal: openLoginModal } = setupModal('login-modal', [], 'close-login-modal-btn');
         
-        const citizenTab = document.getElementById('citizen-tab');
-        const officialTab = document.getElementById('official-tab');
-        const citizenForm = document.getElementById('citizen-form');
-        const officialForm = document.getElementById('official-form');
-        const citizenStep1 = document.getElementById('citizen-step-1');
-        const citizenStep2 = document.getElementById('citizen-step-2');
+        const [citizenTab, officialTab, citizenForm, officialForm, citizenStep1, citizenStep2] = 
+            ['citizen-tab', 'official-tab', 'citizen-form', 'official-form', 'citizen-step-1', 'citizen-step-2'].map(id => document.getElementById(id));
 
-        const switchToCitizenTab = () => { 
-            officialTab.classList.remove('border-teal-500', 'text-teal-600');
-            officialTab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            citizenTab.classList.add('border-teal-500', 'text-teal-600');
-            citizenTab.classList.remove('border-transparent', 'text-gray-500');
-            officialForm.classList.add('hidden');
-            citizenForm.classList.remove('hidden');
-            citizenStep1.classList.remove('hidden');
-            citizenStep2.classList.add('hidden');
-        };
-        const switchToOfficialTab = () => {
-            citizenTab.classList.remove('border-teal-500', 'text-teal-600');
-            citizenTab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            officialTab.classList.add('border-teal-500', 'text-teal-600');
-            officialTab.classList.remove('border-transparent', 'text-gray-500');
-            citizenForm.classList.add('hidden');
-            officialForm.classList.remove('hidden');
+        const switchLoginTab = (showCitizen) => {
+            const activeTab = showCitizen ? citizenTab : officialTab;
+            const inactiveTab = showCitizen ? officialTab : citizenTab;
+            activeTab.className = "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-teal-500 text-teal-600";
+            inactiveTab.className = "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300";
+            
+            citizenForm.classList.toggle('hidden', !showCitizen);
+            officialForm.classList.toggle('hidden', showCitizen);
+
+            if (showCitizen) {
+                citizenStep1.classList.remove('hidden');
+                citizenStep2.classList.add('hidden');
+            }
         };
 
-        citizenLoginBtns.forEach(btn => btn.addEventListener('click', () => {
-            openLoginModal();
-            switchToCitizenTab();
-        }));
-        officialLoginBtns.forEach(btn => btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            openLoginModal();
-            switchToOfficialTab();
-        }));
-        
+        citizenLoginBtns.forEach(btn => btn && btn.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); switchLoginTab(true); }));
+        officialLoginBtns.forEach(btn => btn && btn.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); switchLoginTab(false); }));
+        citizenTab.addEventListener('click', () => switchLoginTab(true));
+        officialTab.addEventListener('click', () => switchLoginTab(false));
+
         document.getElementById('citizen-otp-form').addEventListener('submit', (e) => {
             e.preventDefault();
             citizenStep1.classList.add('hidden');
@@ -1598,12 +1753,9 @@
             citizenStep2.classList.add('hidden');
             citizenStep1.classList.remove('hidden');
         });
-        
-        citizenTab.addEventListener('click', switchToCitizenTab);
-        officialTab.addEventListener('click', switchToOfficialTab);
 
         // Report Modal Specific Logic
-        const { modal: reportModal, closeModal: closeReportModal } = setupModal('report-modal', [document.getElementById('make-report-btn'), document.getElementById('make-report-btn-hero')], 'close-report-modal-btn');
+        const { closeModal: closeReportModal } = setupModal('report-modal', [document.getElementById('make-report-btn')], 'close-report-modal-btn');
         document.getElementById('close-success-btn').addEventListener('click', closeReportModal);
         
         const reportFormContent = document.getElementById('report-form-content');
@@ -1619,49 +1771,26 @@
         let currentStep = 0;
 
         const updateFormSteps = () => {
-            formSteps.forEach((step, index) => {
-                step.classList.toggle('hidden', index !== currentStep);
-            });
-            
+            formSteps.forEach((step, index) => step.classList.toggle('hidden', index !== currentStep));
             stepIndicators.forEach((indicator, index) => {
                 const circle = indicator.querySelector('div');
                 const text = indicator.querySelector('span');
-                if (index < currentStep) {
-                    circle.classList.add('bg-teal-600', 'text-white');
-                    circle.classList.remove('bg-gray-200', 'text-gray-500');
-                    text.classList.add('text-teal-600');
-                    text.classList.remove('text-gray-400');
-                } else if (index === currentStep) {
-                     circle.classList.add('bg-teal-600', 'text-white');
-                    circle.classList.remove('bg-gray-200', 'text-gray-500');
-                    text.classList.add('text-teal-600');
-                    text.classList.remove('text-gray-400');
-                } else {
-                    circle.classList.remove('bg-teal-600', 'text-white');
-                    circle.classList.add('bg-gray-200', 'text-gray-500');
-                    text.classList.remove('text-teal-600');
-                    text.classList.add('text-gray-400');
-                }
+                const isActive = index <= currentStep;
+                
+                circle.classList.toggle('bg-teal-600', isActive);
+                circle.classList.toggle('text-white', isActive);
+                circle.classList.toggle('bg-gray-200', !isActive);
+                circle.classList.toggle('text-gray-500', !isActive);
+                text.classList.toggle('text-teal-600', isActive);
+                text.classList.toggle('text-gray-400', !isActive);
             });
-
             prevBtn.classList.toggle('invisible', currentStep === 0);
             nextBtn.classList.toggle('hidden', currentStep === formSteps.length - 1);
             submitBtn.classList.toggle('hidden', currentStep !== formSteps.length - 1);
         };
         
-        nextBtn.addEventListener('click', () => {
-            if (currentStep < formSteps.length - 1) {
-                currentStep++;
-                updateFormSteps();
-            }
-        });
-
-        prevBtn.addEventListener('click', () => {
-            if (currentStep > 0) {
-                currentStep--;
-                updateFormSteps();
-            }
-        });
+        nextBtn.addEventListener('click', () => { if (currentStep < formSteps.length - 1) { currentStep++; updateFormSteps(); } });
+        prevBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; updateFormSteps(); } });
         
         document.getElementById('report-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -1675,53 +1804,97 @@
         });
         
         document.getElementById('stop-recording-btn').addEventListener('click', () => {
-            // Simulate voice-to-text
             document.getElementById('issue-description').value = "Simulated voice input: 'There is a large pothole in the middle of the road which is causing traffic issues.'";
             voiceRecordingUI.classList.add('hidden');
             reportStep1Form.classList.remove('hidden');
         });
         
-        // Redeem Modal Logic
+        // Redeem & Track Modals
         setupModal('redeem-modal', [document.getElementById('open-redeem-modal-btn')], 'close-redeem-modal-btn');
-        
+        setupModal('track-modal', [document.getElementById('track-report-btn-desktop'), document.getElementById('track-report-btn-mobile')], 'close-track-modal-btn');
+
+        // Track Report Logic
+        const trackInputView = document.getElementById('track-input-view');
+        const trackStatusView = document.getElementById('track-status-view');
+        const trackIdForm = document.getElementById('track-id-form');
+        const displayTrackingId = document.getElementById('display-tracking-id');
+        const trackingIdInput = document.getElementById('tracking-id');
+        const trackAnotherBtn = document.getElementById('track-another-btn');
+        const trackingSteps = Array.from(document.querySelectorAll('.tracking-step'));
+
+        const resetTrackingView = () => {
+            if (window.progressInterval) clearInterval(window.progressInterval);
+            trackingSteps.forEach(step => step.classList.remove('active', 'completed'));
+            trackStatusView.classList.add('hidden');
+            trackInputView.classList.remove('hidden');
+            trackingIdInput.value = '';
+        };
+
+        trackIdForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const trackingId = trackingIdInput.value.trim();
+            if (!trackingId) return;
+
+            displayTrackingId.textContent = trackingId;
+            trackInputView.classList.add('hidden');
+            trackStatusView.classList.remove('hidden');
+            lucide.createIcons();
+
+            let currentTrackingStep = 0;
+            if (window.progressInterval) clearInterval(window.progressInterval);
+            
+            const processStep = () => {
+                 if (currentTrackingStep < trackingSteps.length) {
+                    if (currentTrackingStep > 0) {
+                        trackingSteps[currentTrackingStep - 1].classList.remove('active');
+                        trackingSteps[currentTrackingStep - 1].classList.add('completed');
+                    }
+                    trackingSteps[currentTrackingStep].classList.add('active');
+                    currentTrackingStep++;
+                } else {
+                    trackingSteps[currentTrackingStep - 1].classList.remove('active');
+                    trackingSteps[currentTrackingStep - 1].classList.add('completed');
+                    clearInterval(window.progressInterval);
+                }
+            };
+            processStep();
+            window.progressInterval = setInterval(processStep, 1500);
+        });
+
+        trackAnotherBtn.addEventListener('click', resetTrackingView);
+        document.getElementById('close-track-modal-btn').addEventListener('click', resetTrackingView);
+        document.querySelector('#track-modal .modal-overlay').addEventListener('click', resetTrackingView);
+
+
         // Live Reports Tab Logic
-        const ongoingTab = document.getElementById('ongoing-tab');
-        const solvedTab = document.getElementById('solved-tab');
-        const ongoingGrid = document.getElementById('ongoing-issues-grid');
-        const solvedGrid = document.getElementById('solved-issues-grid');
-
-        ongoingTab.addEventListener('click', () => {
-            ongoingTab.classList.add('active');
-            solvedTab.classList.remove('active');
-            ongoingGrid.classList.remove('hidden');
-            solvedGrid.classList.add('hidden');
-        });
-
-        solvedTab.addEventListener('click', () => {
-            solvedTab.classList.add('active');
-            ongoingTab.classList.remove('active');
-            solvedGrid.classList.remove('hidden');
-            ongoingGrid.classList.add('hidden');
-        });
+        const [ongoingTab, solvedTab, ongoingGrid, solvedGrid] = ['ongoing-tab', 'solved-tab', 'ongoing-issues-grid', 'solved-issues-grid'].map(id => document.getElementById(id));
+        
+        const switchLiveReportTab = (showOngoing) => {
+            ongoingTab.classList.toggle('active', showOngoing);
+            solvedTab.classList.toggle('active', !showOngoing);
+            ongoingGrid.classList.toggle('hidden', !showOngoing);
+            solvedGrid.classList.toggle('hidden', showOngoing);
+        };
+        ongoingTab.addEventListener('click', () => switchLiveReportTab(true));
+        solvedTab.addEventListener('click', () => switchLiveReportTab(false));
 
         // Language translation logic
         const languageSelector = document.getElementById('language-selector');
-        
         const translatePage = (language) => {
-            const langData = { ...translations.en, ...translations[language] };
+            const langData = translations[language];
             document.querySelectorAll('[data-translate]').forEach(element => {
                 const key = element.getAttribute('data-translate');
-                if (langData[key]) {
+                if (langData && langData[key]) {
                     element.innerHTML = langData[key];
                 }
             });
         };
 
-        languageSelector.addEventListener('change', (e) => {
-            translatePage(e.target.value);
-        });
+        languageSelector.addEventListener('change', (e) => translatePage(e.target.value));
+        translatePage('en'); // Initial translation
 
     </script>
 
 </body>
 </html>
+
