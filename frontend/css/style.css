@@ -1,0 +1,244 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    /* UPDATED: Added a background image with a semi-transparent overlay */
+    background-image:
+        linear-gradient(to bottom, rgba(250, 249, 246, 0.95), rgba(250, 249, 246, 0.98)),
+        url('https://images.unsplash.com/photo-1627525895922-8165b4c4815b?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* New Color Palette */
+:root {
+    --primary: #0d9488;
+    /* Teal */
+    --primary-hover: #0f766e;
+    --secondary: #f97316;
+    /* Orange */
+    --accent: #f59e0b;
+    /* Amber */
+    --text-dark: #1f2937;
+    --text-light: #4b5563;
+}
+
+.hero-bg {
+    background-color: #f0fdfa;
+    /* A very light teal */
+    background-image: radial-gradient(#ccfbf1 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+.cta-button {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(13, 148, 136, 0.2);
+}
+
+.feature-card {
+    background-color: white;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.feature-icon {
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.testimonial-card {
+    background: linear-gradient(135deg, var(--primary), #115e59);
+    /* Teal gradient */
+    color: white;
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.testimonial-card::before {
+    content: '“';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 10rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.1);
+    line-height: 1;
+}
+
+/* Scroll Animation */
+.reveal-on-scroll {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out;
+}
+
+.reveal-on-scroll.is-visible {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+
+/* Glassmorphism Header */
+header {
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* SVG Animation */
+.svg-draw-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 3s ease-in-out forwards;
+}
+
+.svg-fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.process-flow-arrow {
+    position: absolute;
+    top: 3rem;
+    left: -4.5rem;
+    transform: translateY(-50%);
+    color: #cbd5e1;
+    /* slate-300 */
+}
+
+@media (max-width: 767px) {
+    .process-flow-arrow {
+        display: none;
+    }
+}
+
+/* FAQ Accordion */
+.faq-question {
+    cursor: pointer;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.faq-item.open .faq-answer {
+    max-height: 200px;
+    /* Adjust as needed */
+}
+
+.faq-item.open .faq-arrow {
+    transform: rotate(180deg);
+}
+
+.faq-arrow {
+    transition: transform 0.3s ease;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Report Modal Step Indicator */
+.step-indicator {
+    transition: all 0.3s ease;
+}
+
+/* Live Reports Tab Styling */
+.tab-btn {
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    border-color: var(--primary);
+    background-color: white;
+}
+
+/* Voice Recording Animation */
+.mic-pulse {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(13, 148, 136, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+    }
+}
+
+/* Tracking Modal Step Progress */
+.tracking-step {
+    transition: all 0.5s ease;
+}
+
+.tracking-step.completed .step-circle {
+    background-color: var(--primary);
+    color: white;
+}
+
+.tracking-step.completed .step-line {
+    background-color: var(--primary);
+}
+
+.tracking-step.active .step-circle {
+    background-color: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.tracking-step.active .step-label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
