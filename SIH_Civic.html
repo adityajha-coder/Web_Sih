@@ -10,7 +10,13 @@
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #f7f8fc; 
+            /* UPDATED: Added a background image with a semi-transparent overlay */
+            background-image: 
+                linear-gradient(to bottom, rgba(250, 249, 246, 0.95), rgba(250, 249, 246, 0.98)),
+                url('https://images.unsplash.com/photo-1627525895922-8165b4c4815b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
@@ -56,7 +62,7 @@
             transition: all 0.3s ease;
         }
          .feature-card:hover .feature-icon {
-            transform: rotate(360deg) scale(1.2);
+            transform: scale(1.1) rotate(-5deg);
         }
 
         .testimonial-card {
@@ -151,6 +157,66 @@
         .faq-arrow {
             transition: transform 0.3s ease;
         }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        /* Report Modal Step Indicator */
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        /* Live Reports Tab Styling */
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+            background-color: white;
+        }
+        
+        /* Voice Recording Animation */
+        .mic-pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(13, 148, 136, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+            }
+        }
+
+        /* Tracking Modal Step Progress */
+        .tracking-step {
+            transition: all 0.5s ease;
+        }
+        .tracking-step.completed .step-circle {
+            background-color: var(--primary);
+            color: white;
+        }
+        .tracking-step.completed .step-line {
+            background-color: var(--primary);
+        }
+        .tracking-step.active .step-circle {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        .tracking-step.active .step-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
 
 
     </style>
@@ -164,18 +230,29 @@
                 <div class="bg-teal-600 p-2 rounded-lg">
                     <i data-lucide="megaphone" class="text-white"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-800">CivicVoice</h1>
+                <h1 class="text-2xl font-bold text-gray-800" data-translate="appName">CivicVoice</h1>
             </a>
             <nav class="hidden md:flex items-center space-x-8 text-gray-800 font-semibold">
-                <a href="#features" class="hover:text-teal-600 transition duration-300">Features</a>
-                <a href="#process" class="hover:text-teal-600 transition duration-300">Process</a>
-                <a href="#impact" class="hover:text-teal-600 transition duration-300">Impact</a>
-                <a href="#testimonials" class="hover:text-teal-600 transition duration-300">Voices</a>
-                <a href="#faq" class="hover:text-teal-600 transition duration-300">FAQ</a>
+                <a href="#features" class="hover:text-teal-600 transition duration-300" data-translate="navFeatures">Features</a>
+                <a href="#process" class="hover:text-teal-600 transition duration-300" data-translate="navProcess">Process</a>
+                <a href="#live-reports" class="hover:text-teal-600 transition duration-300" data-translate="navReports">Reports</a>
+                <a href="#rewards" class="hover:text-teal-600 transition duration-300" data-translate="navRewards">Rewards</a>
+                <a href="#impact" class="hover:text-teal-600 transition duration-300" data-translate="navImpact">Impact</a>
+                <a href="#testimonials" class="hover:text-teal-600 transition duration-300" data-translate="navVoices">Voices</a>
+                <a href="#faq" class="hover:text-teal-600 transition duration-300" data-translate="navFaq">FAQ</a>
             </nav>
             <div class="flex items-center space-x-4">
-                 <button class="hidden md:block bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300">Login</button>
-                 <button class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300 cta-button">Report Now</button>
+                 <!-- Language Selector -->
+                <div class="relative">
+                    <select id="language-selector" class="appearance-none bg-transparent border-none text-gray-600 font-semibold py-2 pr-8 focus:outline-none">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी</option>
+                    </select>
+                    <i data-lucide="languages" class="absolute right-0 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"></i>
+                </div>
+                 <a href="#" id="track-report-btn-desktop" class="hidden sm:block text-sm font-semibold text-gray-600 hover:text-teal-600" data-translate="trackReportNav">Track Report</a>
+                 <button id="citizen-login-btn-desktop" class="bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLogin">Citizen Login</button>
+                 <a href="#" id="official-login-btn-desktop" class="hidden sm:block text-sm font-semibold text-gray-600 hover:text-teal-600" data-translate="officialLogin">Official Login</a>
             </div>
              <button id="mobile-menu-button" class="md:hidden text-gray-700">
                  <i data-lucide="menu"></i>
@@ -183,11 +260,18 @@
         </div>
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-             <a href="#features" class="block py-2 text-gray-700 hover:text-teal-600">Features</a>
-             <a href="#process" class="block py-2 text-gray-700 hover:text-teal-600">Process</a>
-             <a href="#impact" class="block py-2 text-gray-700 hover:text-teal-600">Impact</a>
-             <a href="#testimonials" class="block py-2 text-gray-700 hover:text-teal-600">Voices</a>
-             <a href="#faq" class="block py-2 text-gray-700 hover:text-teal-600">FAQ</a>
+             <a href="#features" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFeaturesMobile">Features</a>
+             <a href="#process" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navProcessMobile">Process</a>
+             <a href="#live-reports" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navReportsMobile">Reports</a>
+             <a href="#rewards" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navRewardsMobile">Rewards</a>
+             <a href="#impact" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navImpactMobile">Impact</a>
+             <a href="#testimonials" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navVoicesMobile">Voices</a>
+             <a href="#faq" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFaqMobile">FAQ</a>
+             <div class="border-t mt-4 pt-4 space-y-2">
+                <button id="track-report-btn-mobile" class="w-full text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition duration-300" data-translate="trackReportNavMobile">Track Report</button>
+                <button id="citizen-login-btn-mobile" class="w-full bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLoginMobile">Citizen Login</button>
+                <button id="official-login-btn-mobile" class="w-full text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition duration-300" data-translate="officialLoginMobile">Official Login</button>
+            </div>
         </div>
     </header>
 
@@ -196,15 +280,10 @@
         <section class="hero-bg overflow-hidden">
             <div class="container mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col lg:flex-row items-center">
                 <div class="lg:w-1/2 text-center lg:text-left">
-                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight">Your Voice, <br><span class="text-teal-600">Our City's Future.</span></h2>
-                    <p class="mt-6 text-lg text-text-light max-w-xl mx-auto lg:mx-0">Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.</p>
-                    <div class="mt-10">
-                        <button class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button">
-                            <span class="flex items-center justify-center"><i data-lucide="plus-circle" class="mr-2"></i>Make a Report</span>
-                        </button>
-                    </div>
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight" data-translate="heroTitle">Your Voice, <br><span class="text-teal-600">Our City's Future.</span></h2>
+                    <p class="mt-6 text-lg text-text-light max-w-xl mx-auto lg:mx-0" data-translate="heroSubtitle">Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.</p>
                 </div>
-                <div class="lg:w-1/2 mt-12 lg:mt-0 flex items-center justify-center">
+                <div class="lg:w-1/2 mt-12 lg:mt-0 flex flex-col items-center justify-center">
                     <!-- Creative SVG Illustration -->
                     <svg viewBox="0 0 500 400" class="w-full max-w-lg h-auto">
                         <defs>
@@ -248,49 +327,127 @@
                         <path d="M365 105 Q 300 140 295 180" fill="none" stroke="var(--accent)" stroke-width="2" class="svg-draw-path" style="animation-delay: 2.8s;"/>
                         <path d="M385 245 Q 320 230 298 210" fill="none" stroke="var(--primary)" stroke-width="2" class="svg-draw-path" style="animation-delay: 3.1s;"/>
                     </svg>
+
+                    <!-- LOCATION SELECTOR & BUTTON MOVED HERE -->
+                    <div class="mt-8 w-full max-w-xl">
+                        <label class="block text-sm font-medium text-text-light mb-2 text-center" data-translate="locationLabel">Select your location to get started</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="relative">
+                                <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+                                <select id="state-select" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition">
+                                    <option selected disabled data-translate="selectState">Select State</option>
+                                    <option>Andaman and Nicobar Islands</option>
+                                    <option>Andhra Pradesh</option>
+                                    <option>Arunachal Pradesh</option>
+                                    <option>Assam</option>
+                                    <option>Bihar</option>
+                                    <option>Chandigarh</option>
+                                    <option>Chhattisgarh</option>
+                                    <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                                    <option>Delhi</option>
+                                    <option>Goa</option>
+                                    <option>Gujarat</option>
+                                    <option>Haryana</option>
+                                    <option>Himachal Pradesh</option>
+                                    <option>Jammu and Kashmir</option>
+                                    <option>Jharkhand</option>
+                                    <option>Karnataka</option>
+                                    <option>Kerala</option>
+                                    <option>Ladakh</option>
+                                    <option>Lakshadweep</option>
+                                    <option>Madhya Pradesh</option>
+                                    <option>Maharashtra</option>
+                                    <option>Manipur</option>
+                                    <option>Meghalaya</option>
+                                    <option>Mizoram</option>
+                                    <option>Nagaland</option>
+                                    <option>Odisha</option>
+                                    <option>Puducherry</option>
+                                    <option>Punjab</option>
+                                    <option>Rajasthan</option>
+                                    <option>Sikkim</option>
+                                    <option>Tamil Nadu</option>
+                                    <option>Telangana</option>
+                                    <option>Tripura</option>
+                                    <option>Uttar Pradesh</option>
+                                    <option>Uttarakhand</option>
+                                    <option>West Bengal</option>
+                                </select>
+                            </div>
+                            <div class="relative">
+                                 <i data-lucide="map" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+                                <select id="city-select" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition" disabled>
+                                    <option selected disabled data-translate="selectCity">Select Area/City</option>
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <button id="make-report-btn" class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button">
+                            <span class="flex items-center justify-center"><i data-lucide="plus-circle" class="mr-2"></i><span data-translate="makeReport">Make a Report</span></span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="py-24 bg-white">
+        <section id="features" class="py-24 bg-transparent">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider">WHY CIVICVOICE?</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2">A Platform Built for Change</h3>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="featuresTag">WHY CIVICVOICE?</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="featuresTitle">A Platform Built for Change</h3>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                    <!-- Feature Card -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Card 1 -->
                     <div class="text-left feature-card reveal-on-scroll">
                          <div class="feature-icon flex items-center justify-center h-16 w-16 bg-teal-100 text-teal-600 rounded-2xl mb-6">
-                            <i data-lucide="camera" class="h-8 w-8"></i>
-                        </div>
-                        <h4 class="text-xl font-bold text-text-dark">Snap & Send</h4>
-                        <p class="mt-2 text-text-light">Reporting an issue is as easy as taking a picture. Our app automatically captures the location.</p>
-                    </div>
-                    <!-- Feature Card -->
-                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 100ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-2xl mb-6">
-                            <i data-lucide="trending-up" class="h-8 w-8"></i>
-                        </div>
-                        <h4 class="text-xl font-bold text-text-dark">Follow the Progress</h4>
-                        <p class="mt-2 text-text-light">Get real-time updates and notifications as your report moves from acknowledged to resolved.</p>
-                    </div>
-                    <!-- Feature Card -->
-                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 200ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-amber-100 text-amber-600 rounded-2xl mb-6">
-                            <i data-lucide="users" class="h-8 w-8"></i>
-                        </div>
-                        <h4 class="text-xl font-bold text-text-dark">Power in Numbers</h4>
-                        <p class="mt-2 text-text-light">Upvote existing issues to highlight their priority. Let the authorities know what matters most.</p>
-                    </div>
-                    <!-- New Feature Card -->
-                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 300ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-violet-100 text-violet-600 rounded-2xl mb-6">
                             <i data-lucide="mic" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark">Voice & Language Support</h4>
-                        <p class="mt-2 text-text-light">Report issues by simply speaking in your regional language. Our smart system will handle the translation.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature1Title">Accessible Reporting</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature1Desc">Snap a photo or simply use your voice in any regional language to submit a report effortlessly.</p>
+                    </div>
+                    <!-- Feature Card 2 -->
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 100ms;">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-2xl mb-6">
+                            <i data-lucide="gantt-chart-square" class="h-8 w-8"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature2Title">Transparent Tracking</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature2Desc">Get real-time updates and notifications as your report moves from acknowledged to resolved.</p>
+                    </div>
+                    <!-- Feature Card 3 -->
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 200ms;">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-amber-100 text-amber-600 rounded-2xl mb-6">
+                            <i data-lucide="users-round" class="h-8 w-8"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature3Title">Community Prioritization</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature3Desc">Upvote existing issues to highlight their priority. Let the authorities know what matters most.</p>
+                    </div>
+                    <!-- Feature Card 4 -->
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 300ms;">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-2xl mb-6">
+                            <i data-lucide="map-pin" class="h-8 w-8"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature4Title">Hyperlocal Focus</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature4Desc">Select your specific state and city to view and report issues that are relevant to your community.</p>
+                    </div>
+                    <!-- Feature Card 5 -->
+                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 400ms;">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-2xl mb-6">
+                            <i data-lucide="award" class="h-8 w-8"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature5Title">Earn Community Rewards</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature5Desc">Get points for valid reports and verifications. Redeem them for cash rewards and climb the community leaderboard.</p>
+                    </div>
+                     <!-- Feature Card 6 -->
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 500ms;">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-indigo-100 text-indigo-600 rounded-2xl mb-6">
+                            <i data-lucide="shield-check" class="h-8 w-8"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature6Title">Secure User Portals</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature6Desc">Separate, secure login portals for citizens and government officials ensure data privacy and integrity.</p>
                     </div>
                 </div>
             </div>
@@ -300,9 +457,9 @@
         <section id="process" class="py-24">
             <div class="container mx-auto px-6">
                  <div class="text-center mb-20">
-                     <span class="text-teal-600 font-semibold tracking-wider">3 EASY STEPS</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2">See It. Report It. Get It Fixed.</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto">We've designed a simple, transparent process to connect you directly with the departments that can make a difference.</p>
+                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY STEPS</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="processTitle">See It. Report It. Get It Fixed.</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="processSubtitle">We've designed a simple, transparent process to connect you directly with the departments that can make a difference.</p>
                  </div>
                 
                  <!-- HORIZONTAL PROCESS -->
@@ -312,8 +469,8 @@
                         <div class="flex items-center justify-center h-24 w-24 bg-teal-100 text-teal-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="smartphone" class="h-12 w-12"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark mt-6">1. Report in Seconds</h4>
-                        <p class="mt-2 text-text-light">Our intuitive form guides you to provide all necessary details quickly.</p>
+                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step1Title">1. Report in Seconds</h4>
+                        <p class="mt-2 text-text-light" data-translate="step1Desc">Our intuitive form guides you to provide all necessary details quickly.</p>
                     </div>
                     
                     <!-- Step 2 -->
@@ -322,8 +479,8 @@
                          <div class="flex items-center justify-center h-24 w-24 bg-orange-100 text-orange-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="route" class="h-12 w-12"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark mt-6">2. Direct to the Right Team</h4>
-                        <p class="mt-2 text-text-light">We intelligently route your issue to the correct municipal department, saving time.</p>
+                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step2Title">2. Direct to the Right Team</h4>
+                        <p class="mt-2 text-text-light" data-translate="step2Desc">We intelligently route your issue to the correct municipal department, saving time.</p>
                     </div>
                     
                     <!-- Step 3 -->
@@ -332,31 +489,185 @@
                          <div class="flex items-center justify-center h-24 w-24 bg-amber-100 text-amber-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="check-check" class="h-12 w-12"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark mt-6">3. Close the Loop</h4>
-                        <p class="mt-2 text-text-light">Get a final notification and photo proof when the issue is resolved.</p>
+                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step3Title">3. Close the Loop</h4>
+                        <p class="mt-2 text-text-light" data-translate="step3Desc">Get a final notification and photo proof when the issue is resolved.</p>
                     </div>
                 </div>
 
             </div>
         </section>
 
+        <!-- Live Community Reports Section -->
+        <section id="live-reports" class="py-24 bg-slate-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="reportsTag">LIVE FEED</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="reportsTitle">Live Community Reports</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="reportsSubtitle">See what's happening in your community in real-time. Your engagement helps prioritize action.</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex justify-center mb-8">
+                    <div class="bg-gray-200 p-1 rounded-lg">
+                        <button id="ongoing-tab" class="tab-btn active py-2 px-6 font-semibold rounded-md" data-translate="ongoingIssuesTab">Ongoing Issues</button>
+                        <button id="solved-tab" class="tab-btn py-2 px-6 font-semibold rounded-md" data-translate="solvedIssuesTab">Recently Solved</button>
+                    </div>
+                </div>
+
+                <!-- Issues Grid -->
+                <div id="ongoing-issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Report Card 1 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden reveal-on-scroll">
+                        <img src="https://placehold.co/400x250/orange/white?text=Pothole" alt="Pothole" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-semibold bg-orange-100 text-orange-800 px-2 py-1 rounded-full" data-translate="categoryRoads">Roads</span>
+                                    <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="ongoingReport1Title">Large Pothole on Main St.</h4>
+                                </div>
+                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                    <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
+                                    <span class="font-bold">128</span>
+                                </button>
+                            </div>
+                             <p class="text-sm text-gray-500 mt-2">Reported 2 days ago</p>
+                            <div class="mt-4">
+                                <p class="text-sm font-semibold text-gray-600">Status: In Progress</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                    <div class="bg-orange-500 h-2.5 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Report Card 2 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden reveal-on-scroll" style="transition-delay: 150ms;">
+                        <img src="https://placehold.co/400x250/red/white?text=Garbage" alt="Garbage Overflow" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                             <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-semibold bg-red-100 text-red-800 px-2 py-1 rounded-full" data-translate="categoryWaste">Waste</span>
+                                    <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="ongoingReport2Title">Garbage Overflow near Park</h4>
+                                </div>
+                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                    <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
+                                    <span class="font-bold">97</span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Reported 1 day ago</p>
+                            <div class="mt-4">
+                                <p class="text-sm font-semibold text-gray-600">Status: Acknowledged</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                    <div class="bg-red-500 h-2.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="solved-issues-grid" class="hidden grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Solved Card 1 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <img src="https://placehold.co/400x250/blue/white?text=Streetlight" alt="Streetlight" class="w-full h-48 object-cover">
+                        <div class="p-6 opacity-80">
+                            <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full" data-translate="categoryInfrastructure">Infrastructure</span>
+                            <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport1Title">Broken Streetlight Fixed</h4>
+                            <div class="mt-4 flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="h-6 w-6 text-green-500"></i>
+                                <p class="font-semibold text-green-600" data-translate="statusResolved">Resolved 4 days ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rewards Section -->
+        <section id="rewards" class="py-24 bg-transparent">
+            <div class="container mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="reveal-on-scroll text-center lg:text-left">
+                        <span class="text-teal-600 font-semibold tracking-wider" data-translate="rewardsTag">BECOME A CHAMPION</span>
+                        <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="rewardsTitle">Earn Rewards for Your Contribution</h3>
+                        <p class="mt-4 text-text-light text-lg" data-translate="rewardsSubtitle">We believe active citizenship should be recognized. Our rewards system encourages you to make a tangible impact on your community.</p>
+                        <div class="mt-8 space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-teal-100 text-teal-600 rounded-lg">
+                                    <i data-lucide="plus-circle"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold" data-translate="reward1Title">Report & Earn Points</h4>
+                                    <p class="text-text-light" data-translate="reward1Desc">Receive points for every valid issue you report that gets acknowledged by the authorities.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+                                    <i data-lucide="check-circle"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold" data-translate="reward2Title">Verify Resolutions</h4>
+                                    <p class="text-text-light" data-translate="reward2Desc">Help us confirm when an issue is properly resolved and earn bonus points for your verification.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-amber-100 text-amber-600 rounded-lg">
+                                    <i data-lucide="gift"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold" data-translate="reward3Title">Redeem for Cash Rewards</h4>
+                                    <p class="text-text-light" data-translate="reward3Desc">Accumulate points and redeem them for exciting cash rewards, vouchers, and other perks.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex items-center justify-center reveal-on-scroll" style="transition-delay: 150ms;">
+                        <img src="https://placehold.co/500x500/f0fdfa/0d9488?text=Rewards" alt="Illustration of a trophy and rewards" class="rounded-2xl shadow-xl">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Redeem Rewards Section -->
+        <section id="redeem-rewards" class="py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="redeemTitle">Redeem Your Points</h3>
+                    <p class="mt-4 text-text-light text-lg max-w-2xl mx-auto" data-translate="redeemSubtitle">Turn your community efforts into tangible rewards. Here’s what you can get with your points.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <!-- User Points Balance -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border text-center mb-8 reveal-on-scroll">
+                        <p class="text-lg text-text-light" data-translate="yourBalance">Your Balance</p>
+                        <p class="text-5xl font-extrabold text-teal-600 mt-2">1250 <span class="text-3xl text-gray-500" data-translate="points">Points</span></p>
+                    </div>
+
+                    <!-- Redeem Button -->
+                    <div class="text-center reveal-on-scroll" style="transition-delay: 150ms;">
+                        <button id="open-redeem-modal-btn" class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button">
+                            <span data-translate="redeemMainButton">Redeem Your Points</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Impact Section -->
-        <section id="impact" class="py-24 bg-white reveal-on-scroll">
+        <section id="impact" class="py-24 bg-transparent">
              <div class="container mx-auto px-6 text-center">
-                 <h3 class="text-3xl lg:text-4xl font-bold text-text-dark">Our Community's Scoreboard</h3>
-                 <p class="mt-3 max-w-2xl mx-auto text-text-light">Small actions, when multiplied by thousands of people, can transform a city.</p>
+                 <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="impactTitle">Our Community's Scoreboard</h3>
+                 <p class="mt-3 max-w-2xl mx-auto text-text-light" data-translate="impactSubtitle">Small actions, when multiplied by thousands of people, can transform a city.</p>
                  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                     <div class="bg-teal-50 p-8 rounded-2xl">
+                     <div class="bg-white p-8 rounded-2xl shadow-md border">
                          <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
-                         <p class="text-text-light font-semibold mt-2">Issues Resolved</p>
+                         <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
                      </div>
-                      <div class="bg-orange-50 p-8 rounded-2xl">
+                      <div class="bg-white p-8 rounded-2xl shadow-md border">
                          <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
-                         <p class="text-text-light font-semibold mt-2">Active Citizens</p>
+                         <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
                      </div>
-                      <div class="bg-amber-50 p-8 rounded-2xl">
+                      <div class="bg-white p-8 rounded-2xl shadow-md border">
                          <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
-                         <p class="text-text-light font-semibold mt-2">Average Rating</p>
+                         <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
                      </div>
                  </div>
              </div>
@@ -366,32 +677,32 @@
         <section id="testimonials" class="py-24">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider">REAL STORIES, REAL IMPACT</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2">What Our Users Are Saying</h3>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="testimonialsTag">REAL STORIES, REAL IMPACT</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="testimonialsTitle">What Our Users Are Saying</h3>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Testimonial 1 -->
                     <div class="testimonial-card reveal-on-scroll">
-                        <p class="text-lg font-medium relative z-10">"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!"</p>
+                        <p class="text-lg font-medium relative z-10" data-translate="testimonial1">"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!"</p>
                         <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Aditya Jha</p>
-                            <p class="text-sm text-teal-200">Mayur Vihar Resident, Delhi</p>
+                            <p class="text-sm text-teal-200" data-translate="testimonial1Location">Mayur Vihar Resident, Delhi</p>
                         </div>
                     </div>
                      <!-- Testimonial 2 -->
                     <div class="testimonial-card reveal-on-scroll" style="transition-delay: 150ms;">
-                        <p class="text-lg font-medium relative z-10">"As a municipal officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is invaluable. It helps us prioritize and resolve citizen grievances faster than ever."</p>
+                        <p class="text-lg font-medium relative z-10" data-translate="testimonial2">"As a municipal officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is invaluable. It helps us prioritize and resolve citizen grievances faster than ever."</p>
                          <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Yagik Garg</p>
-                            <p class="text-sm text-teal-200">Municipal Corporation Official</p>
+                            <p class="text-sm text-teal-200" data-translate="testimonial2Role">Municipal Corporation Official</p>
                         </div>
                     </div>
                      <!-- Testimonial 3 -->
                     <div class="testimonial-card reveal-on-scroll" style="transition-delay: 300ms;">
-                        <p class="text-lg font-medium relative z-10">"It's empowering to see my report getting upvoted by neighbours. We managed to get a new streetlight installed in our lane by showing collective demand through the app."</p>
+                        <p class="text-lg font-medium relative z-10" data-translate="testimonial3">"It's empowering to see my report getting upvoted by neighbours. We managed to get a new streetlight installed in our lane by showing collective demand through the app."</p>
                          <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Aryaman Prasar</p>
-                            <p class="text-sm text-teal-200">Dwarka Community Member</p>
+                            <p class="text-sm text-teal-200" data-translate="testimonial3Location">Dwarka Community Member</p>
                         </div>
                     </div>
                 </div>
@@ -399,43 +710,76 @@
         </section>
         
         <!-- FAQ Section -->
-        <section id="faq" class="py-24 bg-white">
+        <section id="faq" class="py-24 bg-transparent">
             <div class="container mx-auto px-6 max-w-4xl">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider">HAVE QUESTIONS?</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2">Frequently Asked Questions</h3>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="faqTag">HAVE QUESTIONS?</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="faqTitle">Frequently Asked Questions</h3>
                 </div>
                 <div class="space-y-4">
                     <!-- FAQ Item 1 -->
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll">
                         <div class="faq-question flex justify-between items-center p-6">
-                            <h4 class="font-semibold text-lg text-text-dark">What kind of issues can I report?</h4>
+                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq1Question">What kind of issues can I report?</h4>
                             <i data-lucide="chevron-down" class="faq-arrow text-gray-500"></i>
                         </div>
                         <div class="faq-answer px-6 pb-4 text-text-light">
-                            <p>You can report a wide range of non-emergency issues such as potholes, broken streetlights, garbage overflow, water logging, damaged public property, and more. If you're unsure, it's always best to report it.</p>
+                            <p data-translate="faq1Answer">You can report a wide range of non-emergency issues such as potholes, broken streetlights, garbage overflow, water logging, damaged public property, and more. If you're unsure, it's always best to report it.</p>
                         </div>
                     </div>
                     <!-- FAQ Item 2 -->
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll" style="transition-delay: 100ms;">
                         <div class="faq-question flex justify-between items-center p-6">
-                            <h4 class="font-semibold text-lg text-text-dark">Is my data private?</h4>
+                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq2Question">Is my data private?</h4>
                             <i data-lucide="chevron-down" class="faq-arrow text-gray-500"></i>
                         </div>
                         <div class="faq-answer px-6 pb-4 text-text-light">
-                            <p>Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.</p>
+                            <p data-translate="faq2Answer">Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.</p>
                         </div>
                     </div>
                     <!-- FAQ Item 3 -->
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll" style="transition-delay: 200ms;">
                         <div class="faq-question flex justify-between items-center p-6">
-                            <h4 class="font-semibold text-lg text-text-dark">Is the service available in my city?</h4>
+                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq3Question">Is the service available in my city?</h4>
                             <i data-lucide="chevron-down" class="faq-arrow text-gray-500"></i>
                         </div>
                         <div class="faq-answer px-6 pb-4 text-text-light">
-                            <p>We are actively expanding our network of partner municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up to be notified when we launch in your city!</p>
+                            <p data-translate="faq3Answer">We are actively expanding our network of partner municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up to be notified when we launch in your city!</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ask a Question Section -->
+        <section id="ask-question" class="py-24">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-200 reveal-on-scroll">
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="askTitle">Still Have Questions?</h3>
+                        <p class="mt-3 text-text-light" data-translate="askSubtitle">If you couldn't find an answer in our FAQ, feel free to ask us directly.</p>
+                    </div>
+                    <form action="#" method="POST" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700" data-translate="formName">Your Name</label>
+                                <input type="text" name="name" id="name" autocomplete="name" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700" data-translate="formEmail">Email Address</label>
+                                <input type="email" name="email" id="email" autocomplete="email" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="question" class="block text-sm font-medium text-gray-700" data-translate="formQuestion">Your Question</label>
+                            <textarea id="question" name="question" rows="4" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg cta-button" data-translate="formSubmit">
+                                Submit Question
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
@@ -444,10 +788,10 @@
         <section class="reveal-on-scroll">
             <div class="container mx-auto px-6 py-20">
                 <div class="bg-white rounded-3xl shadow-xl p-10 md:p-16 text-center">
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark">Ready to Make a Difference?</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto text-lg">Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.</p>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="ctaTitle">Ready to Make a Difference?</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto text-lg" data-translate="ctaSubtitle">Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.</p>
                     <div class="mt-8">
-                        <button class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button">Sign Up & Start Reporting</button>
+                        <button class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button" data-translate="ctaButton">Sign Up & Start Reporting</button>
                     </div>
                 </div>
             </div>
@@ -459,34 +803,34 @@
         <div class="container mx-auto px-6 py-12">
              <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
                 <div class="col-span-2 lg:col-span-1">
-                    <h4 class="font-bold text-lg mb-4">CivicVoice</h4>
-                    <p class="text-gray-400 text-sm">Your Voice, Amplified.</p>
+                    <h4 class="font-bold text-lg mb-4" data-translate="footerAppName">CivicVoice</h4>
+                    <p class="text-gray-400 text-sm" data-translate="footerSlogan">Your Voice, Amplified.</p>
                 </div>
                 <div>
-                     <h5 class="font-semibold mb-4 text-gray-300">Platform</h5>
+                     <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerPlatform">Platform</h5>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Features</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">For Governments</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Success Stories</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerFeatures">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerGov">For Governments</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerSuccess">Success Stories</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h5 class="font-semibold mb-4 text-gray-300">Company</h5>
+                    <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerCompany">Company</h5>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Careers</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerAbout">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerCareers">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerContact">Contact</a></li>
                     </ul>
                 </div>
                  <div>
-                    <h5 class="font-semibold mb-4 text-gray-300">Legal</h5>
+                    <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerLegal">Legal</h5>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerPrivacy">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerTerms">Terms of Service</a></li>
                     </ul>
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                     <h5 class="font-semibold mb-4 text-gray-300">Connect</h5>
+                     <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerConnect">Connect</h5>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="twitter"></i></a>
                         <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="facebook"></i></a>
@@ -495,13 +839,584 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
-                <p>&copy; 2025 CivicVoice. Made with ❤ in India.</p>
+                <p data-translate="footerCredit">&copy; 2025 CivicVoice. Made with ❤ in India.</p>
             </div>
         </div>
     </footer>
+    
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+                <button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+                <div>
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <button id="citizen-tab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-teal-500 text-teal-600" data-translate="modalCitizenTab">
+                                Citizen
+                            </button>
+                            <button id="official-tab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-translate="modalOfficialTab">
+                                Official Login
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Citizen Login/Signup Form -->
+                    <div id="citizen-form">
+                        <div id="citizen-step-1">
+                            <h3 class="text-2xl font-bold text-center text-gray-800 mt-6" data-translate="modalCitizenTitle">Welcome!</h3>
+                            <p class="text-center text-gray-500 mt-2" data-translate="modalCitizenSubtitle">Enter your details to login or sign up.</p>
+                            <form id="citizen-otp-form" class="mt-8 space-y-6">
+                                <div>
+                                    <label for="citizen-contact" class="block text-sm font-medium text-gray-700" data-translate="modalCitizenInputLabel">Phone Number or Gmail</label>
+                                    <input type="text" name="citizen-contact" id="citizen-contact" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 9876543210 or name@gmail.com">
+                                </div>
+                                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button" data-translate="modalCitizenButton">
+                                    Send OTP
+                                </button>
+                            </form>
+                        </div>
+                        <div id="citizen-step-2" class="hidden">
+                             <h3 class="text-2xl font-bold text-center text-gray-800 mt-6" data-translate="modalOtpTitle">Enter OTP</h3>
+                             <p class="text-center text-gray-500 mt-2" data-translate="modalOtpSubtitle">An OTP has been sent to your device.</p>
+                             <form class="mt-8 space-y-6">
+                                <div>
+                                    <label for="otp-input" class="block text-sm font-medium text-gray-700">One-Time Password</label>
+                                    <input type="text" name="otp-input" id="otp-input" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter the 6-digit code">
+                                </div>
+                                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button" data-translate="modalOtpButton">
+                                    Verify & Login
+                                </button>
+                                <button type="button" id="back-to-login-btn" class="text-sm text-center w-full text-gray-600 hover:text-teal-600">Back to login</button>
+                             </form>
+                        </div>
+                    </div>
+
+                    <!-- Official Login Form -->
+                    <div id="official-form" class="mt-6 hidden">
+                        <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="modalOfficialTitle">Official Portal</h3>
+                         <p class="text-center text-gray-500 mt-2" data-translate="modalOfficialSubtitle">Login with your employee credentials.</p>
+                        <form class="mt-8 space-y-6">
+                            <div>
+                                <label for="employee-id" class="block text-sm font-medium text-gray-700" data-translate="modalOfficialInput1">Employee ID</label>
+                                <input type="text" name="employee-id" id="employee-id" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter your Employee ID">
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <label for="password" class="block text-sm font-medium text-gray-700" data-translate="modalOfficialInput2">Password</label>
+                                    <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-500" data-translate="modalForgotPassword">Forgot password?</a>
+                                </div>
+                                <input type="password" name="password" id="password" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter your password">
+                            </div>
+                            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700" data-translate="modalOfficialButton">
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Issue Modal -->
+    <div id="report-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+                <button id="close-report-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+                
+                <div id="report-form-content">
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="reportModalTitle">Report a Civic Issue</h3>
+                    
+                    <!-- Step Indicator -->
+                    <div class="flex justify-center items-center my-6 space-x-4">
+                        <div id="step-indicator-1" class="step-indicator flex items-center text-teal-600">
+                            <div class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">1</div>
+                            <span class="ml-2 font-semibold" data-translate="reportStep1">Details</span>
+                        </div>
+                        <div class="flex-1 h-0.5 bg-gray-200"></div>
+                        <div id="step-indicator-2" class="step-indicator flex items-center text-gray-400">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">2</div>
+                            <span class="ml-2 font-semibold" data-translate="reportStep2">Location</span>
+                        </div>
+                        <div class="flex-1 h-0.5 bg-gray-200"></div>
+                        <div id="step-indicator-3" class="step-indicator flex items-center text-gray-400">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">3</div>
+                            <span class="ml-2 font-semibold" data-translate="reportStep3">Submit</span>
+                        </div>
+                    </div>
+                    
+                    <form id="report-form" class="mt-8 space-y-6">
+                        <!-- Step 1: Issue Details -->
+                        <div id="form-step-1">
+                            <div id="report-step-1-form">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="issue-category" class="block text-sm font-medium text-gray-700" data-translate="reportCategory">Issue Category</label>
+                                        <select id="issue-category" name="issue-category" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md border">
+                                            <option>Pothole</option>
+                                            <option>Garbage Overflow</option>
+                                            <option>Broken Streetlight</option>
+                                            <option>Water Logging</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700" data-translate="reportPhoto">Upload Photo</label>
+                                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div class="space-y-1 text-center">
+                                                <i data-lucide="image" class="mx-auto h-12 w-12 text-gray-400"></i>
+                                                <div class="flex text-sm text-gray-600">
+                                                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none">
+                                                        <span data-translate="reportUpload">Upload a file</span>
+                                                        <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="issue-description" class="block text-sm font-medium text-gray-700" data-translate="reportDescription">Description</label>
+                                    <textarea id="issue-description" name="issue-description" rows="3" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Provide a brief description of the issue..."></textarea>
+                                </div>
+                                <div class="flex items-end">
+                                    <button type="button" id="record-voice-btn" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button">
+                                        <i data-lucide="mic" class="mr-2 h-5 w-5"></i>
+                                        <span data-translate="reportByVoice">Record by Voice</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Voice Recording UI -->
+                        <div id="voice-recording-ui" class="hidden text-center py-8">
+                            <button id="stop-recording-btn" class="h-24 w-24 mx-auto bg-teal-600 rounded-full flex items-center justify-center text-white mic-pulse">
+                                <i data-lucide="mic" class="h-12 w-12"></i>
+                            </button>
+                            <p class="mt-4 text-lg font-semibold text-gray-700" data-translate="listening">Listening...</p>
+                        </div>
+                        
+                        <!-- Step 2: Location -->
+                        <div id="form-step-2" class="hidden">
+                           <p class="text-center text-gray-500 mb-4" data-translate="reportLocationConfirm">Please confirm the location of the issue.</p>
+                           <div>
+                                <label for="address" class="block text-sm font-medium text-gray-700" data-translate="reportAddress">Address / Landmark</label>
+                                <input type="text" name="address" id="address" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., Near City Park, Main Street">
+                           </div>
+                           <button type="button" class="mt-4 w-full flex items-center justify-center text-sm font-medium text-teal-600 hover:text-teal-800">
+                               <i data-lucide="crosshair" class="h-5 w-5 mr-2"></i>
+                               <span data-translate="reportCurrentLocation">Use my current location</span>
+                           </button>
+                        </div>
+
+                        <!-- Step 3: Submit -->
+                        <div id="form-step-3" class="hidden">
+                             <p class="text-center text-gray-500 mb-4" data-translate="reportContactInfo">Provide your contact information (optional) to receive updates.</p>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="reporter-name" class="block text-sm font-medium text-gray-700" data-translate="formName">Your Name</label>
+                                    <input type="text" name="reporter-name" id="reporter-name" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                                </div>
+                                <div>
+                                    <label for="reporter-contact" class="block text-sm font-medium text-gray-700" data-translate="modalCitizenInputLabel">Phone or Email</label>
+                                    <input type="text" name="reporter-contact" id="reporter-contact" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="mt-8 flex justify-between">
+                        <button id="prev-step-btn" type="button" class="bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 transition duration-300 invisible">
+                            Previous
+                        </button>
+                        <button id="next-step-btn" type="button" class="bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-teal-700 transition duration-300 cta-button">
+                            Next Step
+                        </button>
+                        <button id="submit-report-btn" type="submit" form="report-form" class="hidden bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg cta-button">
+                            Submit Report
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div id="report-success-message" class="hidden text-center py-10">
+                    <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
+                        <i data-lucide="check-circle-2" class="h-12 w-12"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800" data-translate="reportSuccessTitle">Report Submitted!</h3>
+                    <p class="mt-3 text-text-light" data-translate="reportSuccessSub">Thank you for helping improve your community. Your report has been sent to the relevant department.</p>
+                    <p class="mt-4 font-semibold text-gray-800" data-translate="reportSuccessID">Your Tracking ID is:</p>
+                    <p class="mt-1 text-lg font-bold text-teal-600 bg-teal-50 rounded-md py-2 px-4 inline-block">CIVIC-XYZ-123</p>
+                    <button id="close-success-btn" class="mt-8 bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-900 transition duration-300">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Redeem Modal -->
+    <div id="redeem-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+                <button id="close-redeem-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+                <div>
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="redeemModalTitle">Choose Your Reward</h3>
+                    <p class="text-center text-gray-500 mt-2" data-translate="redeemModalSubtitle">Select one of the options below to redeem your points.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        <!-- Reward Card 1 -->
+                        <div class="feature-card text-center">
+                            <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
+                                <i data-lucide="banknote" class="h-10 w-10"></i>
+                            </div>
+                            <h4 class="text-2xl font-bold text-text-dark" data-translate="redeemCashTitle">₹100 Cash Reward</h4>
+                            <p class="text-lg font-semibold text-amber-600 my-2">1000 Points</p>
+                            <button class="mt-4 bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg cta-button" data-translate="redeemButton">Redeem</button>
+                        </div>
+                        <!-- Reward Card 2 -->
+                        <div class="feature-card text-center">
+                            <div class="flex items-center justify-center h-20 w-20 bg-blue-100 text-blue-600 rounded-full mx-auto mb-6">
+                                <i data-lucide="shopping-cart" class="h-10 w-10"></i>
+                            </div>
+                            <h4 class="text-2xl font-bold text-text-dark" data-translate="redeemVoucherTitle">Shopping Voucher</h4>
+                            <p class="text-lg font-semibold text-amber-600 my-2">500 Points</p>
+                            <button class="mt-4 bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg cta-button" data-translate="redeemButton">Redeem</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         lucide.createIcons();
+        
+        // Translations object (with new translations for report modal)
+        const translations = {
+            en: {
+                appName: "CivicVoice",
+                navFeatures: "Features",
+                navProcess: "Process",
+                navReports: "Reports",
+                navRewards: "Rewards",
+                navImpact: "Impact",
+                navVoices: "Voices",
+                navFaq: "FAQ",
+                citizenLogin: "Citizen Login",
+                officialLogin: "Official Login",
+                navFeaturesMobile: "Features",
+                navProcessMobile: "Process",
+                navReportsMobile: "Reports",
+                navRewardsMobile: "Rewards",
+                navImpactMobile: "Impact",
+                navVoicesMobile: "Voices",
+                navFaqMobile: "FAQ",
+                citizenLoginMobile: "Citizen Login",
+                officialLoginMobile: "Official Login",
+                heroTitle: "Your Voice, <br><span class=\"text-teal-600\">Our City's Future.</span>",
+                heroSubtitle: "Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.",
+                locationLabel: "Select your location to get started",
+                selectState: "Select State",
+                selectCity: "Select Area/City",
+                makeReport: "Make a Report",
+                featuresTag: "WHY CIVICVOICE?",
+                featuresTitle: "A Platform Built for Change",
+                feature1Title: "Accessible Reporting",
+                feature1Desc: "Snap a photo or simply use your voice in any regional language to submit a report effortlessly.",
+                feature2Title: "Transparent Tracking",
+                feature2Desc: "Get real-time updates and notifications as your report moves from acknowledged to resolved.",
+                feature3Title: "Community Prioritization",
+                feature3Desc: "Upvote existing issues to highlight their priority. Let the authorities know what matters most.",
+                feature4Title: "Hyperlocal Focus",
+                feature4Desc: "Select your specific state and city to view and report issues that are relevant to your community.",
+                feature5Title: "Earn Community Rewards",
+                feature5Desc: "Get points for valid reports and verifications. Redeem them for cash rewards and climb the community leaderboard.",
+                feature6Title: "Secure User Portals",
+                feature6Desc: "Separate, secure login portals for citizens and government officials ensure data privacy and integrity.",
+                processTag: "3 EASY STEPS",
+                processTitle: "See It. Report It. Get It Fixed.",
+                processSubtitle: "We've designed a simple, transparent process to connect you directly with the departments that can make a difference.",
+                step1Title: "1. Report in Seconds",
+                step1Desc: "Our intuitive form guides you to provide all necessary details quickly.",
+                step2Title: "2. Direct to the Right Team",
+                step2Desc: "We intelligently route your issue to the correct municipal department, saving time.",
+                step3Title: "3. Close the Loop",
+                step3Desc: "Get a final notification and photo proof when the issue is resolved.",
+                reportsTag: "LIVE FEED",
+                reportsTitle: "Live Community Reports",
+                reportsSubtitle: "See what's happening in your community in real-time. Your engagement helps prioritize action.",
+                ongoingIssuesTab: "Ongoing Issues",
+                solvedIssuesTab: "Recently Solved",
+                categoryRoads: "Roads",
+                ongoingReport1Title: "Large Pothole on Main St.",
+                categoryWaste: "Waste",
+                ongoingReport2Title: "Garbage Overflow near Park",
+                categoryInfrastructure: "Infrastructure",
+                solvedReport1Title: "Broken Streetlight Fixed",
+                statusResolved: "Resolved 4 days ago",
+                rewardsTag: "BECOME A CHAMPION",
+                rewardsTitle: "Earn Rewards for Your Contribution",
+                rewardsSubtitle: "We believe active citizenship should be recognized. Our rewards system encourages you to make a tangible impact on your community.",
+                reward1Title: "Report & Earn Points",
+                reward1Desc: "Receive points for every valid issue you report that gets acknowledged by the authorities.",
+                reward2Title: "Verify Resolutions",
+                reward2Desc: "Help us confirm when an issue is properly resolved and earn bonus points for your verification.",
+                reward3Title: "Redeem for Cash Rewards",
+                reward3Desc: "Accumulate points and redeem them for exciting cash rewards, vouchers, and other perks.",
+                redeemTitle: "Redeem Your Points",
+                redeemSubtitle: "Turn your community efforts into tangible rewards. Here’s what you can get with your points.",
+                yourBalance: "Your Balance",
+                points: "Points",
+                redeemCashTitle: "₹100 Cash Reward",
+                redeemVoucherTitle: "Shopping Voucher",
+                redeemButton: "Redeem",
+                redeemMainButton: "Redeem Your Points",
+                redeemModalTitle: "Choose Your Reward",
+                redeemModalSubtitle: "Select one of the options below to redeem your points.",
+                impactTitle: "Our Community's Scoreboard",
+                impactSubtitle: "Small actions, when multiplied by thousands of people, can transform a city.",
+                impact1: "Issues Resolved",
+                impact2: "Active Citizens",
+                impact3: "Average Rating",
+                testimonialsTag: "REAL STORIES, REAL IMPACT",
+                testimonialsTitle: "What Our Users Are Saying",
+                testimonial1: "\"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!\"",
+                testimonial1Location: "Mayur Vihar Resident, Delhi",
+                testimonial2: "\"As a municipal officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is invaluable. It helps us prioritize and resolve citizen grievances faster than ever.\"",
+                testimonial2Role: "Municipal Corporation Official",
+                testimonial3: "\"It's empowering to see my report getting upvoted by neighbours. We managed to get a new streetlight installed in our lane by showing collective demand through the app.\"",
+                testimonial3Location: "Dwarka Community Member",
+                faqTag: "HAVE QUESTIONS?",
+                faqTitle: "Frequently Asked Questions",
+                faq1Question: "What kind of issues can I report?",
+                faq1Answer: "You can report a wide range of non-emergency issues such as potholes, broken streetlights, garbage overflow, water logging, damaged public property, and more. If you're unsure, it's always best to report it.",
+                faq2Question: "Is my data private?",
+                faq2Answer: "Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.",
+                faq3Question: "Is the service available in my city?",
+                faq3Answer: "We are actively expanding our network of partner municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up to be notified when we launch in your city!",
+                askTitle: "Still Have Questions?",
+                askSubtitle: "If you couldn't find an answer in our FAQ, feel free to ask us directly.",
+                formName: "Your Name",
+                formEmail: "Email Address",
+                formQuestion: "Your Question",
+                formSubmit: "Submit Question",
+                ctaTitle: "Ready to Make a Difference?",
+                ctaSubtitle: "Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.",
+                ctaButton: "Sign Up & Start Reporting",
+                footerAppName: "CivicVoice",
+                footerSlogan: "Your Voice, Amplified.",
+                footerPlatform: "Platform",
+                footerFeatures: "Features",
+                footerGov: "For Governments",
+                footerSuccess: "Success Stories",
+                footerCompany: "Company",
+                footerAbout: "About Us",
+                footerCareers: "Careers",
+                footerContact: "Contact",
+                footerLegal: "Legal",
+                footerPrivacy: "Privacy Policy",
+                footerTerms: "Terms of Service",
+                footerConnect: "Connect",
+                footerCredit: "&copy; 2025 CivicVoice. Made with ❤ in India.",
+                modalCitizenTab: "Citizen",
+                modalOfficialTab: "Official Login",
+                modalCitizenTitle: "Welcome!",
+                modalCitizenSubtitle: "Enter your details to login or sign up.",
+                modalCitizenInputLabel: "Phone Number or Gmail",
+                modalCitizenButton: "Send OTP",
+                modalOfficialTitle: "Official Portal",
+                modalOfficialSubtitle: "Login with your employee credentials.",
+                modalOfficialInput1: "Employee ID",
+                modalOfficialInput2: "Password",
+                modalOfficialButton: "Login",
+                modalForgotPassword: "Forgot password?",
+                modalOtpTitle: "Enter OTP",
+                modalOtpSubtitle: "An OTP has been sent to your device.",
+                modalOtpButton: "Verify & Login",
+                reportModalTitle: "Report a Civic Issue",
+                reportStep1: "Details",
+                reportStep2: "Location",
+                reportStep3: "Submit",
+                reportCategory: "Issue Category",
+                reportPhoto: "Upload Photo",
+                reportUpload: "Upload a file",
+                reportDescription: "Description",
+                reportLocationConfirm: "Please confirm the location of the issue.",
+                reportAddress: "Address / Landmark",
+                reportCurrentLocation: "Use my current location",
+                reportContactInfo: "Provide your contact information (optional) to receive updates.",
+                reportSuccessTitle: "Report Submitted!",
+                reportSuccessSub: "Thank you for helping improve your community. Your report has been sent to the relevant department.",
+                reportSuccessID: "Your Tracking ID is:",
+                reportByVoice: "Record by Voice",
+                listening: "Listening..."
+            },
+            hi: {
+                appName: "सिविकवॉइस",
+                navFeatures: "विशेषताएँ",
+                navProcess: "प्रक्रिया",
+                navReports: "रिपोर्ट",
+                navRewards: "पुरस्कार",
+                navImpact: "प्रभाव",
+                navVoices: "आवाज़ें",
+                navFaq: "FAQ",
+                citizenLogin: "नागरिक लॉगिन",
+                officialLogin: "आधिकारिक लॉगिन",
+                navFeaturesMobile: "विशेषताएँ",
+                navProcessMobile: "प्रक्रिया",
+                navReportsMobile: "रिपोर्ट",
+                navRewardsMobile: "पुरस्कार",
+                navImpactMobile: "प्रभाव",
+                navVoicesMobile: "आवाज़ें",
+                navFaqMobile: "FAQ",
+                citizenLoginMobile: "नागरिक लॉगिन",
+                officialLoginMobile: "आधिकारिक लॉगिन",
+                heroTitle: "आपकी आवाज़, <br><span class=\"text-teal-600\">हमारे शहर का भविष्य।</span>",
+                heroSubtitle: "नागरिक मुद्दों की रिपोर्ट करें, उनके समाधान को ट्रैक करें, और एक बेहतर पड़ोस बनाने के लिए अपने समुदाय के साथ सहयोग करें। यह नागरिक जुड़ाव है, सरलीकृत।",
+                locationLabel: "शुरू करने के लिए अपना स्थान चुनें",
+                selectState: "राज्य चुनें",
+                selectCity: "क्षेत्र/शहर चुनें",
+                makeReport: "रिपोर्ट करें",
+                featuresTag: "सिविकवॉइस क्यों?",
+                featuresTitle: "बदलाव के लिए बनाया गया एक मंच",
+                feature1Title: "सुलभ रिपोर्टिंग",
+                feature1Desc: "एक तस्वीर खींचें या बस अपनी क्षेत्रीय भाषा में अपनी आवाज़ का उपयोग करके आसानी से रिपोर्ट दर्ज करें।",
+                feature2Title: "पारदर्शी ट्रैकिंग",
+                feature2Desc: "आपकी रिपोर्ट स्वीकृत होने से लेकर हल होने तक वास्तविक समय के अपडेट और सूचनाएं प्राप्त करें।",
+                feature3Title: "सामुदायिक प्राथमिकता",
+                feature3Desc: "मौजूदा मुद्दों को उनकी प्राथमिकता को उजागर करने के लिए अपवोट करें। अधिकारियों को बताएं कि सबसे ज्यादा क्या मायने रखता है।",
+                feature4Title: "हाइपरलोकल फोकस",
+                feature4Desc: "अपने समुदाय से संबंधित मुद्दों को देखने और रिपोर्ट करने के लिए अपना विशिष्ट राज्य और शहर चुनें।",
+                feature5Title: "सामुदायिक पुरस्कार अर्जित करें",
+                feature5Desc: "मान्य रिपोर्ट और सत्यापन के लिए अंक प्राप्त करें। उन्हें नकद पुरस्कार के लिए भुनाएं और सामुदायिक लीडरबोर्ड पर चढ़ें।",
+                feature6Title: "सुरक्षित उपयोगकर्ता पोर्टल",
+                feature6Desc: "नागरिकों और सरकारी अधिकारियों के लिए अलग, सुरक्षित लॉगिन पोर्टल डेटा गोपनीयता और अखंडता सुनिश्चित करते हैं।",
+                processTag: "३ आसान चरण",
+                processTitle: "देखें। रिपोर्ट करें। इसे ठीक करवाएं।",
+                processSubtitle: "हमने आपको सीधे उन विभागों से जोड़ने के लिए एक सरल, पारदर्शी प्रक्रिया तैयार की है जो एक अंतर ला सकते हैं।",
+                step1Title: "१. सेकंड में रिपोर्ट करें",
+                step1Desc: "हमारा सहज ज्ञान युक्त फॉर्म आपको सभी आवश्यक विवरण जल्दी से प्रदान करने के लिए मार्गदर्शन करता है।",
+                step2Title: "२. सही टीम को सीधे भेजें",
+                step2Desc: "हम बुद्धिमानी से आपके मुद्दे को सही नगरपालिका विभाग में भेजते हैं, जिससे समय की बचत होती है।",
+                step3Title: "३. लूप को बंद करें",
+                step3Desc: "समस्या हल होने पर अंतिम सूचना और फोटो प्रमाण प्राप्त करें।",
+                reportsTag: "लाइव फीड",
+                reportsTitle: "लाइव सामुदायिक रिपोर्ट",
+                reportsSubtitle: "देखें कि आपके समुदाय में वास्तविक समय में क्या हो रहा है। आपकी सहभागिता कार्रवाई को प्राथमिकता देने में मदद करती है।",
+                ongoingIssuesTab: "चल रहे मुद्दे",
+                solvedIssuesTab: "हाल ही में हल",
+                categoryRoads: "सड़कें",
+                ongoingReport1Title: "मुख्य सड़क पर बड़ा गड्ढा।",
+                categoryWaste: "कचरा",
+                ongoingReport2Title: "पार्क के पास कचरा ओवरफ्लो",
+                categoryInfrastructure: "आधारभूत संरचना",
+                solvedReport1Title: "टूटी स्ट्रीटलाइट ठीक हुई",
+                statusResolved: "4 दिन पहले हल किया गया",
+                rewardsTag: "एक चैंपियन बनें",
+                rewardsTitle: "अपने योगदान के लिए पुरस्कार अर्जित करें",
+                rewardsSubtitle: "हमारा मानना ​​है कि सक्रिय नागरिकता को मान्यता मिलनी चाहिए। हमारी पुरस्कार प्रणाली आपको अपने समुदाय पर एक ठोस प्रभाव डालने के लिए प्रोत्साहित करती है।",
+                reward1Title: "रिपोर्ट करें और अंक अर्जित करें",
+                reward1Desc: "आपके द्वारा रिपोर्ट किए गए प्रत्येक मान्य मुद्दे के लिए अंक प्राप्त करें जिसे अधिकारी स्वीकार करते हैं।",
+                reward2Title: "संकल्पों को सत्यापित करें",
+                reward2Desc: "जब कोई समस्या ठीक से हल हो जाए तो हमें पुष्टि करने में मदद करें और अपने सत्यापन के लिए बोनस अंक अर्जित करें।",
+                reward3Title: "नकद पुरस्कार के लिए भुनाएं",
+                reward3Desc: "अंक जमा करें और उन्हें रोमांचक नकद पुरस्कार, वाउचर और अन्य भत्तों के लिए भुनाएं।",
+                redeemTitle: "अपने अंक भुनाएं",
+                redeemSubtitle: "अपने सामुदायिक प्रयासों को वास्तविक पुरस्कारों में बदलें। यहाँ आप अपने अंकों के साथ क्या प्राप्त कर सकते हैं।",
+                yourBalance: "आपका बैलेंस",
+                points: "अंक",
+                redeemCashTitle: "₹100 नकद इनाम",
+                redeemVoucherTitle: "शॉपिंग वाउचर",
+                redeemButton: "भुनाएं",
+                redeemMainButton: "अपने अंक भुनाएं",
+                redeemModalTitle: "अपना इनाम चुनें",
+                redeemModalSubtitle: "अपने अंक भुनाने के लिए नीचे दिए गए विकल्पों में से एक का चयन करें।",
+                impactTitle: "हमारे समुदाय का स्कोरबोर्ड",
+                impactSubtitle: "छोटे कार्य, जब हजारों लोगों द्वारा गुणा किए जाते हैं, तो एक शहर को बदल सकते हैं।",
+                impact1: "मुद्दे हल हुए",
+                impact2: "सक्रिय नागरिक",
+                impact3: "औसत रेटिंग",
+                testimonialsTag: "असली कहानियाँ, असली प्रभाव",
+                testimonialsTitle: "हमारे उपयोगकर्ता क्या कह रहे हैं",
+                testimonial1: "\"मेरे समाज के पास ओवरफ्लो हो रहा कूड़ेदान एक निरंतर समस्या थी। सिविकवॉइस के माध्यम से इसकी सूचना दी, और अगले ही दिन नगर निगम की टीम ने इसे साफ कर दिया। यह मंच वास्तव में काम करता है!\"",
+                testimonial1Location: "मयूर विहार निवासी, दिल्ली",
+                testimonial2: "\"एक नगर निगम अधिकारी के रूप में, सिविकवॉइस हमारे वर्कफ़्लो को सुव्यवस्थित करता है। जियोटैग किए गए, फोटोग्राफिक सबूत अमूल्य हैं। यह हमें नागरिक शिकायतों को प्राथमिकता देने और तेजी से हल करने में मदद करता है।\"",
+                testimonial2Role: "नगर निगम अधिकारी",
+                testimonial3: "\"यह देखकर सशक्त महसूस होता है कि मेरी रिपोर्ट को पड़ोसियों द्वारा अपवोट किया जा रहा है। हमने ऐप के माध्यम से सामूहिक मांग दिखाकर अपनी गली में एक नई स्ट्रीटलाइट लगवाई।\"",
+                testimonial3Location: "द्वारका समुदाय सदस्य",
+                faqTag: "प्रश्न हैं?",
+                faqTitle: "अक्सर पूछे जाने वाले प्रश्न",
+                faq1Question: "मैं किस तरह के मुद्दों की रिपोर्ट कर सकता हूं?",
+                faq1Answer: "आप गड्ढों, टूटी स्ट्रीटलाइट्स, कचरा ओवरफ्लो, जलभराव, क्षतिग्रस्त सार्वजनिक संपत्ति, और बहुत कुछ जैसे गैर-आपातकालीन मुद्दों की एक विस्तृत श्रृंखला की रिपोर्ट कर सकते हैं। यदि आप अनिश्चित हैं, तो रिपोर्ट करना हमेशा सबसे अच्छा होता है।",
+                faq2Question: "क्या मेरा डेटा निजी है?",
+                faq2Answer: "हाँ, बिल्कुल। जबकि मुद्दे का स्थान और विवरण सार्वजनिक है, आपकी व्यक्तिगत जानकारी (नाम, संपर्क विवरण) गोपनीय रखी जाती है और केवल आपकी रिपोर्ट के संबंध में संचार के लिए संबंधित नगरपालिका अधिकारियों के साथ साझा की जाती है।",
+                faq3Question: "क्या यह सेवा मेरे शहर में उपलब्ध है?",
+                faq3Answer: "हम सक्रिय रूप से अपने भागीदार नगर पालिकाओं के नेटवर्क का विस्तार कर रहे हैं। वर्तमान में, हम दिल्ली, मुंबई और बैंगलोर में चालू हैं। जब हम आपके शहर में लॉन्च करेंगे तो अधिसूचित होने के लिए साइन अप करें!",
+                askTitle: "अभी भी प्रश्न हैं?",
+                askSubtitle: "यदि आपको हमारे FAQ में कोई उत्तर नहीं मिला, तो बेझižक हमसे सीधे पूछें।",
+                formName: "आपका नाम",
+                formEmail: "ईमेल पता",
+                formQuestion: "आपका सवाल",
+                formSubmit: "प्रश्न भेजें",
+                ctaTitle: "एक अंतर बनाने के लिए तैयार हैं?",
+                ctaSubtitle: "एक समय में एक रिपोर्ट, हमारे शहर को बेहतर बनाने में हजारों नागरिकों से जुड़ें। यह मुफ़्त, आसान और प्रभावी है।",
+                ctaButton: "साइन अप करें और रिपोर्टिंग शुरू करें",
+                footerAppName: "सिविकवॉइस",
+                footerSlogan: "आपकी आवाज़, प्रवर्धित।",
+                footerPlatform: "मंच",
+                footerFeatures: "विशेषताएँ",
+                footerGov: "सरकारों के लिए",
+                footerSuccess: "सफलता की कहानियाँ",
+                footerCompany: "कंपनी",
+                footerAbout: "हमारे बारे में",
+                footerCareers: "करियर",
+                footerContact: "संपर्क",
+                footerLegal: "कानूनी",
+                footerPrivacy: "गोपनीयता नीति",
+                footerTerms: "सेवा की शर्तें",
+                footerConnect: "जुड़ें",
+                footerCredit: "&copy; २०२५ सिविकवॉइस। भारत में ❤ के साथ बनाया गया।",
+                modalCitizenTab: "नागरिक",
+                modalOfficialTab: "आधिकारिक लॉगिन",
+                modalCitizenTitle: "स्वागत है!",
+                modalCitizenSubtitle: "लॉगिन या साइन अप करने के लिए अपना विवरण दर्ज करें।",
+                modalCitizenInputLabel: "फोन नंबर या जीमेल",
+                modalCitizenButton: "ओटीपी भेजें",
+                modalOfficialTitle: "आधिकारिक पोर्टल",
+                modalOfficialSubtitle: "अपने कर्मचारी क्रेडेंशियल्स के साथ लॉगिन करें।",
+                modalOfficialInput1: "कर्मचारी आयडी",
+                modalOfficialInput2: "पासवर्ड",
+                modalOfficialButton: "लॉगिन",
+                modalForgotPassword: "पासवर्ड भूल गए?",
+                modalOtpTitle: "ओटीपी दर्ज करें",
+                modalOtpSubtitle: "आपके डिवाइस पर एक ओटीपी भेजा गया है।",
+                modalOtpButton: "सत्यापित करें और लॉगिन करें",
+                reportModalTitle: "नागरिक समस्या की रिपोर्ट करें",
+                reportStep1: "विवरण",
+                reportStep2: "स्थान",
+                reportStep3: "सबमिट करें",
+                reportCategory: "समस्या श्रेणी",
+                reportPhoto: "फोटो अपलोड करें",
+                reportUpload: "एक फ़ाइल अपलोड करें",
+                reportDescription: "विवरण",
+                reportLocationConfirm: "कृपया समस्या का स्थान पुष्टि करें।",
+                reportAddress: "पता / लैंडमार्क",
+                reportCurrentLocation: "मेरे वर्तमान स्थान का उपयोग करें",
+                reportContactInfo: "अपडेट प्राप्त करने के लिए अपनी संपर्क जानकारी (वैकल्पिक) प्रदान करें।",
+                reportSuccessTitle: "रिपोर्ट सबमिट की गई!",
+                reportSuccessSub: "अपने समुदाय को बेहतर बनाने में मदद करने के लिए धन्यवाद। आपकी रिपोर्ट संबंधित विभाग को भेज दी गई है।",
+                reportSuccessID: "आपका ट्रैकिंग आईडी है:",
+                reportByVoice: "आवाज़ से रिकॉर्ड करें",
+                listening: "सुन रहा है..."
+            },
+        };
 
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -531,10 +1446,282 @@
                 faqItem.classList.toggle('open');
             });
         });
+
+        // Location Selector Logic
+        const locations = {
+            "Andaman and Nicobar Islands": ["Port Blair"],
+            "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Tirupati"],
+            "Arunachal Pradesh": ["Itanagar", "Tawang", "Ziro"],
+            "Assam": ["Guwahati", "Dibrugarh", "Silchar"],
+            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga", "Madhubani"],
+            "Chandigarh": ["Chandigarh"],
+            "Chhattisgarh": ["Raipur", "Bilaspur", "Durg"],
+            "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Diu", "Silvassa"],
+            "Delhi": ["New Delhi", "North Delhi", "North West Delhi", "West Delhi", "South West Delhi", "South Delhi", "South East Delhi", "Central Delhi", "North East Delhi", "Shahdara", "East Delhi"],
+            "Goa": ["Panaji", "Margao", "Vasco da Gama"],
+            "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot"],
+            "Haryana": ["Gurgaon", "Faridabad", "Chandigarh", "Panipat"],
+            "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"],
+            "Jammu and Kashmir": ["Srinagar", "Jammu"],
+            "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad"],
+            "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru", "Hubballi"],
+            "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode"],
+            "Ladakh": ["Leh", "Kargil"],
+            "Lakshadweep": ["Kavaratti"],
+            "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior"],
+            "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane"],
+            "Manipur": ["Imphal"],
+            "Meghalaya": ["Shillong"],
+            "Mizoram": ["Aizawl"],
+            "Nagaland": ["Kohima", "Dimapur"],
+            "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela"],
+            "Puducherry": ["Puducherry"],
+            "Punjab": ["Ludhiana", "Amritsar", "Jalandhar"],
+            "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota"],
+            "Sikkim": ["Gangtok"],
+            "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
+            "Telangana": ["Hyderabad", "Warangal", "Nizamabad"],
+            "Tripura": ["Agartala"],
+            "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Noida", "Agra", "Varanasi"],
+            "Uttarakhand": ["Dehradun", "Haridwar", "Rishikesh"],
+            "West Bengal": ["Kolkata", "Howrah", "Asansol", "Silguri"]
+        };
+
+        const stateSelect = document.getElementById('state-select');
+        const citySelect = document.getElementById('city-select');
+
+        stateSelect.addEventListener('change', (e) => {
+            const selectedState = e.target.value;
+            // Clear previous options
+            citySelect.innerHTML = '<option selected disabled>Select Area/City</option>';
+
+            if (selectedState && locations[selectedState]) {
+                // Enable the city dropdown
+                citySelect.disabled = false;
+                // Populate new options
+                locations[selectedState].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            } else {
+                // Disable if no state is selected
+                citySelect.disabled = true;
+            }
+        });
+        
+        // --- MODAL LOGIC ---
+        
+        // Generic Modal Open/Close
+        const setupModal = (modalId, openBtns, closeBtnId) => {
+            const modal = document.getElementById(modalId);
+            const modalOverlay = modal.querySelector('.modal-overlay');
+            const modalContent = modal.querySelector('.modal-content');
+            const closeModalBtn = document.getElementById(closeBtnId);
+
+            const openModal = () => {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    modalOverlay.classList.remove('opacity-0');
+                    modalContent.classList.remove('opacity-0', 'translate-y-8');
+                }, 10);
+            };
+            const closeModal = () => {
+                modalOverlay.classList.add('opacity-0');
+                modalContent.classList.add('opacity-0', 'translate-y-8');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            };
+            
+            openBtns.forEach(btn => btn && btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal();
+            }));
+            if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if(modalOverlay) modalOverlay.addEventListener('click', closeModal);
+
+            return { modal, openModal, closeModal };
+        };
+
+        // Login Modal Specific Logic
+        const citizenLoginBtns = [document.getElementById('citizen-login-btn-desktop'), document.getElementById('citizen-login-btn-mobile')];
+        const officialLoginBtns = [document.getElementById('official-login-btn-desktop'), document.getElementById('official-login-btn-mobile')];
+        const { modal: loginModal, openModal: openLoginModal } = setupModal('login-modal', [], 'close-login-modal-btn');
+        
+        const citizenTab = document.getElementById('citizen-tab');
+        const officialTab = document.getElementById('official-tab');
+        const citizenForm = document.getElementById('citizen-form');
+        const officialForm = document.getElementById('official-form');
+        const citizenStep1 = document.getElementById('citizen-step-1');
+        const citizenStep2 = document.getElementById('citizen-step-2');
+
+        const switchToCitizenTab = () => { 
+            officialTab.classList.remove('border-teal-500', 'text-teal-600');
+            officialTab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            citizenTab.classList.add('border-teal-500', 'text-teal-600');
+            citizenTab.classList.remove('border-transparent', 'text-gray-500');
+            officialForm.classList.add('hidden');
+            citizenForm.classList.remove('hidden');
+            citizenStep1.classList.remove('hidden');
+            citizenStep2.classList.add('hidden');
+        };
+        const switchToOfficialTab = () => {
+            citizenTab.classList.remove('border-teal-500', 'text-teal-600');
+            citizenTab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            officialTab.classList.add('border-teal-500', 'text-teal-600');
+            officialTab.classList.remove('border-transparent', 'text-gray-500');
+            citizenForm.classList.add('hidden');
+            officialForm.classList.remove('hidden');
+        };
+
+        citizenLoginBtns.forEach(btn => btn.addEventListener('click', () => {
+            openLoginModal();
+            switchToCitizenTab();
+        }));
+        officialLoginBtns.forEach(btn => btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLoginModal();
+            switchToOfficialTab();
+        }));
+        
+        document.getElementById('citizen-otp-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            citizenStep1.classList.add('hidden');
+            citizenStep2.classList.remove('hidden');
+        });
+
+        document.getElementById('back-to-login-btn').addEventListener('click', () => {
+            citizenStep2.classList.add('hidden');
+            citizenStep1.classList.remove('hidden');
+        });
+        
+        citizenTab.addEventListener('click', switchToCitizenTab);
+        officialTab.addEventListener('click', switchToOfficialTab);
+
+        // Report Modal Specific Logic
+        const { modal: reportModal, closeModal: closeReportModal } = setupModal('report-modal', [document.getElementById('make-report-btn'), document.getElementById('make-report-btn-hero')], 'close-report-modal-btn');
+        document.getElementById('close-success-btn').addEventListener('click', closeReportModal);
+        
+        const reportFormContent = document.getElementById('report-form-content');
+        const reportSuccessMessage = document.getElementById('report-success-message');
+        const reportStep1Form = document.getElementById('report-step-1-form');
+        const voiceRecordingUI = document.getElementById('voice-recording-ui');
+        
+        const formSteps = [document.getElementById('form-step-1'), document.getElementById('form-step-2'), document.getElementById('form-step-3')];
+        const stepIndicators = [document.getElementById('step-indicator-1'), document.getElementById('step-indicator-2'), document.getElementById('step-indicator-3')];
+        const prevBtn = document.getElementById('prev-step-btn');
+        const nextBtn = document.getElementById('next-step-btn');
+        const submitBtn = document.getElementById('submit-report-btn');
+        let currentStep = 0;
+
+        const updateFormSteps = () => {
+            formSteps.forEach((step, index) => {
+                step.classList.toggle('hidden', index !== currentStep);
+            });
+            
+            stepIndicators.forEach((indicator, index) => {
+                const circle = indicator.querySelector('div');
+                const text = indicator.querySelector('span');
+                if (index < currentStep) {
+                    circle.classList.add('bg-teal-600', 'text-white');
+                    circle.classList.remove('bg-gray-200', 'text-gray-500');
+                    text.classList.add('text-teal-600');
+                    text.classList.remove('text-gray-400');
+                } else if (index === currentStep) {
+                     circle.classList.add('bg-teal-600', 'text-white');
+                    circle.classList.remove('bg-gray-200', 'text-gray-500');
+                    text.classList.add('text-teal-600');
+                    text.classList.remove('text-gray-400');
+                } else {
+                    circle.classList.remove('bg-teal-600', 'text-white');
+                    circle.classList.add('bg-gray-200', 'text-gray-500');
+                    text.classList.remove('text-teal-600');
+                    text.classList.add('text-gray-400');
+                }
+            });
+
+            prevBtn.classList.toggle('invisible', currentStep === 0);
+            nextBtn.classList.toggle('hidden', currentStep === formSteps.length - 1);
+            submitBtn.classList.toggle('hidden', currentStep !== formSteps.length - 1);
+        };
+        
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < formSteps.length - 1) {
+                currentStep++;
+                updateFormSteps();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateFormSteps();
+            }
+        });
+        
+        document.getElementById('report-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            reportFormContent.classList.add('hidden');
+            reportSuccessMessage.classList.remove('hidden');
+        });
+        
+        document.getElementById('record-voice-btn').addEventListener('click', () => {
+            reportStep1Form.classList.add('hidden');
+            voiceRecordingUI.classList.remove('hidden');
+        });
+        
+        document.getElementById('stop-recording-btn').addEventListener('click', () => {
+            // Simulate voice-to-text
+            document.getElementById('issue-description').value = "Simulated voice input: 'There is a large pothole in the middle of the road which is causing traffic issues.'";
+            voiceRecordingUI.classList.add('hidden');
+            reportStep1Form.classList.remove('hidden');
+        });
+        
+        // Redeem Modal Logic
+        setupModal('redeem-modal', [document.getElementById('open-redeem-modal-btn')], 'close-redeem-modal-btn');
+        
+        // Live Reports Tab Logic
+        const ongoingTab = document.getElementById('ongoing-tab');
+        const solvedTab = document.getElementById('solved-tab');
+        const ongoingGrid = document.getElementById('ongoing-issues-grid');
+        const solvedGrid = document.getElementById('solved-issues-grid');
+
+        ongoingTab.addEventListener('click', () => {
+            ongoingTab.classList.add('active');
+            solvedTab.classList.remove('active');
+            ongoingGrid.classList.remove('hidden');
+            solvedGrid.classList.add('hidden');
+        });
+
+        solvedTab.addEventListener('click', () => {
+            solvedTab.classList.add('active');
+            ongoingTab.classList.remove('active');
+            solvedGrid.classList.remove('hidden');
+            ongoingGrid.classList.add('hidden');
+        });
+
+        // Language translation logic
+        const languageSelector = document.getElementById('language-selector');
+        
+        const translatePage = (language) => {
+            const langData = { ...translations.en, ...translations[language] };
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (langData[key]) {
+                    element.innerHTML = langData[key];
+                }
+            });
+        };
+
+        languageSelector.addEventListener('change', (e) => {
+            translatePage(e.target.value);
+        });
+
     </script>
 
 </body>
 </html>
-
-
-
