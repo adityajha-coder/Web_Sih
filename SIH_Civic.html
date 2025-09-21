@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,7 +76,7 @@
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .hero p {
@@ -117,7 +118,9 @@
             color: #555;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid #e1e5e9;
@@ -126,7 +129,9 @@
             transition: border-color 0.3s ease;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -242,22 +247,23 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .hero h1 {
                 font-size: 2rem;
             }
-            
+
             .header-content {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             nav ul {
                 gap: 1rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -306,7 +312,7 @@
                         <label for="title">Issue Title</label>
                         <input type="text" id="title" name="title" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="category">Category</label>
                         <select id="category" name="category" required>
@@ -319,17 +325,17 @@
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="location">Location</label>
                         <input type="text" id="location" name="location" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="description">Description</label>
                         <textarea id="description" name="description" required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="priority">Priority</label>
                         <select id="priority" name="priority" required>
@@ -340,27 +346,27 @@
                             <option value="urgent">Urgent</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="reporterName">Your Name</label>
                         <input type="text" id="reporterName" name="reporterName">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="reporterEmail">Email</label>
                         <input type="email" id="reporterEmail" name="reporterEmail">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="reporterPhone">Phone</label>
                         <input type="tel" id="reporterPhone" name="reporterPhone">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="image">Upload Image (Optional)</label>
                         <input type="file" id="image" name="image" accept="image/*,.pdf,.doc,.docx">
                     </div>
-                    
+
                     <button type="submit" class="btn">Submit Issue</button>
                 </form>
             </div>
@@ -392,145 +398,363 @@
     </div>
 
     <script>
-        // API base URL
-        const API_BASE = '/api';
-        
-        // Global variables
-        let issues = [];
+        lucide.createIcons();
 
-        // DOM elements
-        const issueForm = document.getElementById('issueForm');
-        const issuesList = document.getElementById('issuesList');
-        const totalIssuesEl = document.getElementById('totalIssues');
-        const pendingIssuesEl = document.getElementById('pendingIssues');
-        const inProgressIssuesEl = document.getElementById('inProgressIssues');
-        const resolvedIssuesEl = document.getElementById('resolvedIssues');
-        const statusFilter = document.getElementById('statusFilter');
-        const categoryFilter = document.getElementById('categoryFilter');
+        // --- CONFIGURATION ---
+        const API_URL = 'http://localhost:5000'; // Your backend server URL
 
-        // Initialize the application
-        async function init() {
-            await loadIssues();
-            await loadStats();
-            setupEventListeners();
-        }
+        // --- DOM ELEMENTS ---
+        const signupCtaBtn = document.getElementById('signup-cta-btn');
+        const citizenLoginBtns = [document.getElementById('citizen-login-btn-desktop'), document.getElementById('citizen-login-btn-mobile')];
+        const reportModalSubmitBtn = document.getElementById('submit-report-btn');
+        const questionForm = document.querySelector('#ask-question form');
 
-        // Setup event listeners
-        function setupEventListeners() {
-            issueForm.addEventListener('submit', handleSubmit);
-            statusFilter.addEventListener('change', loadIssues);
-            categoryFilter.addEventListener('change', loadIssues);
-        }
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // All other initializations are handled by the original script part below
+        });
 
-        // Load issues from API
-        async function loadIssues() {
-            try {
-                const params = new URLSearchParams();
-                if (statusFilter.value) params.append('status', statusFilter.value);
-                if (categoryFilter.value) params.append('category', categoryFilter.value);
-                
-                const response = await fetch(`${API_BASE}/issues?${params}`);
-                if (!response.ok) throw new Error('Failed to load issues');
-                
-                issues = await response.json();
-                renderIssues();
-            } catch (error) {
-                console.error('Error loading issues:', error);
-                alert('Failed to load issues. Please try again.');
-            }
-        }
+        // --- API & UI FUNCTIONS ---
 
-        // Load statistics from API
-        async function loadStats() {
-            try {
-                const response = await fetch(`${API_BASE}/stats`);
-                if (!response.ok) throw new Error('Failed to load stats');
-                
-                const stats = await response.json();
-                updateStatsDisplay(stats);
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        }
+        /**
+         * Handles the entire citizen login/signup flow
+         */
+        function setupAuthFlow() {
+            const citizenOtpForm = document.getElementById('citizen-otp-form');
+            const citizenStep1 = document.getElementById('citizen-step-1');
+            const citizenStep2 = document.getElementById('citizen-step-2');
+            const otpVerifyForm = citizenStep2.querySelector('form');
 
-        // Handle form submission
-        async function handleSubmit(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(issueForm);
-            
-            // Add reporter information to form data
-            formData.append('reporter_name', formData.get('reporterName'));
-            formData.append('reporter_email', formData.get('reporterEmail'));
-            formData.append('reporter_phone', formData.get('reporterPhone'));
-            
-            try {
-                const response = await fetch(`${API_BASE}/issues`, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to submit issue');
+            // Step 1: Send OTP
+            citizenOtpForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const contactInput = document.getElementById('citizen-contact');
+                const contact = contactInput.value.trim();
+                if (!contact) {
+                    alert('Please enter a phone number or email.');
+                    return;
                 }
-                
-                const result = await response.json();
-                alert('Issue submitted successfully!');
-                issueForm.reset();
-                await loadIssues();
-                await loadStats();
-            } catch (error) {
-                console.error('Error submitting issue:', error);
-                alert('Failed to submit issue: ' + error.message);
-            }
-        }
 
-        // Render issues list
-        function renderIssues() {
-            issuesList.innerHTML = '';
-            
-            if (issues.length === 0) {
-                issuesList.innerHTML = '<p style="text-align: center; color: #666;">No issues found.</p>';
-                return;
-            }
-            
-            issues.forEach(issue => {
-                const issueEl = document.createElement('div');
-                issueEl.className = 'issue-item';
-                
-                const createdDate = new Date(issue.created_at).toLocaleDateString();
-                const imageHtml = issue.image_path ? 
-                    `<br><img src="/uploads/${issue.image_path}" alt="Issue image" style="max-width: 200px; margin-top: 10px; border-radius: 4px;">` : '';
-                
-                issueEl.innerHTML = `
-                    <div class="issue-header">
-                        <span class="issue-title">${issue.title}</span>
-                        <span class="issue-status status-${issue.status}">${issue.status.replace('-', ' ')}</span>
-                    </div>
-                    <div class="issue-description">${issue.description}${imageHtml}</div>
-                    <div class="issue-meta">
-                        <strong>Location:</strong> ${issue.location} | 
-                        <strong>Category:</strong> ${issue.category} | 
-                        <strong>Priority:</strong> ${issue.priority} | 
-                        <strong>Date:</strong> ${createdDate}
-                        ${issue.reporter_name ? `<br><strong>Reporter:</strong> ${issue.reporter_name}` : ''}
-                    </div>
-                `;
-                issuesList.appendChild(issueEl);
+                try {
+                    const response = await fetch(`${API_URL}/api/auth/send-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contact }),
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'Failed to send OTP.');
+
+                    alert('OTP sent successfully!');
+                    citizenStep1.classList.add('hidden');
+                    citizenStep2.classList.remove('hidden');
+                } catch (error) {
+                    console.error('Send OTP Error:', error);
+                    alert(`Error: ${error.message}`);
+                }
+            });
+
+            // Step 2: Verify OTP
+            otpVerifyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const contact = document.getElementById('citizen-contact').value.trim();
+                const otp = document.getElementById('otp-input').value.trim();
+
+                try {
+                    const response = await fetch(`${API_URL}/api/auth/verify-otp`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contact, otp }),
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'Verification failed.');
+
+                    // Login successful!
+                    localStorage.setItem('civicUserToken', data.token);
+                    localStorage.setItem('civicUserInfo', JSON.stringify(data));
+
+                    alert('Login successful!');
+                    window.location.reload(); // Reload to update UI state
+
+                } catch (error) {
+                    console.error('Verify OTP Error:', error);
+                    alert(`Error: ${error.message}`);
+                }
             });
         }
 
-        // Update statistics display
-        function updateStatsDisplay(stats) {
-            totalIssuesEl.textContent = stats.total;
-            pendingIssuesEl.textContent = stats.pending;
-            inProgressIssuesEl.textContent = stats.inProgress;
-            resolvedIssuesEl.textContent = stats.resolved;
+        /**
+         * Handles the submission of a new civic report
+         */
+        function setupReportSubmission() {
+            reportModalSubmitBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                const token = localStorage.getItem('civicUserToken');
+                if (!token) {
+                    alert('You must be logged in to submit a report.');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('category', document.getElementById('issue-category').value);
+                formData.append('description', document.getElementById('issue-description').value);
+                formData.append('address', document.getElementById('address').value);
+
+                const imageFile = document.getElementById('file-upload').files[0];
+                if (imageFile) {
+                    formData.append('image', imageFile);
+                } else {
+                    alert('An image of the issue is required.');
+                    return;
+                }
+
+                // Get user's location
+                if (!navigator.geolocation) {
+                    alert('Geolocation is not supported by your browser.');
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    formData.append('latitude', position.coords.latitude);
+                    formData.append('longitude', position.coords.longitude);
+
+                    try {
+                        const response = await fetch(`${API_URL}/api/reports`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: formData,
+                        });
+
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.message || 'Failed to submit report.');
+
+                        // Manually trigger the success view in the modal
+                        document.getElementById('report-form-content').classList.add('hidden');
+                        document.getElementById('report-success-message').classList.remove('hidden');
+                        document.getElementById('report-success-message').querySelector('.text-teal-600').textContent = data._id; // Display real report ID
+
+                    } catch (error) {
+                        console.error('Report Submission Error:', error);
+                        alert(`Error: ${error.message}`);
+                    }
+
+                }, () => {
+                    alert('Unable to retrieve your location. Please enable location services.');
+                });
+            });
         }
 
-        // Initialize the application when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
+        /**
+         * Handles submitting a question from the contact form
+         */
+        function setupQuestionForm() {
+            questionForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const question = document.getElementById('question').value;
+
+                try {
+                    const response = await fetch(`${API_URL}/api/misc/submit-question`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, question }),
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'An error occurred.');
+
+                    alert('Your question has been submitted successfully!');
+                    questionForm.reset();
+                } catch (error) {
+                    console.error('Question Form Error:', error);
+                    alert(`Error: ${error.message}`);
+                }
+            });
+        }
+
+        /**
+         * Updates the UI based on login state
+         */
+        function updateLoginState() {
+            const token = localStorage.getItem('civicUserToken');
+            if (token) {
+                citizenLoginBtns.forEach(btn => {
+                    if (btn) {
+                        btn.textContent = 'Logout';
+                        btn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            localStorage.removeItem('civicUserToken');
+                            localStorage.removeItem('civicUserInfo');
+                            alert('Logged out successfully.');
+                            window.location.reload();
+                        }, { once: true }); // Use {once: true} to avoid multiple listeners
+                    }
+                });
+            }
+        }
+
+        // --- CONNECTING EVERYTHING ---
+        updateLoginState(); // Check login state on page load
+        setupAuthFlow();
+        setupReportSubmission();
+        setupQuestionForm();
+
+        // Make the main CTA button open the login modal
+        if (signupCtaBtn) {
+            signupCtaBtn.addEventListener('click', () => {
+                // Find one of the login buttons and trigger its click event to open the modal
+                const loginBtn = document.getElementById('citizen-login-btn-desktop');
+                if (loginBtn) {
+                    loginBtn.click();
+                }
+            });
+        }
+
+
+        /*
+        =====================================================================
+        == BELOW IS THE ORIGINAL SCRIPT FOR UI ANIMATIONS AND INTERACTIONS ==
+        =====================================================================
+        */
+
+        // Translations object
+        const translations = {
+            en: {
+                appName: "CivicVoice", navFeatures: "Features", navProcess: "Process", navReports: "Reports", navRewards: "Rewards",
+                navImpact: "Impact", navVoices: "Voices", navFaq: "FAQ", citizenLogin: "Login", officialLogin: "Official Login",
+                navFeaturesMobile: "Features", navProcessMobile: "Process", navReportsMobile: "Reports", navRewardsMobile: "Rewards",
+                navImpactMobile: "Impact", navVoicesMobile: "Voices", navFaqMobile: "FAQ", citizenLoginMobile: "Citizen Login",
+                officialLoginMobile: "Official Login", heroTitle: "Your Voice, <br><span class=\"text-teal-600\">Our City's Future.</span>",
+                heroSubtitle: "Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.",
+                locationLabel: "Select your location to get started", selectState: "Select State", selectCity: "Select Area/City",
+                makeReport: "Make a Report", featuresTag: "WHY CIVICVOICE?", featuresTitle: "A Platform Built for Change",
+                feature1Title: "Accessible Reporting", feature1Desc: "Snap a photo or simply use your voice in any regional language to submit a report effortlessly.",
+                feature2Title: "Transparent Tracking", feature2Desc: "Get real-time updates and notifications as your report moves from acknowledged to resolved.",
+                feature3Title: "Community Prioritization", feature3Desc: "Upvote existing issues to highlight their priority. Let the authorities know what matters most.",
+                feature4Title: "Hyperlocal Focus", feature4Desc: "Select your specific state and city to view and report issues that are relevant to your community.",
+                feature5Title: "Earn Community Rewards", feature5Desc: "Get points for valid reports and verifications. Redeem them for cash rewards and climb the community leaderboard.",
+                feature6Title: "Secure User Portals", feature6Desc: "Separate, secure login portals for citizens and government officials ensure data privacy and integrity.",
+                processTag: "3 EASY STEPS", processTitle: "See It. Report It. Get It Fixed.",
+                processSubtitle: "We've designed a simple, transparent process to connect you directly with the departments that can make a difference.",
+                step1Title: "1. Report in Seconds", step1Desc: "Our intuitive form guides you to provide all necessary details quickly.",
+                step2Title: "2. Direct to the Right Team", step2Desc: "We intelligently route your issue to the correct municipal department, saving time.",
+                step3Title: "3. Close the Loop", step3Desc: "Get a final notification and photo proof when the issue is resolved.",
+                reportsTag: "LIVE FEED", reportsTitle: "Live Community Reports", reportsSubtitle: "See what's happening in your community in real-time. Your engagement helps prioritize action.",
+                ongoingIssuesTab: "Ongoing Issues", solvedIssuesTab: "Recently Solved", categoryRoads: "Roads",
+                ongoingReport1Title: "Large Pothole on Main St.", categoryWaste: "Waste", ongoingReport2Title: "Garbage Overflow near Park",
+                categoryProperty: "Property", ongoingReport4Title: "Damaged fence at garden", categoryInfrastructure: "Infrastructure",
+                solvedReport1Title: "Broken Streetlight Fixed", categoryParks: "Parks", solvedReport2Title: "Park pathway cleaned",
+                statusResolved: "Resolved 4 days ago", statusResolved2: "Resolved 1 week ago", rewardsTag: "BECOME A CHAMPION",
+                rewardsTitle: "Earn Rewards for Your Contribution", rewardsSubtitle: "We believe active citizenship should be recognized. Our rewards system encourages you to make a tangible impact on your community.",
+                reward1Title: "Report & Earn Points", reward1Desc: "Receive points for every valid issue you report that gets acknowledged by the authorities.",
+                reward2Title: "Verify Resolutions", reward2Desc: "Help us confirm when an issue is properly resolved and earn bonus points for your verification.",
+                reward3Title: "Redeem for Cash Rewards", reward3Desc: "Accumulate points and redeem them for exciting cash rewards, vouchers, and other perks.",
+                redeemTitle: "Redeem Your Points", redeemSubtitle: "Turn your community efforts into tangible rewards. Here’s what you can get with your points.",
+                yourBalance: "Your Balance", points: "Points", redeemCashTitle: "₹100 Cash Reward", redeemVoucherTitle: "Shopping Voucher",
+                redeemButton: "Redeem", redeemMainButton: "Redeem Your Points", redeemModalTitle: "Choose Your Reward",
+                redeemModalSubtitle: "Select one of the options below to redeem your points.", impactTitle: "Our Community's Scoreboard",
+                impactSubtitle: "Small actions, when multiplied by thousands of people, can transform a city.", impact1: "Issues Resolved",
+                impact2: "Active Citizens", impact3: "Average Rating", testimonialsTag: "REAL STORIES, REAL IMPACT",
+                testimonialsTitle: "What Our Users Are Saying", testimonial1: "\"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!\"",
+                testimonial1Location: "Mayur Vihar Resident, Delhi", testimonial2: "\"As a municipal officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is invaluable. It helps us prioritize and resolve citizen grievances faster than ever.\"",
+                testimonial2Role: "Municipal Corporation Official", testimonial3: "\"It's empowering to see my report getting upvoted by neighbours. We managed to get a new streetlight installed in our lane by showing collective demand through the app.\"",
+                testimonial3Location: "Dwarka Community Member", faqTag: "HAVE QUESTIONS?", faqTitle: "Frequently Asked Questions",
+                faq1Question: "What kind of issues can I report?", faq1Answer: "You can report a wide range of non-emergency issues such as potholes, broken streetlights, garbage overflow, water logging, damaged public property, and more. If you're unsure, it's always best to report it.",
+                faq2Question: "Is my data private?", faq2Answer: "Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.",
+                faq3Question: "Is the service available in my city?", faq3Answer: "We are actively expanding our network of partner municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up to be notified when we launch in your city!",
+                askTitle: "Still Have Questions?", askSubtitle: "If you couldn't find an answer in our FAQ, feel free to ask us directly.",
+                formName: "Your Name", formEmail: "Email Address", formQuestion: "Your Question", formSubmit: "Submit Question",
+                ctaTitle: "Ready to Make a Difference?", ctaSubtitle: "Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.",
+                ctaButton: "Sign Up & Start Reporting", footerAppName: "CivicVoice", footerSlogan: "Your Voice, Amplified.",
+                footerPlatform: "Platform", footerFeatures: "Features", footerGov: "For Governments", footerSuccess: "Success Stories",
+                footerCompany: "Company", footerAbout: "About Us", footerCareers: "Careers", footerContact: "Contact",
+                footerLegal: "Legal", footerPrivacy: "Privacy Policy", footerTerms: "Terms of Service", footerConnect: "Connect",
+                footerCredit: "&copy; 2025 CivicVoice. Made with ❤ in India.", modalCitizenTab: "Citizen", modalOfficialTab: "Official Login",
+                modalCitizenTitle: "Welcome!", modalCitizenSubtitle: "Enter your details to login or sign up.",
+                modalCitizenInputLabel: "Phone Number or Gmail", modalCitizenButton: "Send OTP", modalOfficialTitle: "Official Portal",
+                modalOfficialSubtitle: "Login with your employee credentials.", modalOfficialInput1: "Employee ID",
+                modalOfficialInput2: "Password", modalOfficialButton: "Login", modalForgotPassword: "Forgot password?",
+                modalOtpTitle: "Enter OTP", modalOtpSubtitle: "An OTP has been sent to your device.", modalOtpButton: "Verify & Login",
+                reportModalTitle: "Report a Civic Issue", reportStep1: "Details", reportStep2: "Location",
+                reportStep3: "Submit", reportCategory: "Issue Category", reportPhoto: "Upload Photo",
+                reportUpload: "Upload a file", reportDescription: "Description", reportLocationConfirm: "Please confirm the location of the issue.",
+                reportAddress: "Address / Landmark", reportCurrentLocation: "Use my current location",
+                reportContactInfo: "Provide your contact information (optional) to receive updates.", reportSuccessTitle: "Report Submitted!",
+                reportSuccessSub: "Thank you for helping improve your community. Your report has been sent to the relevant department.",
+                reportSuccessID: "Your Tracking ID is:", reportByVoice: "Record by Voice", listening: "Listening...",
+                trackReportNav: "Track Report", trackReportNavMobile: "Track Report", trackModalTitle: "Track Your Report",
+                trackModalSubtitle: "Enter the tracking ID you received after submission.", trackModalInputLabel: "Tracking ID",
+                trackModalButton: "Track Status", trackStatusTitle: "Report Status", trackStep1: "Reported",
+                trackStep1Desc: "Your report has been successfully submitted.", trackStep2: "Acknowledged", trackStep2Desc: "The relevant department has received your report.",
+                trackStep3: "In Progress", trackStep3Desc: "Work has begun to resolve the issue.", trackStep4: "Resolved",
+                trackStep4Desc: "The issue has been fixed. Thank you!", trackAnotherButton: "Track Another Report",
+            },
+            hi: { /* ... all your hindi translations ... */ }
+        };
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Reveal on scroll
+        const scrollObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(section => {
+            scrollObserver.observe(section);
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                button.parentElement.classList.toggle('open');
+            });
+        });
+
+        // Location Selector Logic (remains the same)
+        const locations = { "Andaman and Nicobar Islands": ["Port Blair"], "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Tirupati"], "Arunachal Pradesh": ["Itanagar", "Tawang", "Ziro"], "Assam": ["Guwahati", "Dibrugarh", "Silchar"], "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga", "Madhubani"], "Chandigarh": ["Chandigarh"], "Chhattisgarh": ["Raipur", "Bilaspur", "Durg"], "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Diu", "Silvassa"], "Delhi": ["New Delhi", "North Delhi", "North West Delhi", "West Delhi", "South West Delhi", "South Delhi", "South East Delhi", "Central Delhi", "North East Delhi", "Shahdara", "East Delhi"], "Goa": ["Panaji", "Margao", "Vasco da Gama"], "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot"], "Haryana": ["Gurgaon", "Faridabad", "Chandigarh", "Panipat"], "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"], "Jammu and Kashmir": ["Srinagar", "Jammu"], "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad"], "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru", "Hubballi"], "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode"], "Ladakh": ["Leh", "Kargil"], "Lakshadweep": ["Kavaratti"], "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior"], "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane"], "Manipur": ["Imphal"], "Meghalaya": ["Shillong"], "Mizoram": ["Aizawl"], "Nagaland": ["Kohima", "Dimapur"], "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela"], "Puducherry": ["Puducherry"], "Punjab": ["Ludhiana", "Amritsar", "Jalandhar"], "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota"], "Sikkim": ["Gangtok"], "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"], "Telangana": ["Hyderabad", "Warangal", "Nizamabad"], "Tripura": ["Agartala"], "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Noida", "Agra", "Varanasi"], "Uttarakhand": ["Dehradun", "Haridwar", "Rishikesh"], "West Bengal": ["Kolkata", "Howrah", "Asansol", "Silguri"] };
+        const stateSelect = document.getElementById('state-select');
+        const citySelect = document.getElementById('city-select');
+        stateSelect.addEventListener('change', (e) => { const selectedState = e.target.value; citySelect.innerHTML = '<option selected disabled>Select Area/City</option>'; if (selectedState && locations[selectedState]) { citySelect.disabled = false; locations[selectedState].forEach(city => { const option = document.createElement('option'); option.value = city; option.textContent = city; citySelect.appendChild(option); }); } else { citySelect.disabled = true; } });
+
+        // --- MODAL LOGIC ---
+        const setupModal = (modalId, openBtns, closeBtnId) => { const modal = document.getElementById(modalId); if (!modal) return {}; const modalOverlay = modal.querySelector('.modal-overlay'); const modalContent = modal.querySelector('.modal-content'); const closeModalBtn = document.getElementById(closeBtnId); const openModal = () => { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; setTimeout(() => { modalOverlay.classList.remove('opacity-0'); modalContent.classList.remove('opacity-0', 'translate-y-8'); }, 10); }; const closeModal = () => { modalOverlay.classList.add('opacity-0'); modalContent.classList.add('opacity-0', 'translate-y-8'); setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300); }; openBtns.forEach(btn => btn && btn.addEventListener('click', (e) => { e.preventDefault(); openModal(); })); if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal); if (modalOverlay) modalOverlay.addEventListener('click', closeModal); return { modal, openModal, closeModal }; };
+        const { openModal: openLoginModal } = setupModal('login-modal', citizenLoginBtns, 'close-login-modal-btn');
+        const [citizenTab, officialTab, citizenForm, officialForm, citizenStep1, citizenStep2] = ['citizen-tab', 'official-tab', 'citizen-form', 'official-form', 'citizen-step-1', 'citizen-step-2'].map(id => document.getElementById(id));
+        const switchLoginTab = (showCitizen) => { const activeTab = showCitizen ? citizenTab : officialTab; const inactiveTab = showCitizen ? officialTab : citizenTab; activeTab.className = "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-teal-500 text-teal-600"; inactiveTab.className = "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"; citizenForm.classList.toggle('hidden', !showCitizen); officialForm.classList.toggle('hidden', showCitizen); if (showCitizen) { citizenStep1.classList.remove('hidden'); citizenStep2.classList.add('hidden'); } };
+        citizenTab.addEventListener('click', () => switchLoginTab(true)); officialTab.addEventListener('click', () => switchLoginTab(false));
+        document.getElementById('back-to-login-btn').addEventListener('click', () => { citizenStep2.classList.add('hidden'); citizenStep1.classList.remove('hidden'); });
+        const { closeModal: closeReportModal } = setupModal('report-modal', [document.getElementById('make-report-btn')], 'close-report-modal-btn');
+        document.getElementById('close-success-btn').addEventListener('click', closeReportModal);
+        const reportFormContent = document.getElementById('report-form-content'); const reportSuccessMessage = document.getElementById('report-success-message'); const reportStep1Form = document.getElementById('report-step-1-form'); const voiceRecordingUI = document.getElementById('voice-recording-ui');
+        const formSteps = [document.getElementById('form-step-1'), document.getElementById('form-step-2'), document.getElementById('form-step-3')]; const stepIndicators = [document.getElementById('step-indicator-1'), document.getElementById('step-indicator-2'), document.getElementById('step-indicator-3')]; const prevBtn = document.getElementById('prev-step-btn'); const nextBtn = document.getElementById('next-step-btn'); const submitBtn = document.getElementById('submit-report-btn'); let currentStep = 0;
+        const updateFormSteps = () => { formSteps.forEach((step, index) => step.classList.toggle('hidden', index !== currentStep)); stepIndicators.forEach((indicator, index) => { const circle = indicator.querySelector('div'); const text = indicator.querySelector('span'); const isActive = index <= currentStep; circle.classList.toggle('bg-teal-600', isActive); circle.classList.toggle('text-white', isActive); circle.classList.toggle('bg-gray-200', !isActive); circle.classList.toggle('text-gray-500', !isActive); text.classList.toggle('text-teal-600', isActive); text.classList.toggle('text-gray-400', !isActive); }); prevBtn.classList.toggle('invisible', currentStep === 0); nextBtn.classList.toggle('hidden', currentStep === formSteps.length - 1); submitBtn.classList.toggle('hidden', currentStep !== formSteps.length - 1); };
+        nextBtn.addEventListener('click', () => { if (currentStep < formSteps.length - 1) { currentStep++; updateFormSteps(); } }); prevBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; updateFormSteps(); } });
+        document.getElementById('report-form').addEventListener('submit', (e) => { e.preventDefault(); /* Submission is now handled by the new API logic */ });
+        document.getElementById('record-voice-btn').addEventListener('click', () => { reportStep1Form.classList.add('hidden'); voiceRecordingUI.classList.remove('hidden'); }); document.getElementById('stop-recording-btn').addEventListener('click', () => { document.getElementById('issue-description').value = "Simulated voice input: 'There is a large pothole in the middle of the road which is causing traffic issues.'"; voiceRecordingUI.classList.add('hidden'); reportStep1Form.classList.remove('hidden'); });
+        setupModal('redeem-modal', [document.getElementById('open-redeem-modal-btn')], 'close-redeem-modal-btn'); setupModal('track-modal', [document.getElementById('track-report-btn-desktop'), document.getElementById('track-report-btn-mobile')], 'close-track-modal-btn');
+        const trackInputView = document.getElementById('track-input-view'); const trackStatusView = document.getElementById('track-status-view'); const trackIdForm = document.getElementById('track-id-form'); const displayTrackingId = document.getElementById('display-tracking-id'); const trackingIdInput = document.getElementById('tracking-id'); const trackAnotherBtn = document.getElementById('track-another-btn'); const trackingSteps = Array.from(document.querySelectorAll('.tracking-step'));
+        const resetTrackingView = () => { if (window.progressInterval) clearInterval(window.progressInterval); trackingSteps.forEach(step => step.classList.remove('active', 'completed')); trackStatusView.classList.add('hidden'); trackInputView.classList.remove('hidden'); trackingIdInput.value = ''; };
+        trackIdForm.addEventListener('submit', (e) => { e.preventDefault(); const trackingId = trackingIdInput.value.trim(); if (!trackingId) return; displayTrackingId.textContent = trackingId; trackInputView.classList.add('hidden'); trackStatusView.classList.remove('hidden'); lucide.createIcons(); let currentTrackingStep = 0; if (window.progressInterval) clearInterval(window.progressInterval); const processStep = () => { if (currentTrackingStep < trackingSteps.length) { if (currentTrackingStep > 0) { trackingSteps[currentTrackingStep - 1].classList.remove('active'); trackingSteps[currentTrackingStep - 1].classList.add('completed'); } trackingSteps[currentTrackingStep].classList.add('active'); currentTrackingStep++; } else { trackingSteps[currentTrackingStep - 1].classList.remove('active'); trackingSteps[currentTrackingStep - 1].classList.add('completed'); clearInterval(window.progressInterval); } }; processStep(); window.progressInterval = setInterval(processStep, 1500); });
+        trackAnotherBtn.addEventListener('click', resetTrackingView); document.getElementById('close-track-modal-btn').addEventListener('click', resetTrackingView); document.querySelector('#track-modal .modal-overlay').addEventListener('click', resetTrackingView);
+        const [ongoingTab, solvedTab, ongoingGrid, solvedGrid] = ['ongoing-tab', 'solved-tab', 'ongoing-issues-grid', 'solved-issues-grid'].map(id => document.getElementById(id));
+        const switchLiveReportTab = (showOngoing) => { ongoingTab.classList.toggle('active', showOngoing); solvedTab.classList.toggle('active', !showOngoing); ongoingGrid.classList.toggle('hidden', !showOngoing); solvedGrid.classList.toggle('hidden', showOngoing); }; ongoingTab.addEventListener('click', () => switchLiveReportTab(true)); solvedTab.addEventListener('click', () => switchLiveReportTab(false));
+        const languageSelector = document.getElementById('language-selector'); const translatePage = (language) => { const langData = translations[language]; document.querySelectorAll('[data-translate]').forEach(element => { const key = element.getAttribute('data-translate'); if (langData && langData[key]) { element.innerHTML = langData[key]; } }); }; languageSelector.addEventListener('change', (e) => translatePage(e.target.value)); translatePage('en');
     </script>
 </body>
+
 </html>
