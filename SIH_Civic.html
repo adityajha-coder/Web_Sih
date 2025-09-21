@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet.js for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Leaflet.heat for Heatmap Layer -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -32,13 +37,54 @@
             background-size: 20px 20px;
         }
         
-        .cta-button {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* Enhanced Button Styles */
+        .btn {
+            @apply font-semibold py-2 px-5 rounded-full transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
         }
-        .cta-button:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(13, 148, 136, 0.2);
+        .btn-primary {
+            @apply bg-teal-600 text-white focus:ring-teal-500;
+            background-image: linear-gradient(to right, #0d9488 0%, #14b8a6 51%, #0d9488 100%);
+            background-size: 200% auto;
+            box-shadow: 0 4px 15px 0 rgba(13, 148, 136, 0.3);
+            transition: all 0.4s cubic-bezier(.25,.8,.25,1);
+            animation: spotlight-pulse 2.5s infinite 3s;
+        }
+        .btn-primary:hover {
+            background-position: right center;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(13, 148, 136, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15) inset;
+            background-size: 100%;
+        }
+        .btn-secondary {
+             @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400;
+        }
+        .btn-ghost {
+            @apply bg-transparent text-gray-600 hover:bg-gray-100 hover:text-teal-600 focus:ring-teal-500;
+        }
+        .btn-dark {
+            @apply bg-black text-white hover:bg-gray-800 focus:ring-gray-700 shadow-md;
+            transition: all 0.2s ease-in-out;
+        }
+         .btn-dark:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .btn-dark:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset;
+        }
+        .btn-sm {
+            @apply py-1 px-3 text-sm;
+        }
+        
+        @keyframes spotlight-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(13, 148, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
         }
 
         .feature-card {
@@ -210,11 +256,45 @@
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
 
+        /* Chatbot Styles */
+        #chatbot-window {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .chat-bubble-user {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 1.5rem 1.5rem 0.25rem 1.5rem;
+        }
+        .chat-bubble-bot {
+            background-color: #e5e7eb;
+            color: var(--text-dark);
+            border-radius: 1.5rem 1.5rem 1.5rem 0.25rem;
+        }
+
+        /* Leaflet Map Styles */
+        #live-map {
+            z-index: 10;
+        }
+
+        /* Shape Divider */
+        .shape-divider {
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        .shape-divider svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 80px;
+        }
+        .shape-divider .shape-fill {
+            fill: #f1f5f9; /* slate-100 */
+        }
     </style>
 </head>
 <body class="text-gray-700 bg-slate-50">
 
-    <!-- Header -->
     <header class="shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
@@ -227,52 +307,58 @@
                 <a href="#features" class="hover:text-teal-600 transition duration-300" data-translate="navFeatures">Features</a>
                 <a href="#process" class="hover:text-teal-600 transition duration-300" data-translate="navProcess">Process</a>
                 <a href="#live-reports" class="hover:text-teal-600 transition duration-300" data-translate="navReports">Reports</a>
+                <a href="#live-map-dashboard" class="hover:text-teal-600 transition duration-300" data-translate="navDashboard">Dashboard</a>
                 <a href="#rewards" class="hover:text-teal-600 transition duration-300" data-translate="navRewards">Rewards</a>
+                <a href="#community-champions" class="hover:text-teal-600 transition duration-300" data-translate="navChampions">Champions</a>
                 <a href="#impact" class="hover:text-teal-600 transition duration-300" data-translate="navImpact">Impact</a>
                 <a href="#faq" class="hover:text-teal-600 transition duration-300" data-translate="navFaq">FAQ</a>
             </nav>
             <div class="flex items-center space-x-2 sm:space-x-4">
-                 <!-- Language Selector -->
-                <div class="relative">
+                 <div class="relative">
                     <select id="language-selector" class="appearance-none bg-transparent border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm font-medium text-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500">
                         <option value="en">English</option>
                         <option value="hi">हिन्दी</option>
                     </select>
                     <i data-lucide="languages" class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"></i>
                 </div>
-                 <a href="#" id="track-report-btn-desktop" class="hidden sm:block text-sm font-semibold text-gray-600 hover:text-teal-600" data-translate="trackReportNav">Track Report</a>
-                 <button id="citizen-login-btn-desktop" class="hidden sm:block bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLogin">Login</button>
+                 <a href="#" id="track-report-btn-desktop" class="btn btn-ghost hidden sm:block" data-translate="trackReportNav">Track Report</a>
+                 <button id="citizen-login-btn-desktop" class="btn btn-primary hidden sm:flex items-center justify-center">
+                    <i data-lucide="log-in" class="h-5 w-5 mr-2"></i>
+                    <span data-translate="citizenLogin">Login</span>
+                 </button>
             </div>
              <button id="mobile-menu-button" class="md:hidden text-gray-700">
                  <i data-lucide="menu"></i>
             </button>
         </div>
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
              <a href="#features" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFeaturesMobile">Features</a>
              <a href="#process" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navProcessMobile">Process</a>
              <a href="#live-reports" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navReportsMobile">Reports</a>
+             <a href="#live-map-dashboard" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navDashboardMobile">Dashboard</a>
              <a href="#rewards" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navRewardsMobile">Rewards</a>
+             <a href="#community-champions" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navChampionsMobile">Champions</a>
              <a href="#impact" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navImpactMobile">Impact</a>
              <a href="#testimonials" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navVoicesMobile">Voices</a>
              <a href="#faq" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFaqMobile">FAQ</a>
              <div class="border-t mt-4 pt-4 space-y-2">
-                 <button id="track-report-btn-mobile" class="w-full text-left text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300" data-translate="trackReportNavMobile">Track Report</button>
-                 <button id="citizen-login-btn-mobile" class="w-full bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300" data-translate="citizenLoginMobile">Citizen Login</button>
-                 <button id="official-login-btn-mobile" class="w-full text-left text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300" data-translate="officialLoginMobile">Official Login</button>
+                 <button id="track-report-btn-mobile" class="btn btn-ghost w-full text-left" data-translate="trackReportNavMobile">Track Report</button>
+                 <button id="citizen-login-btn-mobile" class="btn btn-primary w-full flex justify-center items-center">
+                    <i data-lucide="log-in" class="h-5 w-5 mr-2"></i>
+                    <span data-translate="citizenLoginMobile">Citizen Login</span>
+                 </button>
+                 <button id="official-login-btn-mobile" class="btn btn-secondary w-full text-left" data-translate="officialLoginMobile">Official Login</button>
             </div>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero-bg overflow-hidden">
             <div class="container mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col lg:flex-row items-center gap-12">
                 <div class="lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start">
-                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight" data-translate="heroTitle">Your Voice, <br><span class="text-teal-600">Our City's Future.</span></h2>
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight" data-translate="heroTitle">Your Voice, <br><span class="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-600">Our City's Future.</span></h2>
                     <p class="mt-6 text-lg text-text-light max-w-xl" data-translate="heroSubtitle">Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.</p>
                     
-                    <!-- ENHANCED: Location selector and CTA moved here -->
                     <div class="mt-10 w-full max-w-xl bg-white/60 backdrop-blur-sm p-6 rounded-2xl border shadow-sm">
                         <label class="block text-sm font-semibold text-text-dark mb-3 text-center" data-translate="locationLabel">Select your location to get started</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -325,13 +411,12 @@
                                 </select>
                             </div>
                         </div>
-                         <button id="make-report-btn" class="mt-4 w-full bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg cta-button">
-                            <span class="flex items-center justify-center"><i data-lucide="plus-circle" class="mr-2"></i><span data-translate="makeReport">Make a Report</span></span>
+                         <button id="make-report-btn" class="btn btn-primary w-full mt-4 text-lg py-3">
+                             <span class="flex items-center justify-center"><i data-lucide="plus-circle" class="mr-2"></i><span data-translate="makeReport">Make a Report</span></span>
                         </button>
                     </div>
                 </div>
                 <div class="lg:w-1/2 mt-12 lg:mt-0 flex items-center justify-center">
-                    <!-- Creative SVG Illustration -->
                     <svg viewBox="0 0 500 400" class="w-full max-w-lg h-auto">
                         <defs>
                             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -342,11 +427,9 @@
                                 </feMerge>
                             </filter>
                         </defs>
-                        <!-- Abstract City background -->
                         <path d="M 50 400 Q 150 300 250 350 T 450 300" fill="none" stroke="#e0f2f1" stroke-width="20" stroke-linecap="round" />
                         <path d="M 20 380 Q 120 280 220 330 T 420 280" fill="none" stroke="#e0f2f1" stroke-width="15" stroke-linecap="round" />
 
-                        <!-- Central element: phone/app -->
                         <rect x="200" y="150" width="100" height="150" rx="15" fill="#fff" stroke="#9ca3af" stroke-width="2" class="svg-fade-in" style="animation-delay: 0.5s;"/>
                         <circle cx="250" cy="165" r="3" fill="#d1d5db"/>
                         <rect x="215" y="180" width="70" height="10" rx="5" fill="#a7f3d0"/>
@@ -354,7 +437,6 @@
                          <rect x="225" y="210" width="50" height="5" rx="2" fill="#d1d5db"/>
                          <rect x="225" y="220" width="30" height="5" rx="2" fill="#d1d5db"/>
 
-                        <!-- Issue Pins -->
                         <g class="svg-fade-in" style="animation-delay: 1s;">
                             <circle cx="100" cy="150" r="15" fill="var(--secondary)" filter="url(#glow)"/>
                             <path d="M96 146 L104 154 M96 154 L104 146" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -368,7 +450,6 @@
                              <path d="M400 242 L 400 258 M392 250 L 408 250" stroke="white" stroke-width="2" stroke-linecap="round"/>
                         </g>
 
-                        <!-- Connecting Lines -->
                         <path d="M115 155 Q 180 180 200 190" fill="none" stroke="var(--secondary)" stroke-width="2" class="svg-draw-path" />
                         <path d="M365 105 Q 300 140 295 180" fill="none" stroke="var(--accent)" stroke-width="2" class="svg-draw-path" style="animation-delay: 1.2s;"/>
                         <path d="M385 245 Q 320 230 298 210" fill="none" stroke="var(--primary)" stroke-width="2" class="svg-draw-path" style="animation-delay: 1.4s;"/>
@@ -377,15 +458,13 @@
             </div>
         </section>
 
-        <!-- Features Section -->
         <section id="features" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="featuresTag">WHY CIVICVOICE?</span>
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="featuresTitle">A Platform Built for Change</h3>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Feature Card 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div class="text-left feature-card reveal-on-scroll">
                          <div class="feature-icon flex items-center justify-center h-16 w-16 bg-teal-100 text-teal-600 rounded-2xl mb-6">
                             <i data-lucide="mic" class="h-8 w-8"></i>
@@ -393,7 +472,6 @@
                         <h4 class="text-xl font-bold text-text-dark" data-translate="feature1Title">Accessible Reporting</h4>
                         <p class="mt-2 text-text-light" data-translate="feature1Desc">Snap a photo or simply use your voice in any regional language to submit a report effortlessly.</p>
                     </div>
-                    <!-- Feature Card 2 -->
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 100ms;">
                         <div class="feature-icon flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-2xl mb-6">
                             <i data-lucide="gantt-chart-square" class="h-8 w-8"></i>
@@ -401,7 +479,6 @@
                         <h4 class="text-xl font-bold text-text-dark" data-translate="feature2Title">Transparent Tracking</h4>
                         <p class="mt-2 text-text-light" data-translate="feature2Desc">Get real-time updates and notifications as your report moves from acknowledged to resolved.</p>
                     </div>
-                    <!-- Feature Card 3 -->
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 200ms;">
                         <div class="feature-icon flex items-center justify-center h-16 w-16 bg-amber-100 text-amber-600 rounded-2xl mb-6">
                             <i data-lucide="users-round" class="h-8 w-8"></i>
@@ -409,7 +486,6 @@
                         <h4 class="text-xl font-bold text-text-dark" data-translate="feature3Title">Community Prioritization</h4>
                         <p class="mt-2 text-text-light" data-translate="feature3Desc">Upvote existing issues to highlight their priority. Let the authorities know what matters most.</p>
                     </div>
-                    <!-- Feature Card 4 -->
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 300ms;">
                         <div class="feature-icon flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-2xl mb-6">
                             <i data-lucide="map-pin" class="h-8 w-8"></i>
@@ -417,38 +493,40 @@
                         <h4 class="text-xl font-bold text-text-dark" data-translate="feature4Title">Hyperlocal Focus</h4>
                         <p class="mt-2 text-text-light" data-translate="feature4Desc">Select your specific state and city to view and report issues that are relevant to your community.</p>
                     </div>
-                    <!-- Feature Card 5 -->
-                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 400ms;">
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 400ms;">
                         <div class="feature-icon flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-2xl mb-6">
                             <i data-lucide="award" class="h-8 w-8"></i>
                         </div>
                         <h4 class="text-xl font-bold text-text-dark" data-translate="feature5Title">Earn Community Rewards</h4>
                         <p class="mt-2 text-text-light" data-translate="feature5Desc">Get points for valid reports and verifications. Redeem them for cash rewards and climb the community leaderboard.</p>
                     </div>
-                     <!-- Feature Card 6 -->
-                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 500ms;">
+                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 500ms;">
                         <div class="feature-icon flex items-center justify-center h-16 w-16 bg-indigo-100 text-indigo-600 rounded-2xl mb-6">
                             <i data-lucide="shield-check" class="h-8 w-8"></i>
                         </div>
                         <h4 class="text-xl font-bold text-text-dark" data-translate="feature6Title">Secure User Portals</h4>
                         <p class="mt-2 text-text-light" data-translate="feature6Desc">Separate, secure login portals for citizens and government officials ensure data privacy and integrity.</p>
                     </div>
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 600ms;">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-red-100 text-red-600 rounded-2xl mb-6">
+                            <i data-lucide="shield-alert" class="h-8 w-8"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature7Title">Fake Report Detection</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature7Desc">Our AI-powered system analyzes report patterns to flag potential spam, ensuring that officials focus on genuine issues.</p>
+                    </div>
                 </div>
             </div>
         </section>
         
-        <!-- Process Section -->
         <section id="process" class="py-24">
             <div class="container mx-auto px-6">
                  <div class="text-center mb-20">
-                      <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY STEPS</span>
+                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY STEPS</span>
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="processTitle">See It. Report It. Get It Fixed.</h3>
                     <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="processSubtitle">We've designed a simple, transparent process to connect you directly with the departments that can make a difference.</p>
-                 </div>
+                </div>
                 
-                 <!-- HORIZONTAL PROCESS -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 text-center">
-                    <!-- Step 1 -->
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 text-center">
                     <div class="flex flex-col items-center reveal-on-scroll">
                         <div class="flex items-center justify-center h-24 w-24 bg-teal-100 text-teal-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="smartphone" class="h-12 w-12"></i>
@@ -457,7 +535,6 @@
                         <p class="mt-2 text-text-light" data-translate="step1Desc">Our intuitive form guides you to provide all necessary details quickly.</p>
                     </div>
                     
-                    <!-- Step 2 -->
                     <div class="flex flex-col items-center reveal-on-scroll relative" style="transition-delay: 150ms;">
                         <i data-lucide="arrow-right" class="process-flow-arrow h-10 w-10"></i>
                          <div class="flex items-center justify-center h-24 w-24 bg-orange-100 text-orange-600 rounded-full border-4 border-white shadow-lg">
@@ -467,7 +544,6 @@
                         <p class="mt-2 text-text-light" data-translate="step2Desc">We intelligently route your issue to the correct municipal department, saving time.</p>
                     </div>
                     
-                    <!-- Step 3 -->
                     <div class="flex flex-col items-center reveal-on-scroll relative" style="transition-delay: 300ms;">
                          <i data-lucide="arrow-right" class="process-flow-arrow h-10 w-10"></i>
                          <div class="flex items-center justify-center h-24 w-24 bg-amber-100 text-amber-600 rounded-full border-4 border-white shadow-lg">
@@ -481,8 +557,7 @@
             </div>
         </section>
 
-        <!-- Live Community Reports Section -->
-        <section id="live-reports" class="py-24 bg-slate-100">
+       <section id="live-reports" class="py-24 bg-slate-100">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="reportsTag">LIVE FEED</span>
@@ -490,7 +565,6 @@
                     <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="reportsSubtitle">See what's happening in your community in real-time. Your engagement helps prioritize action.</p>
                 </div>
 
-                <!-- Tabs -->
                 <div class="flex justify-center mb-8">
                     <div class="bg-gray-200 p-1 rounded-lg">
                         <button id="ongoing-tab" class="tab-btn active py-2 px-6 font-semibold rounded-md" data-translate="ongoingIssuesTab">Ongoing Issues</button>
@@ -498,11 +572,9 @@
                     </div>
                 </div>
 
-                <!-- Issues Grid -->
                 <div id="ongoing-issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Report Card 1 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll">
-                        <img src="https://images.unsplash.com/photo-1515224526905-56c8a7c25f46?q=80&w=2070&auto=format&fit=crop" alt="Pothole on a city street" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" data-report-id="CIVIC-XYZ-123">
+                        <img src="https://images.loksattaimg.com/2022/07/pg-road-pathhole.jpg" alt="Pothole on a city street" class="w-full h-48 object-cover"/>
                         <div class="p-6">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -516,16 +588,20 @@
                             </div>
                              <p class="text-sm text-gray-500 mt-2">Reported 2 days ago in <span class="font-medium">South Delhi</span></p>
                             <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: In Progress</p>
+                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">In Progress</span></p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                     <div class="bg-orange-500 h-2.5 rounded-full" style="width: 45%"></div>
                                 </div>
                             </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <button class="assign-task-btn hidden btn btn-dark w-full">
+                                    <span class="flex items-center justify-center"><i data-lucide="send" class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign Task</span></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <!-- Report Card 2 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 150ms;">
-                        <img src="https://images.unsplash.com/photo-1574716474199-653e020504a2?q=80&w=2070&auto=format&fit=crop" alt="Overflowing garbage bin" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 150ms;" data-report-id="CIVIC-ABC-456">
+                        <img src="https://th-i.thgim.com/public/migration_catalog/article13274116.ece/alternates/FREE_1200/HY05_P3_LEAD_GARBAGE" alt="Overflowing garbage bin" class="w-full h-48 object-cover">
                         <div class="p-6">
                              <div class="flex justify-between items-start">
                                 <div>
@@ -539,16 +615,20 @@
                             </div>
                             <p class="text-sm text-gray-500 mt-2">Reported 1 day ago in <span class="font-medium">Mumbai</span></p>
                             <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: Acknowledged</p>
+                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">Acknowledged</span></p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                     <div class="bg-red-500 h-2.5 rounded-full" style="width: 20%"></div>
                                 </div>
                             </div>
+                             <div class="mt-4 pt-4 border-t border-gray-100">
+                                <button class="assign-task-btn hidden btn btn-dark w-full">
+                                    <span class="flex items-center justify-center"><i data-lucide="send" class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign Task</span></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                     <!-- Report Card 3 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 300ms;">
-                        <img src="https://images.unsplash.com/photo-1616467339809-7b3b7b2b7b2c?q=80&w=2070&auto=format&fit=crop" alt="A waterlogged street" class="w-full h-48 object-cover">
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 300ms;" data-report-id="CIVIC-MNO-789">
+                        <img src="https://resize.indiatvnews.com/en/resize/newbucket/355_-/2018/07/rains-1-1531764418.jpg" alt="A waterlogged street" class="w-full h-48 object-cover">
                         <div class="p-6">
                              <div class="flex justify-between items-start">
                                 <div>
@@ -562,42 +642,23 @@
                             </div>
                             <p class="text-sm text-gray-500 mt-2">Reported 8 hours ago in <span class="font-medium">Bengaluru</span></p>
                             <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: Reported</p>
+                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">Reported</span></p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                     <div class="bg-cyan-500 h-2.5 rounded-full" style="width: 10%"></div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- NEW Report Card 4 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 450ms;">
-                        <img src="https://images.unsplash.com/photo-1569330751688-693a7905393a?q=80&w=1974&auto=format&fit=crop" alt="A broken wooden fence in a park" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                             <div class="flex justify-between items-start">
-                                <div>
-                                    <span class="text-xs font-semibold bg-purple-100 text-purple-800 px-2 py-1 rounded-full" data-translate="categoryProperty">Property</span>
-                                    <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="ongoingReport4Title">Damaged fence at garden</h4>
-                                </div>
-                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
-                                    <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
-                                    <span class="font-bold">42</span>
+                             <div class="mt-4 pt-4 border-t border-gray-100">
+                                <button class="assign-task-btn hidden btn btn-dark w-full">
+                                    <span class="flex items-center justify-center"><i data-lucide="send" class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign Task</span></span>
                                 </button>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-2">Reported 3 days ago in <span class="font-medium">Noida</span></p>
-                            <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: Acknowledged</p>
-                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                                    <div class="bg-purple-500 h-2.5 rounded-full" style="width: 20%"></div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="solved-issues-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Solved Card 1 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
-                        <img src="https://images.unsplash.com/photo-1560970997-3f9502b74790?q=80&w=1974&auto=format&fit=crop" alt="A working streetlight at dusk" class="w-full h-48 object-cover">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
+                        <img src="https://images.indianexpress.com/2023/06/cats-1.jpg" alt="A working streetlight at dusk" class="w-full h-48 object-cover"/>
                         <div class="p-6">
                             <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full" data-translate="categoryInfrastructure">Infrastructure</span>
                             <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport1Title">Broken Streetlight Fixed</h4>
@@ -607,9 +668,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- NEW Solved Card 2 -->
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
-                        <img src="https://images.unsplash.com/photo-1597517109228-dd362c476908?q=80&w=2070&auto=format&fit=crop" alt="A clean park pathway" class="w-full h-48 object-cover">
+                        <img src="https://media.istockphoto.com/id/1257926761/photo/curved-path.jpg?s=612x612&w=0&k=20&c=GC4J1QDvCrVA2O7jX6rao41nBz_cLKKjdPakZCyZRKM=" alt="A clean park pathway" class="w-full h-48 object-cover"/>
                         <div class="p-6">
                             <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full" data-translate="categoryParks">Parks</span>
                             <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport2Title">Park pathway cleaned</h4>
@@ -622,9 +682,178 @@
                 </div>
             </div>
         </section>
+        
+        <!-- MERGED LIVE MAP & HEATMAP SECTION -->
+        <section id="live-map-dashboard" class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="liveMapTag">FOR OFFICIALS</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="liveMapTitle">Live Issue Dashboard & Analytics</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="liveMapSubtitle">Visualize issue hotspots with a real-time map. Toggle between pins and a heatmap view for powerful, data-driven insights.</p>
+                </div>
 
-        <!-- Rewards Section -->
-        <section id="rewards" class="py-24 bg-white">
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border mb-8 reveal-on-scroll">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+                        <!-- Filters -->
+                        <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="map-filter-category" class="text-sm font-medium text-gray-700" data-translate="filterCategory">Category</label>
+                                <select id="map-filter-category" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                                    <option value="all">All</option>
+                                    <option value="Pothole">Pothole</option>
+                                    <option value="Garbage">Garbage</option>
+                                    <option value="Streetlight">Streetlight</option>
+                                    <option value="Water">Water</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="map-filter-status" class="text-sm font-medium text-gray-700" data-translate="filterStatus">Status</label>
+                                <select id="map-filter-status" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                                    <option value="all">All</option>
+                                    <option value="Reported">Reported</option>
+                                    <option value="Acknowledged">Acknowledged</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Resolved">Resolved</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Toggles -->
+                        <div class="lg:col-span-1 flex flex-row lg:flex-col justify-start items-start lg:items-center pt-4 lg:pt-0">
+                             <label class="flex items-center space-x-2 cursor-pointer mr-4 lg:mr-0 lg:mb-2">
+                                <input type="checkbox" id="toggle-pins" class="form-checkbox h-5 w-5 text-teal-600 rounded" checked>
+                                <span class="text-sm font-medium" data-translate="togglePins">Show Pins</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="toggle-heatmap" class="form-checkbox h-5 w-5 text-teal-600 rounded">
+                                <span class="text-sm font-medium" data-translate="toggleHeatmap">Show Heatmap</span>
+                            </label>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2 text-center pt-4 md:pt-0 border-t md:border-t-0 md:border-l pl-0 md:pl-4 mt-4 md:mt-0">
+                            <div class="p-2">
+                                <p id="stat-total" class="text-2xl font-bold text-teal-600">0</p>
+                                <p class="text-xs text-gray-500" data-translate="statTotal">Total Reports</p>
+                            </div>
+                             <div class="p-2">
+                                <p id="stat-resolved" class="text-2xl font-bold text-green-600">0</p>
+                                <p class="text-xs text-gray-500" data-translate="statResolved">Resolved</p>
+                            </div>
+                             <div class="p-2">
+                                <p id="stat-in-progress" class="text-2xl font-bold text-orange-600">0</p>
+                                <p class="text-xs text-gray-500" data-translate="statInProgress">In Progress</p>
+                            </div>
+                             <div class="p-2">
+                                <p id="stat-reported" class="text-2xl font-bold text-red-600">0</p>
+                                <p class="text-xs text-gray-500" data-translate="statReported">Newly Reported</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="live-map" class="w-full h-[600px] rounded-2xl shadow-xl border reveal-on-scroll"></div>
+            </div>
+        </section>
+
+        <!-- Agent Dashboard Section -->
+        <section id="agent-dashboard" class="py-24 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="dashboardTag">FOR DEPARTMENT HEADS</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="dashboardTitle">Field Agent Management</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="dashboardSubtitle">Track your team's performance, manage assignments, and optimize workflow in real-time.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Agent Card 1 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 reveal-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=RK" class="rounded-full" alt="Agent Avatar">
+                            <div class="ml-4">
+                                <p class="font-bold text-lg text-text-dark">Ramesh Kumar</p>
+                                <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">On Duty</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-center my-4">
+                            <div>
+                                <p class="text-2xl font-bold text-teal-600">3</p>
+                                <p class="text-xs text-text-light">Active Tasks</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-teal-600">1.8d</p>
+                                <p class="text-xs text-text-light">Avg. Resolution</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-text-dark mb-2">Current Assignments:</h5>
+                            <ul class="space-y-2 text-sm text-text-light max-h-32 overflow-y-auto">
+                                <li class="p-2 bg-slate-50 rounded-md">#CIVIC-MUM-001: Garbage Overflow</li>
+                                <li class="p-2 bg-slate-50 rounded-md">#CIVIC-HYD-001: Damaged Road</li>
+                                <li class="p-2 bg-slate-50 rounded-md">#CIVIC-DEL-001: Major Pothole</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <!-- Agent Card 2 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 reveal-on-scroll" style="transition-delay:150ms;">
+                        <div class="flex items-center mb-4">
+                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=SS" class="rounded-full" alt="Agent Avatar">
+                            <div class="ml-4">
+                                <p class="font-bold text-lg text-text-dark">Sunita Sharma</p>
+                                <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">On Duty</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-center my-4">
+                            <div>
+                                <p class="text-2xl font-bold text-teal-600">2</p>
+                                <p class="text-xs text-text-light">Active Tasks</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-teal-600">2.1d</p>
+                                <p class="text-xs text-text-light">Avg. Resolution</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-text-dark mb-2">Current Assignments:</h5>
+                            <ul class="space-y-2 text-sm text-text-light max-h-32 overflow-y-auto">
+                                <li class="p-2 bg-slate-50 rounded-md">#CIVIC-KOL-001: Water Logging</li>
+                                <li class="p-2 bg-slate-50 rounded-md">#CIVIC-JAI-001: Blocked Drain</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <!-- Agent Card 3 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 reveal-on-scroll" style="transition-delay:300ms;">
+                        <div class="flex items-center mb-4">
+                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=AS" class="rounded-full" alt="Agent Avatar">
+                            <div class="ml-4">
+                                <p class="font-bold text-lg text-text-dark">Anil Singh</p>
+                                <span class="text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-1 rounded-full">Idle</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-center my-4">
+                            <div>
+                                <p class="text-2xl font-bold text-gray-400">0</p>
+                                <p class="text-xs text-text-light">Active Tasks</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-gray-400">2.5d</p>
+                                <p class="text-xs text-text-light">Avg. Resolution</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-text-dark mb-2">Current Assignments:</h5>
+                            <div class="text-center p-4 text-sm text-gray-500">No active assignments.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="shape-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        <section id="rewards" class="py-24 bg-slate-100">
             <div class="container mx-auto px-6">
                 <div class="grid lg:grid-cols-2 gap-16 items-center">
                     <div class="reveal-on-scroll text-center lg:text-left">
@@ -668,7 +897,125 @@
             </div>
         </section>
 
-        <!-- Redeem Rewards Section -->
+        <!-- NEW COMMUNITY CHAMPIONS SECTION -->
+        <section id="community-champions" class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="championsTag">GAMIFICATION</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="championsTitle">Become a Community Champion</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="championsSubtitle">Earn badges for your contributions and climb the leaderboard to become a recognized voice in your community.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-start">
+                    <div>
+                        <h4 class="text-2xl font-bold text-text-dark mb-6 text-center lg:text-left" data-translate="badgesTitle">Achievement Badges</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll">
+                                <div class="flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-full mx-auto mb-4">
+                                    <i data-lucide="wrench" class="h-8 w-8"></i>
+                                </div>
+                                <h5 class="font-bold text-text-dark" data-translate="badge1Title">Pothole Pioneer</h5>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge1Desc">Report 10 road-related issues.</p>
+                            </div>
+                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll" style="transition-delay: 100ms;">
+                                <div class="flex items-center justify-center h-16 w-16 bg-green-100 text-green-600 rounded-full mx-auto mb-4">
+                                    <i data-lucide="check-check" class="h-8 w-8"></i>
+                                </div>
+                                <h5 class="font-bold text-text-dark" data-translate="badge2Title">Community Verifier</h5>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge2Desc">Confirm 5 resolved tasks.</p>
+                            </div>
+                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll" style="transition-delay: 200ms;">
+                                <div class="flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-full mx-auto mb-4">
+                                    <i data-lucide="sparkles" class="h-8 w-8"></i>
+                                </div>
+                                <h5 class="font-bold text-text-dark" data-translate="badge3Title">Civic Starter</h5>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge3Desc">Submit your first valid report.</p>
+                            </div>
+                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll" style="transition-delay: 300ms;">
+                                <div class="flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-full mx-auto mb-4">
+                                    <i data-lucide="heart" class="h-8 w-8"></i>
+                                </div>
+                                <h5 class="font-bold text-text-dark" data-translate="badge4Title">Neighborhood Hero</h5>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge4Desc">Reach 1000 community points.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                         <h4 class="text-2xl font-bold text-text-dark mb-6 text-center lg:text-left" data-translate="leaderboardTitle">Community Leaderboard</h4>
+                         <div class="bg-white rounded-xl shadow-lg border reveal-on-scroll" style="transition-delay: 150ms;">
+                             <ul class="divide-y divide-slate-200">
+                                 <li class="p-4 flex items-center justify-between">
+                                     <div class="flex items-center">
+                                         <span class="font-bold text-lg text-amber-500 mr-4">1.</span>
+                                         <img src="https://placehold.co/40x40/f59e0b/ffffff?text=A" class="rounded-full" alt="User Avatar">
+                                         <div class="ml-3">
+                                             <p class="font-semibold text-text-dark">Aditya</p>
+                                             <p class="text-sm text-text-light">Level 12 - Elite Citizen</p>
+                                         </div>
+                                     </div>
+                                     <span class="font-bold text-teal-600">5,430 pts</span>
+                                 </li>
+                                 <li class="p-4 flex items-center justify-between bg-slate-50">
+                                     <div class="flex items-center">
+                                         <span class="font-bold text-lg text-slate-400 mr-4">2.</span>
+                                         <img src="https://placehold.co/40x40/64748b/ffffff?text=Y" class="rounded-full" alt="User Avatar">
+                                         <div class="ml-3">
+                                             <p class="font-semibold text-text-dark">Yagik</p>
+                                             <p class="text-sm text-text-light">Level 11 - Super Citizen</p>
+                                         </div>
+                                     </div>
+                                     <span class="font-bold text-teal-600">4,980 pts</span>
+                                 </li>
+                                  <li class="p-4 flex items-center justify-between">
+                                     <div class="flex items-center">
+                                         <span class="font-bold text-lg text-orange-700 mr-4">3.</span>
+                                         <img src="https://placehold.co/40x40/c2410c/ffffff?text=A" class="rounded-full" alt="User Avatar">
+                                         <div class="ml-3">
+                                             <p class="font-semibold text-text-dark">Aryaman</p>
+                                             <p class="text-sm text-text-light">Level 10 - Active Citizen</p>
+                                         </div>
+                                     </div>
+                                     <span class="font-bold text-teal-600">4,550 pts</span>
+                                 </li>
+                                 <li class="p-4 flex items-center justify-between bg-slate-50">
+                                     <div class="flex items-center">
+                                         <span class="font-semibold text-text-light mr-4">4.</span>
+                                         <img src="https://placehold.co/40x40/475569/ffffff?text=N" class="rounded-full" alt="User Avatar">
+                                         <div class="ml-3">
+                                             <p class="font-semibold text-text-dark">Nishank</p>
+                                             <p class="text-sm text-text-light">Level 9 - Engaged Citizen</p>
+                                         </div>
+                                     </div>
+                                     <span class="font-bold text-teal-600">4,210 pts</span>
+                                 </li>
+                                 <li class="p-4 flex items-center justify-between">
+                                     <div class="flex items-center">
+                                         <span class="font-semibold text-text-light mr-4">5.</span>
+                                         <img src="https://placehold.co/40x40/475569/ffffff?text=D" class="rounded-full" alt="User Avatar">
+                                         <div class="ml-3">
+                                             <p class="font-semibold text-text-dark">Divita</p>
+                                             <p class="text-sm text-text-light">Level 8 - Active Contributor</p>
+                                         </div>
+                                     </div>
+                                     <span class="font-bold text-teal-600">3,950 pts</span>
+                                 </li>
+                                 <li class="p-4 flex items-center justify-between bg-slate-50">
+                                     <div class="flex items-center">
+                                         <span class="font-semibold text-text-light mr-4">6.</span>
+                                         <img src="https://placehold.co/40x40/475569/ffffff?text=A" class="rounded-full" alt="User Avatar">
+                                         <div class="ml-3">
+                                             <p class="font-semibold text-text-dark">Atharva</p>
+                                             <p class="text-sm text-text-light">Level 8 - Active Contributor</p>
+                                         </div>
+                                     </div>
+                                     <span class="font-bold text-teal-600">3,720 pts</span>
+                                 </li>
+                             </ul>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="redeem-rewards" class="py-24">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
@@ -677,15 +1024,13 @@
                 </div>
 
                 <div class="max-w-4xl mx-auto">
-                    <!-- User Points Balance -->
                     <div class="bg-white p-6 rounded-2xl shadow-lg border text-center mb-8 reveal-on-scroll">
                         <p class="text-lg text-text-light" data-translate="yourBalance">Your Balance</p>
                         <p class="text-5xl font-extrabold text-teal-600 mt-2">1250 <span class="text-3xl text-gray-500" data-translate="points">Points</span></p>
                     </div>
 
-                    <!-- Redeem Button -->
                     <div class="text-center reveal-on-scroll" style="transition-delay: 150ms;">
-                        <button id="open-redeem-modal-btn" class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button">
+                        <button id="open-redeem-modal-btn" class="btn btn-primary text-lg py-4 px-8">
                             <span data-translate="redeemMainButton">Redeem Your Points</span>
                         </button>
                     </div>
@@ -693,40 +1038,37 @@
             </div>
         </section>
 
-        <!-- Impact Section -->
         <section id="impact" class="py-24 bg-white">
              <div class="container mx-auto px-6 text-center">
                  <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="impactTitle">Our Community's Scoreboard</h3>
                  <p class="mt-3 max-w-2xl mx-auto text-text-light" data-translate="impactSubtitle">Small actions, when multiplied by thousands of people, can transform a city.</p>
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                      <div class="bg-slate-50 p-8 rounded-2xl border">
-                           <i data-lucide="check-badge" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
-                           <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
-                           <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
-                      </div>
-                       <div class="bg-slate-50 p-8 rounded-2xl border">
-                           <i data-lucide="users" class="h-12 w-12 text-orange-500 mx-auto mb-4"></i>
-                           <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
-                           <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
-                      </div>
-                       <div class="bg-slate-50 p-8 rounded-2xl border">
-                           <i data-lucide="star" class="h-12 w-12 text-amber-500 mx-auto mb-4 fill-amber-400"></i>
-                           <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
-                           <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
-                      </div>
-                 </div>
-             </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                     <div class="bg-slate-50 p-8 rounded-2xl border">
+                         <i data-lucide="check-badge" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
+                         <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
+                         <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
+                    </div>
+                     <div class="bg-slate-50 p-8 rounded-2xl border">
+                         <i data-lucide="users" class="h-12 w-12 text-orange-500 mx-auto mb-4"></i>
+                         <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
+                         <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
+                    </div>
+                     <div class="bg-slate-50 p-8 rounded-2xl border">
+                         <i data-lucide="star" class="h-12 w-12 text-amber-500 mx-auto mb-4 fill-amber-400"></i>
+                         <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
+                         <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
+                    </div>
+                </div>
+            </div>
         </section>
-
-        <!-- Testimonials -->
-        <section id="testimonials" class="py-24">
+        
+        <section id="testimonials" class="py-24 bg-slate-100">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="testimonialsTag">REAL STORIES, REAL IMPACT</span>
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="testimonialsTitle">What Our Users Are Saying</h3>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Testimonial 1 -->
                     <div class="testimonial-card reveal-on-scroll">
                         <p class="text-lg font-medium relative z-10" data-translate="testimonial1">"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!"</p>
                         <div class="mt-6 relative z-10">
@@ -734,16 +1076,14 @@
                             <p class="text-sm text-teal-200" data-translate="testimonial1Location">Mayur Vihar Resident, Delhi</p>
                         </div>
                     </div>
-                     <!-- Testimonial 2 -->
-                    <div class="testimonial-card reveal-on-scroll" style="transition-delay: 150ms;">
+                     <div class="testimonial-card reveal-on-scroll" style="transition-delay: 150ms;">
                         <p class="text-lg font-medium relative z-10" data-translate="testimonial2">"As a municipal officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is invaluable. It helps us prioritize and resolve citizen grievances faster than ever."</p>
                          <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Yagik Garg</p>
                             <p class="text-sm text-teal-200" data-translate="testimonial2Role">Municipal Corporation Official</p>
                         </div>
                     </div>
-                     <!-- Testimonial 3 -->
-                    <div class="testimonial-card reveal-on-scroll" style="transition-delay: 300ms;">
+                     <div class="testimonial-card reveal-on-scroll" style="transition-delay: 300ms;">
                         <p class="text-lg font-medium relative z-10" data-translate="testimonial3">"It's empowering to see my report getting upvoted by neighbours. We managed to get a new streetlight installed in our lane by showing collective demand through the app."</p>
                          <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Aryaman Prasar</p>
@@ -754,7 +1094,6 @@
             </div>
         </section>
         
-        <!-- FAQ Section -->
         <section id="faq" class="py-24 bg-white">
             <div class="container mx-auto px-6 max-w-4xl">
                 <div class="text-center mb-16">
@@ -762,7 +1101,6 @@
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="faqTitle">Frequently Asked Questions</h3>
                 </div>
                 <div class="space-y-4">
-                    <!-- FAQ Item 1 -->
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll">
                         <div class="faq-question flex justify-between items-center p-6">
                             <h4 class="font-semibold text-lg text-text-dark" data-translate="faq1Question">What kind of issues can I report?</h4>
@@ -772,7 +1110,6 @@
                             <p data-translate="faq1Answer">You can report a wide range of non-emergency issues such as potholes, broken streetlights, garbage overflow, water logging, damaged public property, and more. If you're unsure, it's always best to report it.</p>
                         </div>
                     </div>
-                    <!-- FAQ Item 2 -->
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll" style="transition-delay: 100ms;">
                         <div class="faq-question flex justify-between items-center p-6">
                             <h4 class="font-semibold text-lg text-text-dark" data-translate="faq2Question">Is my data private?</h4>
@@ -782,7 +1119,6 @@
                             <p data-translate="faq2Answer">Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.</p>
                         </div>
                     </div>
-                    <!-- FAQ Item 3 -->
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll" style="transition-delay: 200ms;">
                         <div class="faq-question flex justify-between items-center p-6">
                             <h4 class="font-semibold text-lg text-text-dark" data-translate="faq3Question">Is the service available in my city?</h4>
@@ -795,55 +1131,20 @@
                 </div>
             </div>
         </section>
-
-        <!-- Ask a Question Section -->
-        <section id="ask-question" class="py-24">
-            <div class="container mx-auto px-6 max-w-4xl">
-                <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-200 reveal-on-scroll">
-                    <div class="text-center mb-8">
-                        <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="askTitle">Still Have Questions?</h3>
-                        <p class="mt-3 text-text-light" data-translate="askSubtitle">If you couldn't find an answer in our FAQ, feel free to ask us directly.</p>
-                    </div>
-                    <form action="#" method="POST" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700" data-translate="formName">Your Name</label>
-                                <input type="text" name="name" id="name" autocomplete="name" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700" data-translate="formEmail">Email Address</label>
-                                <input type="email" name="email" id="email" autocomplete="email" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
-                            </div>
-                        </div>
-                        <div>
-                            <label for="question" class="block text-sm font-medium text-gray-700" data-translate="formQuestion">Your Question</label>
-                            <textarea id="question" name="question" rows="4" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"></textarea>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg cta-button" data-translate="formSubmit">
-                                Submit Question
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
+        
         <section class="reveal-on-scroll">
             <div class="container mx-auto px-6 py-20">
                 <div class="bg-gradient-to-br from-teal-50 to-orange-50 rounded-3xl shadow-lg p-10 md:p-16 text-center">
                     <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="ctaTitle">Ready to Make a Difference?</h3>
                     <p class="mt-4 text-text-light max-w-2xl mx-auto text-lg" data-translate="ctaSubtitle">Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.</p>
                     <div class="mt-8">
-                        <button class="bg-teal-600 text-white font-bold py-4 px-8 rounded-full text-lg cta-button" data-translate="ctaButton">Sign Up & Start Reporting</button>
+                        <button class="btn btn-primary text-lg py-4 px-8" data-translate="ctaButton">Sign Up & Start Reporting</button>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white">
         <div class="container mx-auto px-6 py-12">
              <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
@@ -889,7 +1190,31 @@
         </div>
     </footer>
     
-    <!-- Login Modal -->
+    <div id="chatbot-container" class="fixed bottom-8 right-8 z-50">
+        <div id="chatbot-window" class="hidden w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col transform translate-y-4 opacity-0">
+            <div class="flex justify-between items-center p-4 bg-teal-600 text-white rounded-t-2xl">
+                <h3 class="font-bold">Civic Assistant</h3>
+                <button id="chatbot-close-btn" class="hover:text-gray-200">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+            <div id="chatbot-messages" class="flex-1 p-4 space-y-4 overflow-y-auto">
+                <div class="chat-bubble-bot p-3 max-w-xs">
+                    <p class="text-sm">Hello! How can I help you today?</p>
+                </div>
+            </div>
+            <form id="chatbot-form" class="p-4 border-t flex items-center">
+                <input id="chatbot-input" type="text" placeholder="Ask a question..." class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <button type="submit" class="ml-3 bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                    <i data-lucide="send" class="h-5 w-5"></i>
+                </button>
+            </form>
+        </div>
+        <button id="chatbot-toggle-btn" class="bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center btn-primary">
+            <i data-lucide="message-circle" class="h-8 w-8"></i>
+        </button>
+    </div>
+
     <div id="login-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -909,7 +1234,6 @@
                         </nav>
                     </div>
 
-                    <!-- Citizen Login/Signup Form -->
                     <div id="citizen-form">
                         <div id="citizen-step-1">
                             <h3 class="text-2xl font-bold text-center text-gray-800 mt-6" data-translate="modalCitizenTitle">Welcome!</h3>
@@ -919,7 +1243,7 @@
                                     <label for="citizen-contact" class="block text-sm font-medium text-gray-700" data-translate="modalCitizenInputLabel">Phone Number or Gmail</label>
                                     <input type="text" name="citizen-contact" id="citizen-contact" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 9876543210 or name@gmail.com">
                                 </div>
-                                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button" data-translate="modalCitizenButton">
+                                <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="modalCitizenButton">
                                     Send OTP
                                 </button>
                             </form>
@@ -932,19 +1256,18 @@
                                     <label for="otp-input" class="block text-sm font-medium text-gray-700">One-Time Password</label>
                                     <input type="text" name="otp-input" id="otp-input" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter the 6-digit code">
                                 </div>
-                                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button" data-translate="modalOtpButton">
+                                <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="modalOtpButton">
                                     Verify & Login
                                 </button>
-                                <button type="button" id="back-to-login-btn" class="text-sm text-center w-full text-gray-600 hover:text-teal-600">Back to login</button>
+                                <button type="button" id="back-to-login-btn" class="btn btn-ghost w-full">Back to login</button>
                              </form>
                         </div>
                     </div>
 
-                    <!-- Official Login Form -->
                     <div id="official-form" class="mt-6 hidden">
                         <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="modalOfficialTitle">Official Portal</h3>
                          <p class="text-center text-gray-500 mt-2" data-translate="modalOfficialSubtitle">Login with your employee credentials.</p>
-                        <form class="mt-8 space-y-6">
+                        <form id="official-login-form" class="mt-8 space-y-6">
                             <div>
                                 <label for="employee-id" class="block text-sm font-medium text-gray-700" data-translate="modalOfficialInput1">Employee ID</label>
                                 <input type="text" name="employee-id" id="employee-id" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter your Employee ID">
@@ -956,7 +1279,7 @@
                                 </div>
                                 <input type="password" name="password" id="password" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter your password">
                             </div>
-                            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700" data-translate="modalOfficialButton">
+                            <button type="submit" class="btn btn-dark w-full flex justify-center py-3 text-lg" data-translate="modalOfficialButton">
                                 Login
                             </button>
                         </form>
@@ -966,7 +1289,6 @@
         </div>
     </div>
     
-    <!-- Report Issue Modal -->
     <div id="report-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -978,7 +1300,6 @@
                 <div id="report-form-content">
                     <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="reportModalTitle">Report a Civic Issue</h3>
                     
-                    <!-- Step Indicator -->
                     <div class="flex justify-center items-center my-6 space-x-4">
                         <div id="step-indicator-1" class="step-indicator flex items-center text-teal-600">
                             <div class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">1</div>
@@ -997,7 +1318,6 @@
                     </div>
                     
                     <form id="report-form" class="mt-8 space-y-6">
-                        <!-- Step 1: Issue Details -->
                         <div id="form-step-1">
                             <div id="report-step-1-form">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1031,38 +1351,35 @@
                                     <textarea id="issue-description" name="issue-description" rows="3" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Provide a brief description of the issue..."></textarea>
                                 </div>
                                 <div class="flex items-end">
-                                    <button type="button" id="record-voice-btn" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button">
+                                    <button type="button" id="record-voice-btn" class="btn btn-primary w-full flex justify-center items-center py-3 text-lg">
                                         <i data-lucide="mic" class="mr-2 h-5 w-5"></i>
                                         <span data-translate="reportByVoice">Record by Voice</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                         <!-- Voice Recording UI -->
-                        <div id="voice-recording-ui" class="hidden text-center py-8">
+                         <div id="voice-recording-ui" class="hidden text-center py-8">
                             <button id="stop-recording-btn" class="h-24 w-24 mx-auto bg-teal-600 rounded-full flex items-center justify-center text-white mic-pulse">
                                 <i data-lucide="mic" class="h-12 w-12"></i>
                             </button>
                             <p class="mt-4 text-lg font-semibold text-gray-700" data-translate="listening">Listening...</p>
                         </div>
                         
-                        <!-- Step 2: Location -->
                         <div id="form-step-2" class="hidden">
                            <p class="text-center text-gray-500 mb-4" data-translate="reportLocationConfirm">Please confirm the location of the issue.</p>
                            <div>
                                 <label for="address" class="block text-sm font-medium text-gray-700" data-translate="reportAddress">Address / Landmark</label>
                                 <input type="text" name="address" id="address" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., Near City Park, Main Street">
                            </div>
-                           <button type="button" class="mt-4 w-full flex items-center justify-center text-sm font-medium text-teal-600 hover:text-teal-800">
+                           <button type="button" class="btn btn-ghost mt-4 w-full flex items-center justify-center text-sm">
                                <i data-lucide="crosshair" class="h-5 w-5 mr-2"></i>
                                <span data-translate="reportCurrentLocation">Use my current location</span>
                            </button>
                         </div>
 
-                        <!-- Step 3: Submit -->
                         <div id="form-step-3" class="hidden">
-                             <p class="text-center text-gray-500 mb-4" data-translate="reportContactInfo">Provide your contact information (optional) to receive updates.</p>
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <p class="text-center text-gray-500 mb-4" data-translate="reportContactInfo">Provide your contact information (optional) to receive updates.</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label for="reporter-name" class="block text-sm font-medium text-gray-700" data-translate="formName">Your Name</label>
                                     <input type="text" name="reporter-name" id="reporter-name" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
@@ -1075,21 +1392,19 @@
                         </div>
                     </form>
                     
-                    <!-- Navigation Buttons -->
                     <div class="mt-8 flex justify-between">
-                        <button id="prev-step-btn" type="button" class="bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 transition duration-300 invisible">
+                        <button id="prev-step-btn" type="button" class="btn btn-secondary invisible">
                             Previous
                         </button>
-                        <button id="next-step-btn" type="button" class="bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-teal-700 transition duration-300 cta-button">
+                        <button id="next-step-btn" type="button" class="btn btn-primary">
                             Next Step
                         </button>
-                        <button id="submit-report-btn" type="submit" form="report-form" class="hidden bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg cta-button">
+                        <button id="submit-report-btn" type="submit" form="report-form" class="hidden btn btn-primary text-lg py-3 px-8">
                             Submit Report
                         </button>
                     </div>
                 </div>
                 
-                <!-- Success Message -->
                 <div id="report-success-message" class="hidden text-center py-10">
                     <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
                         <i data-lucide="check-circle-2" class="h-12 w-12"></i>
@@ -1098,13 +1413,12 @@
                     <p class="mt-3 text-text-light" data-translate="reportSuccessSub">Thank you for helping improve your community. Your report has been sent to the relevant department.</p>
                     <p class="mt-4 font-semibold text-gray-800" data-translate="reportSuccessID">Your Tracking ID is:</p>
                     <p class="mt-1 text-lg font-bold text-teal-600 bg-teal-50 rounded-md py-2 px-4 inline-block">CIVIC-XYZ-123</p>
-                    <button id="close-success-btn" class="mt-8 bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-900 transition duration-300">Close</button>
+                    <button id="close-success-btn" class="btn btn-dark mt-8 py-3 px-6">Close</button>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Redeem Modal -->
     <div id="redeem-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -1116,23 +1430,21 @@
                     <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="redeemModalTitle">Choose Your Reward</h3>
                     <p class="text-center text-gray-500 mt-2" data-translate="redeemModalSubtitle">Select one of the options below to redeem your points.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                        <!-- Reward Card 1 -->
                         <div class="feature-card text-center">
                             <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
                                 <i data-lucide="banknote" class="h-10 w-10"></i>
                             </div>
                             <h4 class="text-2xl font-bold text-text-dark" data-translate="redeemCashTitle">₹100 Cash Reward</h4>
                             <p class="text-lg font-semibold text-amber-600 my-2">1000 Points</p>
-                            <button class="mt-4 bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg cta-button" data-translate="redeemButton">Redeem</button>
+                            <button class="btn btn-primary mt-4" data-translate="redeemButton">Redeem</button>
                         </div>
-                        <!-- Reward Card 2 -->
                         <div class="feature-card text-center">
                             <div class="flex items-center justify-center h-20 w-20 bg-blue-100 text-blue-600 rounded-full mx-auto mb-6">
                                 <i data-lucide="shopping-cart" class="h-10 w-10"></i>
                             </div>
-                            <h4 class="text-2xl font-bold text-text-dark" data-translate="redeemVoucherTitle">Shopping Voucher</h4>
+                            <h4 class="text-xl font-bold text-text-dark" data-translate="redeemVoucherTitle">Shopping Voucher</h4>
                             <p class="text-lg font-semibold text-amber-600 my-2">500 Points</p>
-                            <button class="mt-4 bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg cta-button" data-translate="redeemButton">Redeem</button>
+                            <button class="btn btn-primary mt-4" data-translate="redeemButton">Redeem</button>
                         </div>
                     </div>
                 </div>
@@ -1140,7 +1452,6 @@
         </div>
     </div>
 
-    <!-- Track Report Modal -->
     <div id="track-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -1149,7 +1460,6 @@
                     <i data-lucide="x" class="h-6 w-6"></i>
                 </button>
                 
-                <!-- Initial View: Enter ID -->
                 <div id="track-input-view">
                     <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackModalTitle">Track Your Report</h3>
                     <p class="text-center text-gray-500 mt-2" data-translate="trackModalSubtitle">Enter the tracking ID you received after submission.</p>
@@ -1158,18 +1468,16 @@
                             <label for="tracking-id" class="block text-sm font-medium text-gray-700" data-translate="trackModalInputLabel">Tracking ID</label>
                             <input type="text" name="tracking-id" id="tracking-id" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., CIVIC-XYZ-123">
                         </div>
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 cta-button" data-translate="trackModalButton">
+                        <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="trackModalButton">
                             Track Status
                         </button>
                     </form>
                 </div>
 
-                <!-- Status View: Timeline -->
                 <div id="track-status-view" class="hidden">
                      <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackStatusTitle">Report Status</h3>
                      <p class="text-center text-gray-500 mt-2">Tracking ID: <span id="display-tracking-id" class="font-semibold text-teal-600"></span></p>
                      <div class="mt-8">
-                        <!-- Step 1: Reported -->
                         <div id="tracking-step-1" class="tracking-step">
                             <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
                                 <i data-lucide="file-plus-2" class="h-5 w-5"></i>
@@ -1180,10 +1488,7 @@
                             </div>
                         </div>
                         
-                        <div class="h-8"></div> <!-- Spacer -->
-
-                        <!-- Step 2: Acknowledged -->
-                        <div id="tracking-step-2" class="tracking-step">
+                        <div class="h-8"></div> <div id="tracking-step-2" class="tracking-step">
                             <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
                                  <i data-lucide="clipboard-check" class="h-5 w-5"></i>
                             </div>
@@ -1193,10 +1498,7 @@
                             </div>
                         </div>
                         
-                        <div class="h-8"></div> <!-- Spacer -->
-
-                        <!-- Step 3: In Progress -->
-                        <div id="tracking-step-3" class="tracking-step">
+                        <div class="h-8"></div> <div id="tracking-step-3" class="tracking-step">
                             <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
                                  <i data-lucide="wrench" class="h-5 w-5"></i>
                             </div>
@@ -1206,10 +1508,7 @@
                             </div>
                         </div>
                         
-                        <div class="h-8"></div> <!-- Spacer -->
-
-                        <!-- Step 4: Resolved -->
-                        <div id="tracking-step-4" class="tracking-step">
+                        <div class="h-8"></div> <div id="tracking-step-4" class="tracking-step">
                             <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
                                <i data-lucide="check-circle-2" class="h-5 w-5"></i>
                             </div>
@@ -1218,8 +1517,55 @@
                                 <p class="text-sm text-gray-400 mt-1" data-translate="trackStep4Desc">The issue has been fixed. Thank you!</p>
                             </div>
                         </div>
-                     </div>
-                     <button id="track-another-btn" class="mt-8 w-full text-center text-sm font-semibold text-teal-600 hover:text-teal-800" data-translate="trackAnotherButton">Track Another Report</button>
+                       </div>
+                     <button id="track-another-btn" class="btn btn-ghost w-full mt-8" data-translate="trackAnotherButton">Track Another Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="assignment-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white w-full max-w-lg p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+                <button id="close-assignment-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+                <div id="assignment-form-view">
+                    <h3 id="assignment-modal-title" class="text-2xl font-bold text-center text-gray-800" data-translate="assignModalTitle">Assign Report</h3>
+                    <form id="assignment-form" class="mt-8 space-y-4">
+                        <div>
+                            <label for="assign-department" class="block text-sm font-medium text-gray-700" data-translate="assignDeptLabel">Department</label>
+                            <select id="assign-department" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                                <option>Sanitation Department</option>
+                                <option>Public Works Department</option>
+                                <option>Electrical Department</option>
+                                <option>Water Supply Board</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="assign-agent" class="block text-sm font-medium text-gray-700" data-translate="assignAgentLabel">Field Agent</label>
+                            <select id="assign-agent" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                                <option>Agent 1 - Ramesh Kumar</option>
+                                <option>Agent 2 - Sunita Sharma</option>
+                                <option>Agent 3 - Anil Singh</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="assign-notes" class="block text-sm font-medium text-gray-700" data-translate="assignNotesLabel">Notes (Optional)</label>
+                            <textarea id="assign-notes" rows="3" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Add specific instructions..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="confirmAssignmentButton">
+                            Confirm Assignment
+                        </button>
+                    </form>
+                </div>
+                <div id="assignment-success-view" class="hidden text-center py-10">
+                    <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
+                        <i data-lucide="check-circle-2" class="h-12 w-12"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800" data-translate="assignSuccessTitle">Task Assigned!</h3>
+                    <p class="mt-3 text-text-light" data-translate="assignSuccessSub">The relevant department and agent have been notified.</p>
                 </div>
             </div>
         </div>
@@ -1236,7 +1582,9 @@
                 navFeatures: "Features",
                 navProcess: "Process",
                 navReports: "Reports",
+                navDashboard: "Dashboard",
                 navRewards: "Rewards",
+                navChampions: "Champions",
                 navImpact: "Impact",
                 navVoices: "Voices",
                 navFaq: "FAQ",
@@ -1245,13 +1593,15 @@
                 navFeaturesMobile: "Features",
                 navProcessMobile: "Process",
                 navReportsMobile: "Reports",
+                navDashboardMobile: "Dashboard",
                 navRewardsMobile: "Rewards",
+                navChampionsMobile: "Champions",
                 navImpactMobile: "Impact",
                 navVoicesMobile: "Voices",
                 navFaqMobile: "FAQ",
                 citizenLoginMobile: "Citizen Login",
                 officialLoginMobile: "Official Login",
-                heroTitle: "Your Voice, <br><span class=\"text-teal-600\">Our City's Future.</span>",
+                heroTitle: "Your Voice, <br><span class=\"bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-600\">Our City's Future.</span>",
                 heroSubtitle: "Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.",
                 locationLabel: "Select your location to get started",
                 selectState: "Select State",
@@ -1271,6 +1621,8 @@
                 feature5Desc: "Get points for valid reports and verifications. Redeem them for cash rewards and climb the community leaderboard.",
                 feature6Title: "Secure User Portals",
                 feature6Desc: "Separate, secure login portals for citizens and government officials ensure data privacy and integrity.",
+                feature7Title: "Fake Report Detection",
+                feature7Desc: "Our AI-powered system analyzes report patterns to flag potential spam, ensuring that officials focus on genuine issues.",
                 processTag: "3 EASY STEPS",
                 processTitle: "See It. Report It. Get It Fixed.",
                 processSubtitle: "We've designed a simple, transparent process to connect you directly with the departments that can make a difference.",
@@ -1306,6 +1658,19 @@
                 reward2Desc: "Help us confirm when an issue is properly resolved and earn bonus points for your verification.",
                 reward3Title: "Redeem for Cash Rewards",
                 reward3Desc: "Accumulate points and redeem them for exciting cash rewards, vouchers, and other perks.",
+                championsTag: "GAMIFICATION",
+                championsTitle: "Become a Community Champion",
+                championsSubtitle: "Earn badges for your contributions and climb the leaderboard to become a recognized voice in your community.",
+                badgesTitle: "Achievement Badges",
+                badge1Title: "Pothole Pioneer",
+                badge1Desc: "Report 10 road-related issues.",
+                badge2Title: "Community Verifier",
+                badge2Desc: "Confirm 5 resolved tasks.",
+                badge3Title: "Civic Starter",
+                badge3Desc: "Submit your first valid report.",
+                badge4Title: "Neighborhood Hero",
+                badge4Desc: "Reach 1000 community points.",
+                leaderboardTitle: "Community Leaderboard",
                 redeemTitle: "Redeem Your Points",
                 redeemSubtitle: "Turn your community efforts into tangible rewards. Here’s what you can get with your points.",
                 yourBalance: "Your Balance",
@@ -1321,6 +1686,20 @@
                 impact1: "Issues Resolved",
                 impact2: "Active Citizens",
                 impact3: "Average Rating",
+                liveMapTag: "FOR OFFICIALS",
+                liveMapTitle: "Live Issue Dashboard & Analytics",
+                liveMapSubtitle: "Visualize issue hotspots with a real-time map. Toggle between pins and a heatmap view for powerful, data-driven insights.",
+                togglePins: "Show Pins",
+                toggleHeatmap: "Show Heatmap",
+                filterCategory: "Category",
+                filterStatus: "Status",
+                statTotal: "Total Reports",
+                statResolved: "Resolved",
+                statInProgress: "In Progress",
+                statReported: "Newly Reported",
+                dashboardTag: "FOR DEPARTMENT HEADS",
+                dashboardTitle: "Field Agent Management",
+                dashboardSubtitle: "Track your team's performance, manage assignments, and optimize workflow in real-time.",
                 testimonialsTag: "REAL STORIES, REAL IMPACT",
                 testimonialsTitle: "What Our Users Are Saying",
                 testimonial1: "\"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!\"",
@@ -1337,12 +1716,6 @@
                 faq2Answer: "Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.",
                 faq3Question: "Is the service available in my city?",
                 faq3Answer: "We are actively expanding our network of partner municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up to be notified when we launch in your city!",
-                askTitle: "Still Have Questions?",
-                askSubtitle: "If you couldn't find an answer in our FAQ, feel free to ask us directly.",
-                formName: "Your Name",
-                formEmail: "Email Address",
-                formQuestion: "Your Question",
-                formSubmit: "Submit Question",
                 ctaTitle: "Ready to Make a Difference?",
                 ctaSubtitle: "Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.",
                 ctaButton: "Sign Up & Start Reporting",
@@ -1388,6 +1761,7 @@
                 reportAddress: "Address / Landmark",
                 reportCurrentLocation: "Use my current location",
                 reportContactInfo: "Provide your contact information (optional) to receive updates.",
+                formName: "Your Name",
                 reportSuccessTitle: "Report Submitted!",
                 reportSuccessSub: "Thank you for helping improve your community. Your report has been sent to the relevant department.",
                 reportSuccessID: "Your Tracking ID is:",
@@ -1409,13 +1783,23 @@
                 trackStep4: "Resolved",
                 trackStep4Desc: "The issue has been fixed. Thank you!",
                 trackAnotherButton: "Track Another Report",
+                assignTaskButton: "Assign Task",
+                assignModalTitle: "Assign Report",
+                assignDeptLabel: "Department",
+                assignAgentLabel: "Field Agent",
+                assignNotesLabel: "Notes (Optional)",
+                confirmAssignmentButton: "Confirm Assignment",
+                assignSuccessTitle: "Task Assigned!",
+                assignSuccessSub: "The relevant department and agent have been notified."
             },
             hi: {
                 appName: "सिविकवॉइस",
                 navFeatures: "विशेषताएँ",
                 navProcess: "प्रक्रिया",
                 navReports: "रिपोर्ट",
+                navDashboard: "डैशबोर्ड",
                 navRewards: "पुरस्कार",
+                navChampions: "चैंपियंस",
                 navImpact: "प्रभाव",
                 navVoices: "आवाज़ें",
                 navFaq: "FAQ",
@@ -1424,13 +1808,15 @@
                 navFeaturesMobile: "विशेषताएँ",
                 navProcessMobile: "प्रक्रिया",
                 navReportsMobile: "रिपोर्ट",
+                navDashboardMobile: "डैशबोर्ड",
                 navRewardsMobile: "पुरस्कार",
+                navChampionsMobile: "चैंपियंस",
                 navImpactMobile: "प्रभाव",
                 navVoicesMobile: "आवाज़ें",
                 navFaqMobile: "FAQ",
                 citizenLoginMobile: "नागरिक लॉगिन",
                 officialLoginMobile: "आधिकारिक लॉगिन",
-                heroTitle: "आपकी आवाज़, <br><span class=\"text-teal-600\">हमारे शहर का भविष्य।</span>",
+                heroTitle: "आपकी आवाज़, <br><span class=\"bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-600\">हमारे शहर का भविष्य।</span>",
                 heroSubtitle: "नागरिक मुद्दों की रिपोर्ट करें, उनके समाधान को ट्रैक करें, और एक बेहतर पड़ोस बनाने के लिए अपने समुदाय के साथ सहयोग करें। यह नागरिक जुड़ाव है, सरलीकृत।",
                 locationLabel: "शुरू करने के लिए अपना स्थान चुनें",
                 selectState: "राज्य चुनें",
@@ -1450,6 +1836,8 @@
                 feature5Desc: "मान्य रिपोर्ट और सत्यापन के लिए अंक प्राप्त करें। उन्हें नकद पुरस्कार के लिए भुनाएं और सामुदायिक लीडरबोर्ड पर चढ़ें।",
                 feature6Title: "सुरक्षित उपयोगकर्ता पोर्टल",
                 feature6Desc: "नागरिकों और सरकारी अधिकारियों के लिए अलग, सुरक्षित लॉगिन पोर्टल डेटा गोपनीयता और अखंडता सुनिश्चित करते हैं।",
+                feature7Title: "नकली रिपोर्ट की पहचान",
+                feature7Desc: "हमारी AI-संचालित प्रणाली संभावित स्पैम को चिह्नित करने के लिए रिपोर्ट पैटर्न का विश्लेषण करती है, यह सुनिश्चित करते हुए कि अधिकारी वास्तविक मुद्दों पर ध्यान केंद्रित करें।",
                 processTag: "३ आसान चरण",
                 processTitle: "देखें। रिपोर्ट करें। इसे ठीक करवाएं।",
                 processSubtitle: "हमने आपको सीधे उन विभागों से जोड़ने के लिए एक सरल, पारदर्शी प्रक्रिया तैयार की है जो एक अंतर ला सकते हैं।",
@@ -1485,6 +1873,19 @@
                 reward2Desc: "जब कोई समस्या ठीक से हल हो जाए तो हमें पुष्टि करने में मदद करें और अपने सत्यापन के लिए बोनस अंक अर्जित करें।",
                 reward3Title: "नकद पुरस्कार के लिए भुनाएं",
                 reward3Desc: "अंक जमा करें और उन्हें रोमांचक नकद पुरस्कार, वाउचर और अन्य भत्तों के लिए भुनाएं।",
+                championsTag: "गेमिफिकेशन",
+                championsTitle: "सामुदायिक चैंपियन बनें",
+                championsSubtitle: "अपने योगदान के लिए बैज अर्जित करें और अपने समुदाय में एक मान्यता प्राप्त आवाज बनने के लिए लीडरबोर्ड पर चढ़ें।",
+                badgesTitle: "उपलब्धि बैज",
+                badge1Title: "गड्ढा पायनियर",
+                badge1Desc: "10 सड़क संबंधी मुद्दों की रिपोर्ट करें।",
+                badge2Title: "सामुदायिक सत्यापनकर्ता",
+                badge2Desc: "5 हल किए गए कार्यों की पुष्टि करें।",
+                badge3Title: "सिविक स्टार्टर",
+                badge3Desc: "अपनी पहली वैध रिपोर्ट सबमिट करें।",
+                badge4Title: "पड़ोस का हीरो",
+                badge4Desc: "1000 सामुदायिक अंक तक पहुंचें।",
+                leaderboardTitle: "सामुदायिक लीडरबोर्ड",
                 redeemTitle: "अपने अंक भुनाएं",
                 redeemSubtitle: "अपने सामुदायिक प्रयासों को वास्तविक पुरस्कारों में बदलें। यहाँ आप अपने अंकों के साथ क्या प्राप्त कर सकते हैं।",
                 yourBalance: "आपका बैलेंस",
@@ -1500,6 +1901,20 @@
                 impact1: "मुद्दे हल हुए",
                 impact2: "सक्रिय नागरिक",
                 impact3: "औसत रेटिंग",
+                liveMapTag: "अधिकारियों के लिए",
+                liveMapTitle: "लाइव इश्यू डैशबोर्ड और एनालिटिक्स",
+                liveMapSubtitle: "वास्तविक समय के नक्शे के साथ समस्या हॉटस्पॉट की कल्पना करें। शक्तिशाली, डेटा-संचालित अंतर्दृष्टि के लिए पिन और हीटमैप दृश्य के बीच टॉगल करें।",
+                togglePins: "पिन दिखाएं",
+                toggleHeatmap: "हीटमैप दिखाएं",
+                filterCategory: "श्रेणी",
+                filterStatus: "स्थिति",
+                statTotal: "कुल रिपोर्ट",
+                statResolved: "हल",
+                statInProgress: "प्रगति में",
+                statReported: "नई रिपोर्ट",
+                dashboardTag: "विभाग प्रमुखों के लिए",
+                dashboardTitle: "फील्ड एजेंट प्रबंधन",
+                dashboardSubtitle: "अपनी टीम के प्रदर्शन को ट्रैक करें, असाइनमेंट प्रबंधित करें और वास्तविक समय में वर्कफ़्लो को अनुकूलित करें।",
                 testimonialsTag: "असली कहानियाँ, असली प्रभाव",
                 testimonialsTitle: "हमारे उपयोगकर्ता क्या कह रहे हैं",
                 testimonial1: "\"मेरे समाज के पास ओवरफ्लो हो रहा कूड़ेदान एक निरंतर समस्या थी। सिविकवॉइस के माध्यम से इसकी सूचना दी, और अगले ही दिन नगर निगम की टीम ਨੇ इसे साफ कर दिया। यह मंच वास्तव में काम करता है!\"",
@@ -1516,12 +1931,6 @@
                 faq2Answer: "हाँ, बिल्कुल। जबकि मुद्दे का स्थान और विवरण सार्वजनिक है, आपकी व्यक्तिगत जानकारी (नाम, संपर्क विवरण) गोपनीय रखी जाती है और केवल आपकी रिपोर्ट के संबंध में संचार के लिए संबंधित नगरपालिका अधिकारियों के साथ साझा की जाती है।",
                 faq3Question: "क्या यह सेवा मेरे शहर में उपलब्ध है?",
                 faq3Answer: "हम सक्रिय रूप से अपने भागीदार नगर पालिकाओं के नेटवर्क का विस्तार कर रहे हैं। वर्तमान में, हम दिल्ली, मुंबई और बैंगलोर में चालू हैं। जब हम आपके शहर में लॉन्च करेंगे तो अधिसूचित होने के लिए साइन अप करें!",
-                askTitle: "अभी भी प्रश्न हैं?",
-                askSubtitle: "यदि आपको हमारे FAQ में कोई उत्तर नहीं मिला, तो बेझिझक हमसे सीधे पूछें।",
-                formName: "आपका नाम",
-                formEmail: "ईमेल पता",
-                formQuestion: "आपका सवाल",
-                formSubmit: "प्रश्न भेजें",
                 ctaTitle: "एक अंतर बनाने के लिए तैयार हैं?",
                 ctaSubtitle: "एक समय में एक रिपोर्ट, हमारे शहर को बेहतर बनाने में हजारों नागरिकों से जुड़ें। यह मुफ़्त, आसान और प्रभावी है।",
                 ctaButton: "साइन अप करें और रिपोर्टिंग शुरू करें",
@@ -1567,6 +1976,7 @@
                 reportAddress: "पता / लैंडमार्क",
                 reportCurrentLocation: "मेरे वर्तमान स्थान का उपयोग करें",
                 reportContactInfo: "अपडेट प्राप्त करने के लिए अपनी संपर्क जानकारी (वैकल्पिक) प्रदान करें।",
+                formName: "आपका नाम",
                 reportSuccessTitle: "रिपोर्ट सबमिट की गई!",
                 reportSuccessSub: "अपने समुदाय को बेहतर बनाने में मदद करने के लिए धन्यवाद। आपकी रिपोर्ट संबंधित विभाग को भेज दी गई है।",
                 reportSuccessID: "आपका ट्रैकिंग आईडी है:",
@@ -1588,8 +1998,20 @@
                 trackStep4: "हल हो गया",
                 trackStep4Desc: "समस्या ठीक कर दी गई है। धन्यवाद!",
                 trackAnotherButton: "दूसरी रिपोर्ट ट्रैक करें",
+                assignTaskButton: "कार्य सौंपें",
+                assignModalTitle: "रिपोर्ट सौंपें",
+                assignDeptLabel: "विभाग",
+                assignAgentLabel: "फील्ड एजेंट",
+                assignNotesLabel: "टिप्पणियाँ (वैकल्पिक)",
+                confirmAssignmentButton: "असाइनमेंट की पुष्टि करें",
+                assignSuccessTitle: "कार्य सौंपा गया!",
+                assignSuccessSub: "संबंधित विभाग और एजेंट को सूचित कर दिया गया है।"
             },
         };
+
+        // --- STATE MANAGEMENT (FOR DEMO) ---
+        let isOfficialLoggedIn = false;
+        let activeReportCard = null;
 
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -1717,8 +2139,7 @@
 
         // Login Modal Specific Logic
         const citizenLoginBtns = [document.getElementById('citizen-login-btn-desktop'), document.getElementById('citizen-login-btn-mobile')];
-        const officialLoginBtns = [document.getElementById('official-login-btn-desktop'), document.getElementById('official-login-btn-mobile')];
-        const { openModal: openLoginModal } = setupModal('login-modal', [], 'close-login-modal-btn');
+        const { modal: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = setupModal('login-modal', [], 'close-login-modal-btn');
         
         const [citizenTab, officialTab, citizenForm, officialForm, citizenStep1, citizenStep2] = 
             ['citizen-tab', 'official-tab', 'citizen-form', 'official-form', 'citizen-step-1', 'citizen-step-2'].map(id => document.getElementById(id));
@@ -1739,7 +2160,7 @@
         };
 
         citizenLoginBtns.forEach(btn => btn && btn.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); switchLoginTab(true); }));
-        officialLoginBtns.forEach(btn => btn && btn.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); switchLoginTab(false); }));
+        document.getElementById('official-login-btn-mobile').addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); switchLoginTab(false); });
         citizenTab.addEventListener('click', () => switchLoginTab(true));
         officialTab.addEventListener('click', () => switchLoginTab(false));
 
@@ -1753,6 +2174,26 @@
             citizenStep2.classList.add('hidden');
             citizenStep1.classList.remove('hidden');
         });
+        
+        // --- Official Login Simulation ---
+        const updateOfficialUI = () => {
+             document.querySelectorAll('.assign-task-btn').forEach(btn => {
+                 btn.classList.toggle('hidden', !isOfficialLoggedIn);
+            });
+        }
+
+        document.getElementById('official-login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            isOfficialLoggedIn = true; // Simulate successful login
+            closeLoginModal();
+            updateOfficialUI();
+            // In a real app, you would also probably hide the main login button
+            const loginBtnDesktop = document.getElementById('citizen-login-btn-desktop');
+            loginBtnDesktop.innerHTML = `<i data-lucide="user-check" class="h-5 w-5 mr-2"></i><span>Official Logged In</span>`;
+            lucide.createIcons();
+            loginBtnDesktop.disabled = true;
+        });
+
 
         // Report Modal Specific Logic
         const { closeModal: closeReportModal } = setupModal('report-modal', [document.getElementById('make-report-btn')], 'close-report-modal-btn');
@@ -1812,6 +2253,45 @@
         // Redeem & Track Modals
         setupModal('redeem-modal', [document.getElementById('open-redeem-modal-btn')], 'close-redeem-modal-btn');
         setupModal('track-modal', [document.getElementById('track-report-btn-desktop'), document.getElementById('track-report-btn-mobile')], 'close-track-modal-btn');
+
+        // --- NEW: Assignment Modal ---
+        const { openModal: openAssignmentModal, closeModal: closeAssignmentModal } = setupModal('assignment-modal', [], 'close-assignment-modal-btn');
+        const assignmentFormView = document.getElementById('assignment-form-view');
+        const assignmentSuccessView = document.getElementById('assignment-success-view');
+
+        document.querySelectorAll('.assign-task-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                activeReportCard = e.currentTarget.closest('.report-card');
+                const reportId = activeReportCard.dataset.reportId;
+                document.getElementById('assignment-modal-title').textContent = `Assign Report: ${reportId}`;
+                
+                // Reset modal to its initial state
+                assignmentFormView.classList.remove('hidden');
+                assignmentSuccessView.classList.add('hidden');
+
+                openAssignmentModal();
+            });
+        });
+
+        document.getElementById('assignment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const department = document.getElementById('assign-department').value;
+            const agent = document.getElementById('assign-agent').value;
+
+            // Update UI on the card
+            if (activeReportCard) {
+                const statusText = activeReportCard.querySelector('.status-text');
+                statusText.textContent = `Assigned to ${agent}`;
+                statusText.classList.add('text-blue-600', 'font-bold');
+            }
+            
+            assignmentFormView.classList.add('hidden');
+            assignmentSuccessView.classList.remove('hidden');
+
+            setTimeout(() => {
+                closeAssignmentModal();
+            }, 2000);
+        });
 
         // Track Report Logic
         const trackInputView = document.getElementById('track-input-view');
@@ -1888,13 +2368,186 @@
                     element.innerHTML = langData[key];
                 }
             });
+             // After translating, we need to re-initialize icons in the map popups if any are open
+            // but for simplicity, we assume popups are closed or will be re-rendered on click.
+            lucide.createIcons();
         };
 
         languageSelector.addEventListener('change', (e) => translatePage(e.target.value));
-        translatePage('en'); // Initial translation
+        
+        // Chatbot Logic
+        const chatbotToggleButton = document.getElementById('chatbot-toggle-btn');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const chatbotCloseButton = document.getElementById('chatbot-close-btn');
+        const chatbotForm = document.getElementById('chatbot-form');
+        const chatbotInput = document.getElementById('chatbot-input');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+
+        const toggleChatbot = (show) => {
+            if(show) {
+                chatbotWindow.classList.remove('hidden');
+                setTimeout(() => {
+                    chatbotWindow.classList.remove('opacity-0', 'translate-y-4');
+                }, 10);
+            } else {
+                chatbotWindow.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => {
+                    chatbotWindow.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        chatbotToggleButton.addEventListener('click', () => toggleChatbot(true));
+        chatbotCloseButton.addEventListener('click', () => toggleChatbot(false));
+
+        chatbotForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = chatbotInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            const userBubble = document.createElement('div');
+            userBubble.classList.add('chat-bubble-user', 'p-3', 'self-end', 'max-w-xs');
+            userBubble.innerHTML = `<p class="text-sm">${message}</p>`;
+            chatbotMessages.appendChild(userBubble);
+            
+            chatbotInput.value = '';
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+            // Simulate bot reply
+            setTimeout(() => {
+                const botBubble = document.createElement('div');
+                botBubble.classList.add('chat-bubble-bot', 'p-3', 'self-start', 'max-w-xs');
+                botBubble.innerHTML = `<p class="text-sm">Thank you for your question. A representative will get back to you shortly.</p>`;
+                chatbotMessages.appendChild(botBubble);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }, 1000);
+        });
+
+        // --- Live Map Initialization ---
+        const initLiveMap = () => {
+            if (document.getElementById('live-map')._leaflet_id) { return; } // Prevent re-initialization
+            
+            const map = L.map('live-map').setView([22.5937, 78.9629], 5); 
+
+            const southWest = L.latLng(6.5546, 68.1113);
+            const northEast = L.latLng(35.6745, 97.3956);
+            const bounds = L.latLngBounds(southWest, northEast);
+            map.setMaxBounds(bounds);
+            map.on('drag', function() { map.panInsideBounds(bounds, { animate: false }); });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                minZoom: 5,
+            }).addTo(map);
+
+            const createCustomIcon = (iconName, colorClass) => L.divIcon({
+                html: `<div class="p-2 rounded-full shadow-lg ${colorClass} flex items-center justify-center"><i data-lucide="${iconName}" class="h-5 w-5 text-white"></i></div>`,
+                className: 'bg-transparent border-0',
+                iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32]
+            });
+
+            const icons = {
+                'Pothole': createCustomIcon('wrench', 'bg-orange-500'),
+                'Garbage': createCustomIcon('trash-2', 'bg-red-500'),
+                'Streetlight': createCustomIcon('lightbulb', 'bg-amber-500'),
+                'Water': createCustomIcon('droplets', 'bg-cyan-500')
+            };
+            
+            const issues = [
+                { id: 'CIVIC-DEL-001', lat: 28.6139, lng: 77.2090, category: 'Pothole', title: 'Major Pothole in Connaught Place, Delhi', status: 'Reported' },
+                { id: 'CIVIC-MUM-001', lat: 19.0760, lng: 72.8777, category: 'Garbage', title: 'Overflowing Bin in Bandra, Mumbai', status: 'In Progress' },
+                { id: 'CIVIC-BLR-001', lat: 12.9716, lng: 77.5946, category: 'Streetlight', title: 'Streetlight out in Koramangala, Bengaluru', status: 'Reported' },
+                { id: 'CIVIC-KOL-001', lat: 22.5726, lng: 88.3639, category: 'Water', title: 'Water Logging near Howrah Bridge, Kolkata', status: 'Acknowledged' },
+                { id: 'CIVIC-CHN-001', lat: 13.0827, lng: 80.2707, category: 'Garbage', title: 'Illegal Dumping in T. Nagar, Chennai', status: 'Reported' },
+                { id: 'CIVIC-HYD-001', lat: 17.3850, lng: 78.4867, category: 'Pothole', title: 'Damaged Road in Jubilee Hills, Hyderabad', status: 'In Progress' },
+                { id: 'CIVIC-BHO-001', lat: 23.2599, lng: 77.4126, category: 'Streetlight', title: 'Faulty light in Arera Colony, Bhopal', status: 'Resolved'},
+                { id: 'CIVIC-JAI-001', lat: 26.9124, lng: 75.7873, category: 'Water', title: 'Blocked drain in Malviya Nagar, Jaipur', status: 'Acknowledged' }
+            ];
+
+            const heatLayer = L.heatLayer([], { radius: 25 });
+            const markerGroup = L.layerGroup();
+            
+            const updateStats = (filteredIssues) => {
+                document.getElementById('stat-total').textContent = filteredIssues.length;
+                document.getElementById('stat-resolved').textContent = filteredIssues.filter(i => i.status === 'Resolved').length;
+                document.getElementById('stat-in-progress').textContent = filteredIssues.filter(i => i.status === 'In Progress').length;
+                document.getElementById('stat-reported').textContent = filteredIssues.filter(i => i.status === 'Reported').length;
+            };
+
+            const updateMapLayers = () => {
+                const category = document.getElementById('map-filter-category').value;
+                const status = document.getElementById('map-filter-status').value;
+
+                const filteredIssues = issues.filter(issue => 
+                    (category === 'all' || issue.category === category) &&
+                    (status === 'all' || issue.status === status)
+                );
+
+                markerGroup.clearLayers();
+                filteredIssues.forEach(issue => {
+                    const icon = icons[issue.category] || icons['Pothole'];
+                    const marker = L.marker([issue.lat, issue.lng], { icon: icon });
+                    marker.bindPopup(`<b>${issue.title}</b><br>Status: ${issue.status}<br><button class="btn btn-dark btn-sm mt-2 assign-map-task-btn" data-report-id="${issue.id}">Assign</button>`);
+                    marker.addTo(markerGroup);
+                });
+                lucide.createIcons();
+
+                const heatPoints = filteredIssues.map(issue => [issue.lat, issue.lng]);
+                heatLayer.setLatLngs(heatPoints);
+                
+                updateStats(filteredIssues);
+            };
+
+            const togglePins = document.getElementById('toggle-pins');
+            const toggleHeatmap = document.getElementById('toggle-heatmap');
+            
+            togglePins.addEventListener('change', (e) => e.target.checked ? map.addLayer(markerGroup) : map.removeLayer(markerGroup));
+            toggleHeatmap.addEventListener('change', (e) => e.target.checked ? map.addLayer(heatLayer) : map.removeLayer(heatLayer));
+
+            document.getElementById('map-filter-category').addEventListener('change', updateMapLayers);
+            document.getElementById('map-filter-status').addEventListener('change', updateMapLayers);
+            
+            // Handle dynamically created assign buttons in popups
+            map.on('popupopen', function() {
+                document.querySelectorAll('.assign-map-task-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const reportId = e.target.dataset.reportId;
+                        document.getElementById('assignment-modal-title').textContent = `Assign Report: ${reportId}`;
+                        openAssignmentModal();
+                    });
+                });
+            });
+
+
+            updateMapLayers(); // Initial population
+            if (togglePins.checked) map.addLayer(markerGroup);
+            if (toggleHeatmap.checked) map.addLayer(heatLayer);
+        };
+
+        // Initial Page Load
+        document.addEventListener('DOMContentLoaded', () => {
+            translatePage('en'); // Initial translation
+            updateOfficialUI(); // Ensure official buttons are hidden initially
+            initLiveMap(); // Initialize the map
+        });
 
     </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
