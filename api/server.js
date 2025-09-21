@@ -301,7 +301,7 @@ app.use('/uploads', express.static(uploadsDir));
 
 // Serve the main HTML file
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'SIH_Civic.html'));
+    res.sendFile(path.join(__dirname, '../SIH_Civic.html'));
 });
 
 // Error handling middleware
