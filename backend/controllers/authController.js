@@ -97,7 +97,7 @@ const verifyCitizenOtp = async (req, res) => {
 // @route   POST /api/auth/login/official
 // @access  Public
 const loginOfficial = async (req, res) => {
-  const { employeeId, password } = req.body; 
+  const { 'employee-id': employeeId, password } = req.body; 
 
   try {
     const user = await User.findOne({ email: employeeId, role: 'official' });
