@@ -1,90 +1,173 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CivicVoice | Your Community, Your Voice</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Leaflet.js for Interactive Map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Leaflet.heat for Heatmap Layer -->
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #f8fafc; /* A neutral light gray background */
+            background-color: #f8fafc;
+            /* A neutral light gray background */
         }
-        h1, h2, h3, h4, h5, h6 {
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* Color Palette */
         :root {
-            --primary: #0d9488; /* Teal-600 */
-            --primary-hover: #0f766e; /* Teal-700 */
-            --secondary: #f97316; /* Orange-500 */
-            --accent: #f59e0b; /* Amber-500 */
-            --text-dark: #1f2937; /* Gray-800 */
-            --text-light: #4b5563; /* Gray-600 */
+            --primary: #0d9488;
+            /* Teal-600 */
+            --primary-hover: #0f766e;
+            /* Teal-700 */
+            --secondary: #f97316;
+            /* Orange-500 */
+            --accent: #f59e0b;
+            /* Amber-500 */
+            --text-dark: #1f2937;
+            /* Gray-800 */
+            --text-light: #4b5563;
+            /* Gray-600 */
         }
 
         .hero-bg {
-            background-color: #f0fdfa; /* Teal-50 */
+            background-color: #f0fdfa;
+            /* Teal-50 */
             background-image: radial-gradient(#ccfbf1 1px, transparent 1px);
             background-size: 20px 20px;
         }
-        
+
         /* Enhanced Button Styles */
         .btn {
-            @apply font-semibold py-2 px-5 rounded-full transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
+            font-weight: 600;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+            border-radius: 9999px;
+            transition: all 0.3s;
         }
+
+        .btn:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+            --tw-ring-offset-width: 2px;
+        }
+
         .btn-primary {
-            @apply bg-teal-600 text-white focus:ring-teal-500;
+            background-color: #0d9488;
+            color: white;
             background-image: linear-gradient(to right, #0d9488 0%, #14b8a6 51%, #0d9488 100%);
             background-size: 200% auto;
             box-shadow: 0 4px 15px 0 rgba(13, 148, 136, 0.3);
-            transition: all 0.4s cubic-bezier(.25,.8,.25,1);
+            transition: all 0.4s cubic-bezier(.25, .8, .25, 1);
             animation: spotlight-pulse 2.5s infinite 3s;
         }
+
+        .btn-primary:focus {
+            --tw-ring-color: #14b8a6;
+        }
+
+
         .btn-primary:hover {
             background-position: right center;
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 10px 20px rgba(13, 148, 136, 0.4);
         }
+
         .btn-primary:active {
             transform: translateY(1px) scale(0.98);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15) inset;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset;
             background-size: 100%;
         }
+
         .btn-secondary {
-             @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400;
+            background-color: #e5e7eb;
+            color: #1f2937;
         }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-secondary:focus {
+            --tw-ring-color: #9ca3af;
+        }
+
         .btn-ghost {
-            @apply bg-transparent text-gray-600 hover:bg-gray-100 hover:text-teal-600 focus:ring-teal-500;
+            background-color: transparent;
+            color: #4b5563;
         }
+
+        .btn-ghost:hover {
+            background-color: #f3f4f6;
+            color: #0d9488;
+        }
+
+        .btn-ghost:focus {
+            --tw-ring-color: #14b8a6;
+        }
+
         .btn-dark {
-            @apply bg-black text-white hover:bg-gray-800 focus:ring-gray-700 shadow-md;
+            background-color: #000;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: all 0.2s ease-in-out;
         }
-         .btn-dark:hover {
+
+        .btn-dark:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
+
         .btn-dark:active {
             transform: translateY(0);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
         }
+
         .btn-sm {
-            @apply py-1 px-3 text-sm;
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
         }
-        
+
         @keyframes spotlight-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(13, 148, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(13, 148, 136, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+            }
         }
 
         .feature-card {
@@ -94,25 +177,30 @@
             transition: all 0.3s ease;
             border: 1px solid #e5e7eb;
         }
+
         .feature-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
+
         .feature-icon {
             transition: all 0.3s ease;
         }
-         .feature-card:hover .feature-icon {
+
+        .feature-card:hover .feature-icon {
             transform: scale(1.1) rotate(-5deg);
         }
 
         .testimonial-card {
-            background: linear-gradient(135deg, var(--primary), #115e59); /* Teal gradient */
+            background: linear-gradient(135deg, var(--primary), #115e59);
+            /* Teal gradient */
             color: white;
             border-radius: 1.5rem;
             padding: 2.5rem;
             position: relative;
             overflow: hidden;
         }
+
         .testimonial-card::before {
             content: '“';
             position: absolute;
@@ -133,6 +221,7 @@
             transform: translateY(30px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out;
         }
+
         .reveal-on-scroll.is-visible {
             opacity: 1;
             filter: blur(0);
@@ -146,125 +235,195 @@
             -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(229, 231, 235, 0.5);
         }
-        
+
         /* SVG Animation */
         .svg-draw-path {
             stroke-dasharray: 1000;
             stroke-dashoffset: 1000;
             animation: draw 2s ease-in-out 1s forwards;
         }
+
         .svg-fade-in {
             opacity: 0;
             animation: fadeIn 1s ease-in-out forwards;
         }
 
-        @keyframes draw { to { stroke-dashoffset: 0; } }
-        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
 
         .process-flow-arrow {
             position: absolute;
             top: 3rem;
             left: -4.5rem;
             transform: translateY(-50%);
-            color: #cbd5e1; /* slate-300 */
+            color: #cbd5e1;
+            /* slate-300 */
         }
-         @media (max-width: 767px) {
-            .process-flow-arrow { display: none; }
+
+        @media (max-width: 767px) {
+            .process-flow-arrow {
+                display: none;
+            }
         }
-        
+
         /* FAQ Accordion */
-        .faq-question { cursor: pointer; }
+        .faq-question {
+            cursor: pointer;
+        }
+
         .faq-answer {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-in-out;
         }
+
         .faq-item.open .faq-answer {
-            max-height: 200px; /* Adjust as needed */
+            max-height: 200px;
+            /* Adjust as needed */
         }
-         .faq-item.open .faq-arrow { transform: rotate(180deg); }
-        .faq-arrow { transition: transform 0.3s ease; }
-        
+
+        .faq-item.open .faq-arrow {
+            transform: rotate(180deg);
+        }
+
+        .faq-arrow {
+            transition: transform 0.3s ease;
+        }
+
         /* Modal Styles */
-        .modal-overlay { transition: opacity 0.3s ease; }
-        .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
-        
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
         /* Report Modal Step Indicator */
-        .step-indicator { transition: all 0.3s ease; }
-        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+
         /* Live Reports Tab Styling */
-        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+
         .tab-btn.active {
             color: var(--primary);
             border-color: var(--primary);
             background-color: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Voice Recording Animation */
-        .mic-pulse { animation: pulse 1.5s infinite; }
+        .mic-pulse {
+            animation: pulse 1.5s infinite;
+        }
+
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(13, 148, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(13, 148, 136, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+            }
         }
 
         /* Tracking Modal Step Progress */
         .tracking-step {
             transition: all 0.5s ease;
             position: relative;
-            padding-left: 3.5rem; /* Space for icon circle */
+            padding-left: 3.5rem;
+            /* Space for icon circle */
         }
+
         .tracking-step .step-circle {
             transition: all 0.3s ease;
             position: absolute;
             left: 0;
             top: 0;
         }
-        .tracking-step::before { /* The line connecting steps */
+
+        .tracking-step::before {
+            /* The line connecting steps */
             content: '';
             position: absolute;
-            left: 1.25rem; /* center of the 2.5rem (w-10) circle */
-            top: 2.5rem; /* bottom of the circle */
-            height: calc(100% + 2rem); /* 100% of height + h-8 gap */
+            left: 1.25rem;
+            /* center of the 2.5rem (w-10) circle */
+            top: 2.5rem;
+            /* bottom of the circle */
+            height: calc(100% + 2rem);
+            /* 100% of height + h-8 gap */
             width: 2px;
-            background-color: #e5e7eb; /* gray-200 */
+            background-color: #e5e7eb;
+            /* gray-200 */
             transition: background-color 0.5s ease;
         }
-        .tracking-step:last-child::before { display: none; }
+
+        .tracking-step:last-child::before {
+            display: none;
+        }
+
         .tracking-step.completed .step-circle {
             background-color: var(--primary);
             color: white;
         }
-        .tracking-step.completed::before { background-color: var(--primary); }
-        .tracking-step.completed .step-label { color: var(--text-dark); }
+
+        .tracking-step.completed::before {
+            background-color: var(--primary);
+        }
+
+        .tracking-step.completed .step-label {
+            color: var(--text-dark);
+        }
+
         .tracking-step.active .step-circle {
             background-color: var(--primary);
             color: white;
             transform: scale(1.1);
             box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.3);
         }
+
         .tracking-step.active .step-label {
             font-weight: 600;
             color: var(--text-dark);
         }
+
         .report-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .report-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         /* Chatbot Styles */
         #chatbot-window {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
         .chat-bubble-user {
             background-color: var(--primary);
             color: white;
             border-radius: 1.5rem 1.5rem 0.25rem 1.5rem;
         }
+
         .chat-bubble-bot {
             background-color: #e5e7eb;
             color: var(--text-dark);
@@ -282,17 +441,21 @@
             overflow: hidden;
             line-height: 0;
         }
+
         .shape-divider svg {
             position: relative;
             display: block;
             width: calc(100% + 1.3px);
             height: 80px;
         }
+
         .shape-divider .shape-fill {
-            fill: #f1f5f9; /* slate-100 */
+            fill: #f1f5f9;
+            /* slate-100 */
         }
     </style>
 </head>
+
 <body class="text-gray-700 bg-slate-50">
 
     <header class="shadow-sm sticky top-0 z-50">
@@ -304,67 +467,97 @@
                 <h1 class="text-2xl font-bold text-gray-800" data-translate="appName">CivicVoice</h1>
             </a>
             <nav class="hidden md:flex items-center space-x-8 text-gray-800 font-semibold">
-                <a href="#features" class="hover:text-teal-600 transition duration-300" data-translate="navFeatures">Features</a>
-                <a href="#process" class="hover:text-teal-600 transition duration-300" data-translate="navProcess">Process</a>
-                <a href="#live-reports" class="hover:text-teal-600 transition duration-300" data-translate="navReports">Reports</a>
-                <a href="#live-map-dashboard" class="hover:text-teal-600 transition duration-300" data-translate="navDashboard">Dashboard</a>
-                <a href="#rewards" class="hover:text-teal-600 transition duration-300" data-translate="navRewards">Rewards</a>
-                <a href="#community-champions" class="hover:text-teal-600 transition duration-300" data-translate="navChampions">Champions</a>
-                <a href="#impact" class="hover:text-teal-600 transition duration-300" data-translate="navImpact">Impact</a>
+                <a href="#features" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navFeatures">Features</a>
+                <a href="#process" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navProcess">Process</a>
+                <a href="#live-reports" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navReports">Reports</a>
+                <a href="#live-map-dashboard" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navDashboard">Dashboard</a>
+                <a href="#rewards" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navRewards">Rewards</a>
+                <a href="#community-champions" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navChampions">Champions</a>
+                <a href="#impact" class="hover:text-teal-600 transition duration-300"
+                    data-translate="navImpact">Impact</a>
                 <a href="#faq" class="hover:text-teal-600 transition duration-300" data-translate="navFaq">FAQ</a>
             </nav>
             <div class="flex items-center space-x-2 sm:space-x-4">
-                 <div class="relative">
-                    <select id="language-selector" class="appearance-none bg-transparent border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm font-medium text-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500">
+                <div class="relative">
+                    <select id="language-selector"
+                        class="appearance-none bg-transparent border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm font-medium text-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500">
                         <option value="en">English</option>
                         <option value="hi">हिन्दी</option>
                     </select>
-                    <i data-lucide="languages" class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"></i>
+                    <i data-lucide="languages"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"></i>
                 </div>
-                 <a href="#" id="track-report-btn-desktop" class="btn btn-ghost hidden sm:block" data-translate="trackReportNav">Track Report</a>
-                 <button id="citizen-login-btn-desktop" class="btn btn-primary hidden sm:flex items-center justify-center">
+                <a href="#" id="track-report-btn-desktop" class="btn btn-ghost hidden sm:block"
+                    data-translate="trackReportNav">Track Report</a>
+                <button id="citizen-login-btn-desktop"
+                    class="btn btn-primary hidden sm:flex items-center justify-center">
                     <i data-lucide="log-in" class="h-5 w-5 mr-2"></i>
                     <span data-translate="citizenLogin">Login</span>
-                 </button>
+                </button>
             </div>
-             <button id="mobile-menu-button" class="md:hidden text-gray-700">
-                 <i data-lucide="menu"></i>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                <i data-lucide="menu"></i>
             </button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-             <a href="#features" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFeaturesMobile">Features</a>
-             <a href="#process" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navProcessMobile">Process</a>
-             <a href="#live-reports" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navReportsMobile">Reports</a>
-             <a href="#live-map-dashboard" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navDashboardMobile">Dashboard</a>
-             <a href="#rewards" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navRewardsMobile">Rewards</a>
-             <a href="#community-champions" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navChampionsMobile">Champions</a>
-             <a href="#impact" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navImpactMobile">Impact</a>
-             <a href="#testimonials" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navVoicesMobile">Voices</a>
-             <a href="#faq" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFaqMobile">FAQ</a>
-             <div class="border-t mt-4 pt-4 space-y-2">
-                 <button id="track-report-btn-mobile" class="btn btn-ghost w-full text-left" data-translate="trackReportNavMobile">Track Report</button>
-                 <button id="citizen-login-btn-mobile" class="btn btn-primary w-full flex justify-center items-center">
+            <a href="#features" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navFeaturesMobile">Features</a>
+            <a href="#process" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navProcessMobile">Process</a>
+            <a href="#live-reports" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navReportsMobile">Reports</a>
+            <a href="#live-map-dashboard" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navDashboardMobile">Dashboard</a>
+            <a href="#rewards" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navRewardsMobile">Rewards</a>
+            <a href="#community-champions" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navChampionsMobile">Champions</a>
+            <a href="#impact" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navImpactMobile">Impact</a>
+            <a href="#testimonials" class="block py-2 text-gray-700 hover:text-teal-600"
+                data-translate="navVoicesMobile">Voices</a>
+            <a href="#faq" class="block py-2 text-gray-700 hover:text-teal-600" data-translate="navFaqMobile">FAQ</a>
+            <div class="border-t mt-4 pt-4 space-y-2">
+                <button id="track-report-btn-mobile" class="btn btn-ghost w-full text-left"
+                    data-translate="trackReportNavMobile">Track Report</button>
+                <button id="citizen-login-btn-mobile" class="btn btn-primary w-full flex justify-center items-center">
                     <i data-lucide="log-in" class="h-5 w-5 mr-2"></i>
                     <span data-translate="citizenLoginMobile">Citizen Login</span>
-                 </button>
-                 <button id="official-login-btn-mobile" class="btn btn-secondary w-full text-left" data-translate="officialLoginMobile">Official Login</button>
+                </button>
+                <button id="official-login-btn-mobile" class="btn btn-secondary w-full text-left"
+                    data-translate="officialLoginMobile">Official Login</button>
             </div>
         </div>
     </header>
 
     <main>
         <section class="hero-bg overflow-hidden">
-            <div class="container mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col lg:flex-row items-center gap-12">
+            <div
+                class="container mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col lg:flex-row items-center gap-12">
                 <div class="lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start">
-                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight" data-translate="heroTitle">Your Voice, <br><span class="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-600">Our City's Future.</span></h2>
-                    <p class="mt-6 text-lg text-text-light max-w-xl" data-translate="heroSubtitle">Report civic issues, track their resolution, and collaborate with your community to build a better neighborhood. It's civic engagement, simplified.</p>
-                    
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-dark leading-tight"
+                        data-translate="heroTitle">Your Voice, <br><span
+                            class="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-600">Our City's
+                            Future.</span></h2>
+                    <p class="mt-6 text-lg text-text-light max-w-xl" data-translate="heroSubtitle">Report civic issues,
+                        track their resolution, and collaborate with your community to build a better neighborhood. It's
+                        civic engagement, simplified.</p>
+
                     <div class="mt-10 w-full max-w-xl bg-white/60 backdrop-blur-sm p-6 rounded-2xl border shadow-sm">
-                        <label class="block text-sm font-semibold text-text-dark mb-3 text-center" data-translate="locationLabel">Select your location to get started</label>
+                        <label class="block text-sm font-semibold text-text-dark mb-3 text-center"
+                            data-translate="locationLabel">Select your location to get started</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="relative">
-                                <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
-                                <select id="state-select" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition">
+                                <i data-lucide="map-pin"
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+                                <select id="state-select"
+                                    class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition">
                                     <option selected disabled data-translate="selectState">Select State</option>
                                     <option>Andaman and Nicobar Islands</option>
                                     <option>Andhra Pradesh</option>
@@ -405,14 +598,18 @@
                                 </select>
                             </div>
                             <div class="relative">
-                                 <i data-lucide="map" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
-                                <select id="city-select" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition" disabled>
+                                <i data-lucide="map"
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+                                <select id="city-select"
+                                    class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition"
+                                    disabled>
                                     <option selected disabled data-translate="selectCity">Select Area/City</option>
                                 </select>
                             </div>
                         </div>
-                         <button id="make-report-btn" class="btn btn-primary w-full mt-4 text-lg py-3">
-                             <span class="flex items-center justify-center"><i data-lucide="plus-circle" class="mr-2"></i><span data-translate="makeReport">Make a Report</span></span>
+                        <button id="make-report-btn" class="btn btn-primary w-full mt-4 text-lg py-3">
+                            <span class="flex items-center justify-center"><i data-lucide="plus-circle"
+                                    class="mr-2"></i><span data-translate="makeReport">Make a Report</span></span>
                         </button>
                     </div>
                 </div>
@@ -420,39 +617,48 @@
                     <svg viewBox="0 0 500 400" class="w-full max-w-lg h-auto">
                         <defs>
                             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                                 <feMerge>
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
                         </defs>
-                        <path d="M 50 400 Q 150 300 250 350 T 450 300" fill="none" stroke="#e0f2f1" stroke-width="20" stroke-linecap="round" />
-                        <path d="M 20 380 Q 120 280 220 330 T 420 280" fill="none" stroke="#e0f2f1" stroke-width="15" stroke-linecap="round" />
+                        <path d="M 50 400 Q 150 300 250 350 T 450 300" fill="none" stroke="#e0f2f1" stroke-width="20"
+                            stroke-linecap="round" />
+                        <path d="M 20 380 Q 120 280 220 330 T 420 280" fill="none" stroke="#e0f2f1" stroke-width="15"
+                            stroke-linecap="round" />
 
-                        <rect x="200" y="150" width="100" height="150" rx="15" fill="#fff" stroke="#9ca3af" stroke-width="2" class="svg-fade-in" style="animation-delay: 0.5s;"/>
-                        <circle cx="250" cy="165" r="3" fill="#d1d5db"/>
-                        <rect x="215" y="180" width="70" height="10" rx="5" fill="#a7f3d0"/>
-                        <rect x="215" y="200" width="70" height="40" rx="5" fill="#f3f4f6"/>
-                         <rect x="225" y="210" width="50" height="5" rx="2" fill="#d1d5db"/>
-                         <rect x="225" y="220" width="30" height="5" rx="2" fill="#d1d5db"/>
+                        <rect x="200" y="150" width="100" height="150" rx="15" fill="#fff" stroke="#9ca3af"
+                            stroke-width="2" class="svg-fade-in" style="animation-delay: 0.5s;" />
+                        <circle cx="250" cy="165" r="3" fill="#d1d5db" />
+                        <rect x="215" y="180" width="70" height="10" rx="5" fill="#a7f3d0" />
+                        <rect x="215" y="200" width="70" height="40" rx="5" fill="#f3f4f6" />
+                        <rect x="225" y="210" width="50" height="5" rx="2" fill="#d1d5db" />
+                        <rect x="225" y="220" width="30" height="5" rx="2" fill="#d1d5db" />
 
                         <g class="svg-fade-in" style="animation-delay: 1s;">
-                            <circle cx="100" cy="150" r="15" fill="var(--secondary)" filter="url(#glow)"/>
-                            <path d="M96 146 L104 154 M96 154 L104 146" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="100" cy="150" r="15" fill="var(--secondary)" filter="url(#glow)" />
+                            <path d="M96 146 L104 154 M96 154 L104 146" stroke="white" stroke-width="2"
+                                stroke-linecap="round" />
                         </g>
                         <g class="svg-fade-in" style="animation-delay: 1.3s;">
-                            <circle cx="380" cy="100" r="15" fill="var(--accent)" filter="url(#glow)"/>
-                            <rect x="375" y="95" width="10" height="10" fill="white" stroke="var(--accent)" stroke-width="1"/>
+                            <circle cx="380" cy="100" r="15" fill="var(--accent)" filter="url(#glow)" />
+                            <rect x="375" y="95" width="10" height="10" fill="white" stroke="var(--accent)"
+                                stroke-width="1" />
                         </g>
-                         <g class="svg-fade-in" style="animation-delay: 1.6s;">
-                            <circle cx="400" cy="250" r="15" fill="var(--primary)" filter="url(#glow)"/>
-                             <path d="M400 242 L 400 258 M392 250 L 408 250" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <g class="svg-fade-in" style="animation-delay: 1.6s;">
+                            <circle cx="400" cy="250" r="15" fill="var(--primary)" filter="url(#glow)" />
+                            <path d="M400 242 L 400 258 M392 250 L 408 250" stroke="white" stroke-width="2"
+                                stroke-linecap="round" />
                         </g>
 
-                        <path d="M115 155 Q 180 180 200 190" fill="none" stroke="var(--secondary)" stroke-width="2" class="svg-draw-path" />
-                        <path d="M365 105 Q 300 140 295 180" fill="none" stroke="var(--accent)" stroke-width="2" class="svg-draw-path" style="animation-delay: 1.2s;"/>
-                        <path d="M385 245 Q 320 230 298 210" fill="none" stroke="var(--primary)" stroke-width="2" class="svg-draw-path" style="animation-delay: 1.4s;"/>
+                        <path d="M115 155 Q 180 180 200 190" fill="none" stroke="var(--secondary)" stroke-width="2"
+                            class="svg-draw-path" />
+                        <path d="M365 105 Q 300 140 295 180" fill="none" stroke="var(--accent)" stroke-width="2"
+                            class="svg-draw-path" style="animation-delay: 1.2s;" />
+                        <path d="M385 245 Q 320 230 298 210" fill="none" stroke="var(--primary)" stroke-width="2"
+                            class="svg-draw-path" style="animation-delay: 1.4s;" />
                     </svg>
                 </div>
             </div>
@@ -461,195 +667,263 @@
         <section id="features" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="featuresTag">WHY CIVICVOICE?</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="featuresTitle">A Platform Built for Change</h3>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="featuresTag">WHY
+                        CIVICVOICE?</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="featuresTitle">A
+                        Platform Built for Change</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div class="text-left feature-card reveal-on-scroll">
-                         <div class="feature-icon flex items-center justify-center h-16 w-16 bg-teal-100 text-teal-600 rounded-2xl mb-6">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-teal-100 text-teal-600 rounded-2xl mb-6">
                             <i data-lucide="mic" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature1Title">Accessible Reporting</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature1Desc">Snap a photo or simply use your voice in any regional language to submit a report effortlessly.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature1Title">Accessible Reporting
+                        </h4>
+                        <p class="mt-2 text-text-light" data-translate="feature1Desc">Snap a photo or simply use your
+                            voice in any regional language to submit a report effortlessly.</p>
                     </div>
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 100ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-2xl mb-6">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-2xl mb-6">
                             <i data-lucide="gantt-chart-square" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature2Title">Transparent Tracking</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature2Desc">Get real-time updates and notifications as your report moves from acknowledged to resolved.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature2Title">Transparent Tracking
+                        </h4>
+                        <p class="mt-2 text-text-light" data-translate="feature2Desc">Get real-time updates and
+                            notifications as your report moves from acknowledged to resolved.</p>
                     </div>
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 200ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-amber-100 text-amber-600 rounded-2xl mb-6">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-amber-100 text-amber-600 rounded-2xl mb-6">
                             <i data-lucide="users-round" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature3Title">Community Prioritization</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature3Desc">Upvote existing issues to highlight their priority. Let the authorities know what matters most.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature3Title">Community
+                            Prioritization</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature3Desc">Upvote existing issues to
+                            highlight their priority. Let the authorities know what matters most.</p>
                     </div>
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 300ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-2xl mb-6">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-2xl mb-6">
                             <i data-lucide="map-pin" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature4Title">Hyperlocal Focus</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature4Desc">Select your specific state and city to view and report issues that are relevant to your community.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature4Title">Hyperlocal Focus
+                        </h4>
+                        <p class="mt-2 text-text-light" data-translate="feature4Desc">Select your specific state and
+                            city to view and report issues that are relevant to your community.</p>
                     </div>
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 400ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-2xl mb-6">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-2xl mb-6">
                             <i data-lucide="award" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature5Title">Earn Community Rewards</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature5Desc">Get points for valid reports and verifications. Redeem them for cash rewards and climb the community leaderboard.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature5Title">Earn Community
+                            Rewards</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature5Desc">Get points for valid reports and
+                            verifications. Redeem them for cash rewards and climb the community leaderboard.</p>
                     </div>
-                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 500ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-indigo-100 text-indigo-600 rounded-2xl mb-6">
+                    <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 500ms;">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-indigo-100 text-indigo-600 rounded-2xl mb-6">
                             <i data-lucide="shield-check" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature6Title">Secure User Portals</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature6Desc">Separate, secure login portals for citizens and government officials ensure data privacy and integrity.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature6Title">Secure User Portals
+                        </h4>
+                        <p class="mt-2 text-text-light" data-translate="feature6Desc">Separate, secure login portals for
+                            citizens and government officials ensure data privacy and integrity.</p>
                     </div>
                     <div class="text-left feature-card reveal-on-scroll" style="transition-delay: 600ms;">
-                        <div class="feature-icon flex items-center justify-center h-16 w-16 bg-red-100 text-red-600 rounded-2xl mb-6">
+                        <div
+                            class="feature-icon flex items-center justify-center h-16 w-16 bg-red-100 text-red-600 rounded-2xl mb-6">
                             <i data-lucide="shield-alert" class="h-8 w-8"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature7Title">Fake Report Detection</h4>
-                        <p class="mt-2 text-text-light" data-translate="feature7Desc">Our AI-powered system analyzes report patterns to flag potential spam, ensuring that officials focus on genuine issues.</p>
+                        <h4 class="text-xl font-bold text-text-dark" data-translate="feature7Title">Fake Report
+                            Detection</h4>
+                        <p class="mt-2 text-text-light" data-translate="feature7Desc">Our AI-powered system analyzes
+                            report patterns to flag potential spam, ensuring that officials focus on genuine issues.</p>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <section id="process" class="py-24">
             <div class="container mx-auto px-6">
-                 <div class="text-center mb-20">
-                     <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY STEPS</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="processTitle">See It. Report It. Get It Fixed.</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="processSubtitle">We've designed a simple, transparent process to connect you directly with the departments that can make a difference.</p>
+                <div class="text-center mb-20">
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="processTag">3 EASY
+                        STEPS</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="processTitle">See It.
+                        Report It. Get It Fixed.</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="processSubtitle">We've designed a
+                        simple, transparent process to connect you directly with the departments that can make a
+                        difference.</p>
                 </div>
-                
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 text-center">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 text-center">
                     <div class="flex flex-col items-center reveal-on-scroll">
-                        <div class="flex items-center justify-center h-24 w-24 bg-teal-100 text-teal-600 rounded-full border-4 border-white shadow-lg">
+                        <div
+                            class="flex items-center justify-center h-24 w-24 bg-teal-100 text-teal-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="smartphone" class="h-12 w-12"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step1Title">1. Report in Seconds</h4>
-                        <p class="mt-2 text-text-light" data-translate="step1Desc">Our intuitive form guides you to provide all necessary details quickly.</p>
+                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step1Title">1. Report in
+                            Seconds</h4>
+                        <p class="mt-2 text-text-light" data-translate="step1Desc">Our intuitive form guides you to
+                            provide all necessary details quickly.</p>
                     </div>
-                    
+
                     <div class="flex flex-col items-center reveal-on-scroll relative" style="transition-delay: 150ms;">
                         <i data-lucide="arrow-right" class="process-flow-arrow h-10 w-10"></i>
-                         <div class="flex items-center justify-center h-24 w-24 bg-orange-100 text-orange-600 rounded-full border-4 border-white shadow-lg">
+                        <div
+                            class="flex items-center justify-center h-24 w-24 bg-orange-100 text-orange-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="route" class="h-12 w-12"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step2Title">2. Direct to the Right Team</h4>
-                        <p class="mt-2 text-text-light" data-translate="step2Desc">We intelligently route your issue to the correct municipal department, saving time.</p>
+                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step2Title">2. Direct to the
+                            Right Team</h4>
+                        <p class="mt-2 text-text-light" data-translate="step2Desc">We intelligently route your issue to
+                            the correct municipal department, saving time.</p>
                     </div>
-                    
+
                     <div class="flex flex-col items-center reveal-on-scroll relative" style="transition-delay: 300ms;">
-                         <i data-lucide="arrow-right" class="process-flow-arrow h-10 w-10"></i>
-                         <div class="flex items-center justify-center h-24 w-24 bg-amber-100 text-amber-600 rounded-full border-4 border-white shadow-lg">
+                        <i data-lucide="arrow-right" class="process-flow-arrow h-10 w-10"></i>
+                        <div
+                            class="flex items-center justify-center h-24 w-24 bg-amber-100 text-amber-600 rounded-full border-4 border-white shadow-lg">
                             <i data-lucide="check-check" class="h-12 w-12"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step3Title">3. Close the Loop</h4>
-                        <p class="mt-2 text-text-light" data-translate="step3Desc">Get a final notification and photo proof when the issue is resolved.</p>
+                        <h4 class="text-xl font-bold text-text-dark mt-6" data-translate="step3Title">3. Close the Loop
+                        </h4>
+                        <p class="mt-2 text-text-light" data-translate="step3Desc">Get a final notification and photo
+                            proof when the issue is resolved.</p>
                     </div>
                 </div>
 
             </div>
         </section>
 
-       <section id="live-reports" class="py-24 bg-slate-100">
+        <section id="live-reports" class="py-24 bg-slate-100">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="reportsTag">LIVE FEED</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="reportsTitle">Live Community Reports</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="reportsSubtitle">See what's happening in your community in real-time. Your engagement helps prioritize action.</p>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="reportsTag">LIVE
+                        FEED</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="reportsTitle">Live
+                        Community Reports</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="reportsSubtitle">See what's
+                        happening in your community in real-time. Your engagement helps prioritize action.</p>
                 </div>
 
                 <div class="flex justify-center mb-8">
                     <div class="bg-gray-200 p-1 rounded-lg">
-                        <button id="ongoing-tab" class="tab-btn active py-2 px-6 font-semibold rounded-md" data-translate="ongoingIssuesTab">Ongoing Issues</button>
-                        <button id="solved-tab" class="tab-btn py-2 px-6 font-semibold rounded-md" data-translate="solvedIssuesTab">Recently Solved</button>
+                        <button id="ongoing-tab" class="tab-btn active py-2 px-6 font-semibold rounded-md"
+                            data-translate="ongoingIssuesTab">Ongoing Issues</button>
+                        <button id="solved-tab" class="tab-btn py-2 px-6 font-semibold rounded-md"
+                            data-translate="solvedIssuesTab">Recently Solved</button>
                     </div>
                 </div>
 
                 <div id="ongoing-issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" data-report-id="CIVIC-XYZ-123">
-                        <img src="https://images.loksattaimg.com/2022/07/pg-road-pathhole.jpg" alt="Pothole on a city street" class="w-full h-48 object-cover"/>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll"
+                        data-report-id="CIVIC-XYZ-123">
+                        <img src="https://images.loksattaimg.com/2022/07/pg-road-pathhole.jpg"
+                            alt="Pothole on a city street" class="w-full h-48 object-cover" />
                         <div class="p-6">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <span class="text-xs font-semibold bg-orange-100 text-orange-800 px-2 py-1 rounded-full" data-translate="categoryRoads">Roads</span>
-                                    <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="ongoingReport1Title">Large Pothole on Main St.</h4>
+                                    <span
+                                        class="text-xs font-semibold bg-orange-100 text-orange-800 px-2 py-1 rounded-full"
+                                        data-translate="categoryRoads">Roads</span>
+                                    <h4 class="text-lg font-bold mt-2 text-text-dark"
+                                        data-translate="ongoingReport1Title">Large Pothole on Main St.</h4>
                                 </div>
-                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                <button
+                                    class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
                                     <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
                                     <span class="font-bold">128</span>
                                 </button>
                             </div>
-                             <p class="text-sm text-gray-500 mt-2">Reported 2 days ago in <span class="font-medium">South Delhi</span></p>
+                            <p class="text-sm text-gray-500 mt-2">Reported 2 days ago in <span class="font-medium">South
+                                    Delhi</span></p>
                             <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">In Progress</span></p>
+                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">In
+                                        Progress</span></p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                     <div class="bg-orange-500 h-2.5 rounded-full" style="width: 45%"></div>
                                 </div>
                             </div>
                             <div class="mt-4 pt-4 border-t border-gray-100">
                                 <button class="assign-task-btn hidden btn btn-dark w-full">
-                                    <span class="flex items-center justify-center"><i data-lucide="send" class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign Task</span></span>
+                                    <span class="flex items-center justify-center"><i data-lucide="send"
+                                            class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign
+                                            Task</span></span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 150ms;" data-report-id="CIVIC-ABC-456">
-                        <img src="https://th-i.thgim.com/public/migration_catalog/article13274116.ece/alternates/FREE_1200/HY05_P3_LEAD_GARBAGE" alt="Overflowing garbage bin" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll"
+                        style="transition-delay: 150ms;" data-report-id="CIVIC-ABC-456">
+                        <img src="https://th-i.thgim.com/public/migration_catalog/article13274116.ece/alternates/FREE_1200/HY05_P3_LEAD_GARBAGE"
+                            alt="Overflowing garbage bin" class="w-full h-48 object-cover">
                         <div class="p-6">
-                             <div class="flex justify-between items-start">
+                            <div class="flex justify-between items-start">
                                 <div>
-                                    <span class="text-xs font-semibold bg-red-100 text-red-800 px-2 py-1 rounded-full" data-translate="categoryWaste">Waste</span>
-                                    <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="ongoingReport2Title">Garbage Overflow near Park</h4>
+                                    <span class="text-xs font-semibold bg-red-100 text-red-800 px-2 py-1 rounded-full"
+                                        data-translate="categoryWaste">Waste</span>
+                                    <h4 class="text-lg font-bold mt-2 text-text-dark"
+                                        data-translate="ongoingReport2Title">Garbage Overflow near Park</h4>
                                 </div>
-                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                <button
+                                    class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
                                     <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
                                     <span class="font-bold">97</span>
                                 </button>
                             </div>
-                            <p class="text-sm text-gray-500 mt-2">Reported 1 day ago in <span class="font-medium">Mumbai</span></p>
+                            <p class="text-sm text-gray-500 mt-2">Reported 1 day ago in <span
+                                    class="font-medium">Mumbai</span></p>
                             <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">Acknowledged</span></p>
+                                <p class="text-sm font-semibold text-gray-600">Status: <span
+                                        class="status-text">Acknowledged</span></p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                     <div class="bg-red-500 h-2.5 rounded-full" style="width: 20%"></div>
                                 </div>
                             </div>
-                             <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="mt-4 pt-4 border-t border-gray-100">
                                 <button class="assign-task-btn hidden btn btn-dark w-full">
-                                    <span class="flex items-center justify-center"><i data-lucide="send" class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign Task</span></span>
+                                    <span class="flex items-center justify-center"><i data-lucide="send"
+                                            class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign
+                                            Task</span></span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                     <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll" style="transition-delay: 300ms;" data-report-id="CIVIC-MNO-789">
-                        <img src="https://resize.indiatvnews.com/en/resize/newbucket/355_-/2018/07/rains-1-1531764418.jpg" alt="A waterlogged street" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card reveal-on-scroll"
+                        style="transition-delay: 300ms;" data-report-id="CIVIC-MNO-789">
+                        <img src="https://resize.indiatvnews.com/en/resize/newbucket/355_-/2018/07/rains-1-1531764418.jpg"
+                            alt="A waterlogged street" class="w-full h-48 object-cover">
                         <div class="p-6">
-                             <div class="flex justify-between items-start">
+                            <div class="flex justify-between items-start">
                                 <div>
-                                    <span class="text-xs font-semibold bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full">Water</span>
+                                    <span
+                                        class="text-xs font-semibold bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full">Water</span>
                                     <h4 class="text-lg font-bold mt-2 text-text-dark">Water Logging after rain</h4>
                                 </div>
-                                <button class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
+                                <button
+                                    class="flex items-center space-x-2 text-gray-500 hover:text-teal-600 transition">
                                     <i data-lucide="arrow-up-circle" class="h-6 w-6"></i>
                                     <span class="font-bold">54</span>
                                 </button>
                             </div>
-                            <p class="text-sm text-gray-500 mt-2">Reported 8 hours ago in <span class="font-medium">Bengaluru</span></p>
+                            <p class="text-sm text-gray-500 mt-2">Reported 8 hours ago in <span
+                                    class="font-medium">Bengaluru</span></p>
                             <div class="mt-4">
-                                <p class="text-sm font-semibold text-gray-600">Status: <span class="status-text">Reported</span></p>
+                                <p class="text-sm font-semibold text-gray-600">Status: <span
+                                        class="status-text">Reported</span></p>
                                 <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                     <div class="bg-cyan-500 h-2.5 rounded-full" style="width: 10%"></div>
                                 </div>
                             </div>
-                             <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="mt-4 pt-4 border-t border-gray-100">
                                 <button class="assign-task-btn hidden btn btn-dark w-full">
-                                    <span class="flex items-center justify-center"><i data-lucide="send" class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign Task</span></span>
+                                    <span class="flex items-center justify-center"><i data-lucide="send"
+                                            class="h-4 w-4 mr-2"></i><span data-translate="assignTaskButton">Assign
+                                            Task</span></span>
                                 </button>
                             </div>
                         </div>
@@ -657,39 +931,51 @@
                 </div>
 
                 <div id="solved-issues-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
-                        <img src="https://images.indianexpress.com/2023/06/cats-1.jpg" alt="A working streetlight at dusk" class="w-full h-48 object-cover"/>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
+                        <img src="https://images.indianexpress.com/2023/06/cats-1.jpg"
+                            alt="A working streetlight at dusk" class="w-full h-48 object-cover" />
                         <div class="p-6">
-                            <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full" data-translate="categoryInfrastructure">Infrastructure</span>
-                            <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport1Title">Broken Streetlight Fixed</h4>
+                            <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+                                data-translate="categoryInfrastructure">Infrastructure</span>
+                            <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport1Title">Broken
+                                Streetlight Fixed</h4>
                             <div class="mt-4 flex items-center space-x-2">
                                 <i data-lucide="check-circle-2" class="h-6 w-6 text-green-500"></i>
-                                <p class="font-semibold text-green-600" data-translate="statusResolved">Resolved 4 days ago</p>
+                                <p class="font-semibold text-green-600" data-translate="statusResolved">Resolved 4 days
+                                    ago</p>
                             </div>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden report-card">
-                        <img src="https://media.istockphoto.com/id/1257926761/photo/curved-path.jpg?s=612x612&w=0&k=20&c=GC4J1QDvCrVA2O7jX6rao41nBz_cLKKjdPakZCyZRKM=" alt="A clean park pathway" class="w-full h-48 object-cover"/>
+                        <img src="https://media.istockphoto.com/id/1257926761/photo/curved-path.jpg?s=612x612&w=0&k=20&c=GC4J1QDvCrVA2O7jX6rao41nBz_cLKKjdPakZCyZRKM="
+                            alt="A clean park pathway" class="w-full h-48 object-cover" />
                         <div class="p-6">
-                            <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full" data-translate="categoryParks">Parks</span>
-                            <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport2Title">Park pathway cleaned</h4>
+                            <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full"
+                                data-translate="categoryParks">Parks</span>
+                            <h4 class="text-lg font-bold mt-2 text-text-dark" data-translate="solvedReport2Title">Park
+                                pathway cleaned</h4>
                             <div class="mt-4 flex items-center space-x-2">
                                 <i data-lucide="check-circle-2" class="h-6 w-6 text-green-500"></i>
-                                <p class="font-semibold text-green-600" data-translate="statusResolved2">Resolved 1 week ago</p>
+                                <p class="font-semibold text-green-600" data-translate="statusResolved2">Resolved 1 week
+                                    ago</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <!-- MERGED LIVE MAP & HEATMAP SECTION -->
         <section id="live-map-dashboard" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="liveMapTag">FOR OFFICIALS</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="liveMapTitle">Live Issue Dashboard & Analytics</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="liveMapSubtitle">Visualize issue hotspots with a real-time map. Toggle between pins and a heatmap view for powerful, data-driven insights.</p>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="liveMapTag">FOR
+                        OFFICIALS</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="liveMapTitle">Live
+                        Issue Dashboard & Analytics</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="liveMapSubtitle">Visualize issue
+                        hotspots with a real-time map. Toggle between pins and a heatmap view for powerful, data-driven
+                        insights.</p>
                 </div>
 
                 <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border mb-8 reveal-on-scroll">
@@ -697,8 +983,10 @@
                         <!-- Filters -->
                         <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label for="map-filter-category" class="text-sm font-medium text-gray-700" data-translate="filterCategory">Category</label>
-                                <select id="map-filter-category" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                                <label for="map-filter-category" class="text-sm font-medium text-gray-700"
+                                    data-translate="filterCategory">Category</label>
+                                <select id="map-filter-category"
+                                    class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
                                     <option value="all">All</option>
                                     <option value="Pothole">Pothole</option>
                                     <option value="Garbage">Garbage</option>
@@ -707,8 +995,10 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="map-filter-status" class="text-sm font-medium text-gray-700" data-translate="filterStatus">Status</label>
-                                <select id="map-filter-status" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                                <label for="map-filter-status" class="text-sm font-medium text-gray-700"
+                                    data-translate="filterStatus">Status</label>
+                                <select id="map-filter-status"
+                                    class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
                                     <option value="all">All</option>
                                     <option value="Reported">Reported</option>
                                     <option value="Acknowledged">Acknowledged</option>
@@ -719,32 +1009,36 @@
                         </div>
 
                         <!-- Toggles -->
-                        <div class="lg:col-span-1 flex flex-row lg:flex-col justify-start items-start lg:items-center pt-4 lg:pt-0">
-                             <label class="flex items-center space-x-2 cursor-pointer mr-4 lg:mr-0 lg:mb-2">
-                                <input type="checkbox" id="toggle-pins" class="form-checkbox h-5 w-5 text-teal-600 rounded" checked>
+                        <div
+                            class="lg:col-span-1 flex flex-row lg:flex-col justify-start items-start lg:items-center pt-4 lg:pt-0">
+                            <label class="flex items-center space-x-2 cursor-pointer mr-4 lg:mr-0 lg:mb-2">
+                                <input type="checkbox" id="toggle-pins"
+                                    class="form-checkbox h-5 w-5 text-teal-600 rounded" checked>
                                 <span class="text-sm font-medium" data-translate="togglePins">Show Pins</span>
                             </label>
                             <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" id="toggle-heatmap" class="form-checkbox h-5 w-5 text-teal-600 rounded">
+                                <input type="checkbox" id="toggle-heatmap"
+                                    class="form-checkbox h-5 w-5 text-teal-600 rounded">
                                 <span class="text-sm font-medium" data-translate="toggleHeatmap">Show Heatmap</span>
                             </label>
                         </div>
 
                         <!-- Stats -->
-                        <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2 text-center pt-4 md:pt-0 border-t md:border-t-0 md:border-l pl-0 md:pl-4 mt-4 md:mt-0">
+                        <div
+                            class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2 text-center pt-4 md:pt-0 border-t md:border-t-0 md:border-l pl-0 md:pl-4 mt-4 md:mt-0">
                             <div class="p-2">
                                 <p id="stat-total" class="text-2xl font-bold text-teal-600">0</p>
                                 <p class="text-xs text-gray-500" data-translate="statTotal">Total Reports</p>
                             </div>
-                             <div class="p-2">
+                            <div class="p-2">
                                 <p id="stat-resolved" class="text-2xl font-bold text-green-600">0</p>
                                 <p class="text-xs text-gray-500" data-translate="statResolved">Resolved</p>
                             </div>
-                             <div class="p-2">
+                            <div class="p-2">
                                 <p id="stat-in-progress" class="text-2xl font-bold text-orange-600">0</p>
                                 <p class="text-xs text-gray-500" data-translate="statInProgress">In Progress</p>
                             </div>
-                             <div class="p-2">
+                            <div class="p-2">
                                 <p id="stat-reported" class="text-2xl font-bold text-red-600">0</p>
                                 <p class="text-xs text-gray-500" data-translate="statReported">Newly Reported</p>
                             </div>
@@ -759,19 +1053,25 @@
         <section id="agent-dashboard" class="py-24 bg-slate-50">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="dashboardTag">FOR DEPARTMENT HEADS</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="dashboardTitle">Field Agent Management</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="dashboardSubtitle">Track your team's performance, manage assignments, and optimize workflow in real-time.</p>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="dashboardTag">FOR
+                        DEPARTMENT HEADS</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="dashboardTitle">Field
+                        Agent Management</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="dashboardSubtitle">Track your
+                        team's performance, manage assignments, and optimize workflow in real-time.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Agent Card 1 -->
                     <div class="bg-white rounded-xl shadow-lg p-6 reveal-on-scroll">
                         <div class="flex items-center mb-4">
-                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=RK" class="rounded-full" alt="Agent Avatar">
+                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=RK" class="rounded-full"
+                                alt="Agent Avatar">
                             <div class="ml-4">
                                 <p class="font-bold text-lg text-text-dark">Ramesh Kumar</p>
-                                <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">On Duty</span>
+                                <span
+                                    class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">On
+                                    Duty</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-center my-4">
@@ -793,13 +1093,16 @@
                             </ul>
                         </div>
                     </div>
-                     <!-- Agent Card 2 -->
+                    <!-- Agent Card 2 -->
                     <div class="bg-white rounded-xl shadow-lg p-6 reveal-on-scroll" style="transition-delay:150ms;">
                         <div class="flex items-center mb-4">
-                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=SS" class="rounded-full" alt="Agent Avatar">
+                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=SS" class="rounded-full"
+                                alt="Agent Avatar">
                             <div class="ml-4">
                                 <p class="font-bold text-lg text-text-dark">Sunita Sharma</p>
-                                <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">On Duty</span>
+                                <span
+                                    class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">On
+                                    Duty</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-center my-4">
@@ -820,13 +1123,15 @@
                             </ul>
                         </div>
                     </div>
-                     <!-- Agent Card 3 -->
+                    <!-- Agent Card 3 -->
                     <div class="bg-white rounded-xl shadow-lg p-6 reveal-on-scroll" style="transition-delay:300ms;">
                         <div class="flex items-center mb-4">
-                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=AS" class="rounded-full" alt="Agent Avatar">
+                            <img src="https://placehold.co/60x60/1e293b/ffffff?text=AS" class="rounded-full"
+                                alt="Agent Avatar">
                             <div class="ml-4">
                                 <p class="font-bold text-lg text-text-dark">Anil Singh</p>
-                                <span class="text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-1 rounded-full">Idle</span>
+                                <span
+                                    class="text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-1 rounded-full">Idle</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-center my-4">
@@ -849,49 +1154,66 @@
         </section>
 
         <div class="shape-divider">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
+                preserveAspectRatio="none">
+                <path
+                    d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                    class="shape-fill"></path>
             </svg>
         </div>
         <section id="rewards" class="py-24 bg-slate-100">
             <div class="container mx-auto px-6">
                 <div class="grid lg:grid-cols-2 gap-16 items-center">
                     <div class="reveal-on-scroll text-center lg:text-left">
-                        <span class="text-teal-600 font-semibold tracking-wider" data-translate="rewardsTag">BECOME A CHAMPION</span>
-                        <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="rewardsTitle">Earn Rewards for Your Contribution</h3>
-                        <p class="mt-4 text-text-light text-lg" data-translate="rewardsSubtitle">We believe active citizenship should be recognized. Our rewards system encourages you to make a tangible impact on your community.</p>
+                        <span class="text-teal-600 font-semibold tracking-wider" data-translate="rewardsTag">BECOME A
+                            CHAMPION</span>
+                        <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="rewardsTitle">
+                            Earn Rewards for Your Contribution</h3>
+                        <p class="mt-4 text-text-light text-lg" data-translate="rewardsSubtitle">We believe active
+                            citizenship should be recognized. Our rewards system encourages you to make a tangible
+                            impact on your community.</p>
                         <div class="mt-8 space-y-6">
                             <div class="flex items-start">
-                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-teal-100 text-teal-600 rounded-lg">
+                                <div
+                                    class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-teal-100 text-teal-600 rounded-lg">
                                     <i data-lucide="plus-circle"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <h4 class="text-lg font-bold" data-translate="reward1Title">Report & Earn Points</h4>
-                                    <p class="text-text-light" data-translate="reward1Desc">Receive points for every valid issue you report that gets acknowledged by the authorities.</p>
+                                    <h4 class="text-lg font-bold" data-translate="reward1Title">Report & Earn Points
+                                    </h4>
+                                    <p class="text-text-light" data-translate="reward1Desc">Receive points for every
+                                        valid issue you report that gets acknowledged by the authorities.</p>
                                 </div>
                             </div>
                             <div class="flex items-start">
-                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
+                                <div
+                                    class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg">
                                     <i data-lucide="check-circle"></i>
                                 </div>
                                 <div class="ml-4">
                                     <h4 class="text-lg font-bold" data-translate="reward2Title">Verify Resolutions</h4>
-                                    <p class="text-text-light" data-translate="reward2Desc">Help us confirm when an issue is properly resolved and earn bonus points for your verification.</p>
+                                    <p class="text-text-light" data-translate="reward2Desc">Help us confirm when an
+                                        issue is properly resolved and earn bonus points for your verification.</p>
                                 </div>
                             </div>
                             <div class="flex items-start">
-                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-amber-100 text-amber-600 rounded-lg">
+                                <div
+                                    class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-amber-100 text-amber-600 rounded-lg">
                                     <i data-lucide="gift"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <h4 class="text-lg font-bold" data-translate="reward3Title">Redeem for Cash Rewards</h4>
-                                    <p class="text-text-light" data-translate="reward3Desc">Accumulate points and redeem them for exciting cash rewards, vouchers, and other perks.</p>
+                                    <h4 class="text-lg font-bold" data-translate="reward3Title">Redeem for Cash Rewards
+                                    </h4>
+                                    <p class="text-text-light" data-translate="reward3Desc">Accumulate points and redeem
+                                        them for exciting cash rewards, vouchers, and other perks.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="hidden lg:flex items-center justify-center reveal-on-scroll" style="transition-delay: 150ms;">
-                        <img src="https://placehold.co/500x500/f0fdfa/0d9488?text=Rewards+Trophy" alt="Illustration of a trophy and rewards" class="rounded-2xl shadow-xl">
+                    <div class="hidden lg:flex items-center justify-center reveal-on-scroll"
+                        style="transition-delay: 150ms;">
+                        <img src="https://placehold.co/500x500/f0fdfa/0d9488?text=Rewards+Trophy"
+                            alt="Illustration of a trophy and rewards" class="rounded-2xl shadow-xl">
                     </div>
                 </div>
             </div>
@@ -901,116 +1223,141 @@
         <section id="community-champions" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="championsTag">GAMIFICATION</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="championsTitle">Become a Community Champion</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="championsSubtitle">Earn badges for your contributions and climb the leaderboard to become a recognized voice in your community.</p>
+                    <span class="text-teal-600 font-semibold tracking-wider"
+                        data-translate="championsTag">GAMIFICATION</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="championsTitle">
+                        Become a Community Champion</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto" data-translate="championsSubtitle">Earn badges for
+                        your contributions and climb the leaderboard to become a recognized voice in your community.</p>
                 </div>
                 <div class="grid lg:grid-cols-2 gap-12 items-start">
                     <div>
-                        <h4 class="text-2xl font-bold text-text-dark mb-6 text-center lg:text-left" data-translate="badgesTitle">Achievement Badges</h4>
+                        <h4 class="text-2xl font-bold text-text-dark mb-6 text-center lg:text-left"
+                            data-translate="badgesTitle">Achievement Badges</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll">
-                                <div class="flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-full mx-auto mb-4">
+                            <div
+                                class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll">
+                                <div
+                                    class="flex items-center justify-center h-16 w-16 bg-orange-100 text-orange-600 rounded-full mx-auto mb-4">
                                     <i data-lucide="wrench" class="h-8 w-8"></i>
                                 </div>
                                 <h5 class="font-bold text-text-dark" data-translate="badge1Title">Pothole Pioneer</h5>
-                                <p class="text-sm text-text-light mt-1" data-translate="badge1Desc">Report 10 road-related issues.</p>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge1Desc">Report 10
+                                    road-related issues.</p>
                             </div>
-                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll" style="transition-delay: 100ms;">
-                                <div class="flex items-center justify-center h-16 w-16 bg-green-100 text-green-600 rounded-full mx-auto mb-4">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll"
+                                style="transition-delay: 100ms;">
+                                <div
+                                    class="flex items-center justify-center h-16 w-16 bg-green-100 text-green-600 rounded-full mx-auto mb-4">
                                     <i data-lucide="check-check" class="h-8 w-8"></i>
                                 </div>
-                                <h5 class="font-bold text-text-dark" data-translate="badge2Title">Community Verifier</h5>
-                                <p class="text-sm text-text-light mt-1" data-translate="badge2Desc">Confirm 5 resolved tasks.</p>
+                                <h5 class="font-bold text-text-dark" data-translate="badge2Title">Community Verifier
+                                </h5>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge2Desc">Confirm 5 resolved
+                                    tasks.</p>
                             </div>
-                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll" style="transition-delay: 200ms;">
-                                <div class="flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-full mx-auto mb-4">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll"
+                                style="transition-delay: 200ms;">
+                                <div
+                                    class="flex items-center justify-center h-16 w-16 bg-sky-100 text-sky-600 rounded-full mx-auto mb-4">
                                     <i data-lucide="sparkles" class="h-8 w-8"></i>
                                 </div>
                                 <h5 class="font-bold text-text-dark" data-translate="badge3Title">Civic Starter</h5>
-                                <p class="text-sm text-text-light mt-1" data-translate="badge3Desc">Submit your first valid report.</p>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge3Desc">Submit your first
+                                    valid report.</p>
                             </div>
-                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll" style="transition-delay: 300ms;">
-                                <div class="flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-full mx-auto mb-4">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center reveal-on-scroll"
+                                style="transition-delay: 300ms;">
+                                <div
+                                    class="flex items-center justify-center h-16 w-16 bg-rose-100 text-rose-600 rounded-full mx-auto mb-4">
                                     <i data-lucide="heart" class="h-8 w-8"></i>
                                 </div>
                                 <h5 class="font-bold text-text-dark" data-translate="badge4Title">Neighborhood Hero</h5>
-                                <p class="text-sm text-text-light mt-1" data-translate="badge4Desc">Reach 1000 community points.</p>
+                                <p class="text-sm text-text-light mt-1" data-translate="badge4Desc">Reach 1000 community
+                                    points.</p>
                             </div>
                         </div>
                     </div>
                     <div>
-                         <h4 class="text-2xl font-bold text-text-dark mb-6 text-center lg:text-left" data-translate="leaderboardTitle">Community Leaderboard</h4>
-                         <div class="bg-white rounded-xl shadow-lg border reveal-on-scroll" style="transition-delay: 150ms;">
-                             <ul class="divide-y divide-slate-200">
-                                 <li class="p-4 flex items-center justify-between">
-                                     <div class="flex items-center">
-                                         <span class="font-bold text-lg text-amber-500 mr-4">1.</span>
-                                         <img src="https://placehold.co/40x40/f59e0b/ffffff?text=A" class="rounded-full" alt="User Avatar">
-                                         <div class="ml-3">
-                                             <p class="font-semibold text-text-dark">Aditya</p>
-                                             <p class="text-sm text-text-light">Level 12 - Elite Citizen</p>
-                                         </div>
-                                     </div>
-                                     <span class="font-bold text-teal-600">5,430 pts</span>
-                                 </li>
-                                 <li class="p-4 flex items-center justify-between bg-slate-50">
-                                     <div class="flex items-center">
-                                         <span class="font-bold text-lg text-slate-400 mr-4">2.</span>
-                                         <img src="https://placehold.co/40x40/64748b/ffffff?text=Y" class="rounded-full" alt="User Avatar">
-                                         <div class="ml-3">
-                                             <p class="font-semibold text-text-dark">Yagik</p>
-                                             <p class="text-sm text-text-light">Level 11 - Super Citizen</p>
-                                         </div>
-                                     </div>
-                                     <span class="font-bold text-teal-600">4,980 pts</span>
-                                 </li>
-                                  <li class="p-4 flex items-center justify-between">
-                                     <div class="flex items-center">
-                                         <span class="font-bold text-lg text-orange-700 mr-4">3.</span>
-                                         <img src="https://placehold.co/40x40/c2410c/ffffff?text=A" class="rounded-full" alt="User Avatar">
-                                         <div class="ml-3">
-                                             <p class="font-semibold text-text-dark">Aryaman</p>
-                                             <p class="text-sm text-text-light">Level 10 - Active Citizen</p>
-                                         </div>
-                                     </div>
-                                     <span class="font-bold text-teal-600">4,550 pts</span>
-                                 </li>
-                                 <li class="p-4 flex items-center justify-between bg-slate-50">
-                                     <div class="flex items-center">
-                                         <span class="font-semibold text-text-light mr-4">4.</span>
-                                         <img src="https://placehold.co/40x40/475569/ffffff?text=N" class="rounded-full" alt="User Avatar">
-                                         <div class="ml-3">
-                                             <p class="font-semibold text-text-dark">Nishank</p>
-                                             <p class="text-sm text-text-light">Level 9 - Engaged Citizen</p>
-                                         </div>
-                                     </div>
-                                     <span class="font-bold text-teal-600">4,210 pts</span>
-                                 </li>
-                                 <li class="p-4 flex items-center justify-between">
-                                     <div class="flex items-center">
-                                         <span class="font-semibold text-text-light mr-4">5.</span>
-                                         <img src="https://placehold.co/40x40/475569/ffffff?text=D" class="rounded-full" alt="User Avatar">
-                                         <div class="ml-3">
-                                             <p class="font-semibold text-text-dark">Divita</p>
-                                             <p class="text-sm text-text-light">Level 8 - Active Contributor</p>
-                                         </div>
-                                     </div>
-                                     <span class="font-bold text-teal-600">3,950 pts</span>
-                                 </li>
-                                 <li class="p-4 flex items-center justify-between bg-slate-50">
-                                     <div class="flex items-center">
-                                         <span class="font-semibold text-text-light mr-4">6.</span>
-                                         <img src="https://placehold.co/40x40/475569/ffffff?text=A" class="rounded-full" alt="User Avatar">
-                                         <div class="ml-3">
-                                             <p class="font-semibold text-text-dark">Atharva</p>
-                                             <p class="text-sm text-text-light">Level 8 - Active Contributor</p>
-                                         </div>
-                                     </div>
-                                     <span class="font-bold text-teal-600">3,720 pts</span>
-                                 </li>
-                             </ul>
-                         </div>
+                        <h4 class="text-2xl font-bold text-text-dark mb-6 text-center lg:text-left"
+                            data-translate="leaderboardTitle">Community Leaderboard</h4>
+                        <div class="bg-white rounded-xl shadow-lg border reveal-on-scroll"
+                            style="transition-delay: 150ms;">
+                            <ul class="divide-y divide-slate-200">
+                                <li class="p-4 flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="font-bold text-lg text-amber-500 mr-4">1.</span>
+                                        <img src="https://placehold.co/40x40/f59e0b/ffffff?text=A" class="rounded-full"
+                                            alt="User Avatar">
+                                        <div class="ml-3">
+                                            <p class="font-semibold text-text-dark">Aditya</p>
+                                            <p class="text-sm text-text-light">Level 12 - Elite Citizen</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-teal-600">5,430 pts</span>
+                                </li>
+                                <li class="p-4 flex items-center justify-between bg-slate-50">
+                                    <div class="flex items-center">
+                                        <span class="font-bold text-lg text-slate-400 mr-4">2.</span>
+                                        <img src="https://placehold.co/40x40/64748b/ffffff?text=Y" class="rounded-full"
+                                            alt="User Avatar">
+                                        <div class="ml-3">
+                                            <p class="font-semibold text-text-dark">Yagik</p>
+                                            <p class="text-sm text-text-light">Level 11 - Super Citizen</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-teal-600">4,980 pts</span>
+                                </li>
+                                <li class="p-4 flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="font-bold text-lg text-orange-700 mr-4">3.</span>
+                                        <img src="https://placehold.co/40x40/c2410c/ffffff?text=A" class="rounded-full"
+                                            alt="User Avatar">
+                                        <div class="ml-3">
+                                            <p class="font-semibold text-text-dark">Aryaman</p>
+                                            <p class="text-sm text-text-light">Level 10 - Active Citizen</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-teal-600">4,550 pts</span>
+                                </li>
+                                <li class="p-4 flex items-center justify-between bg-slate-50">
+                                    <div class="flex items-center">
+                                        <span class="font-semibold text-text-light mr-4">4.</span>
+                                        <img src="https://placehold.co/40x40/475569/ffffff?text=N" class="rounded-full"
+                                            alt="User Avatar">
+                                        <div class="ml-3">
+                                            <p class="font-semibold text-text-dark">Nishank</p>
+                                            <p class="text-sm text-text-light">Level 9 - Engaged Citizen</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-teal-600">4,210 pts</span>
+                                </li>
+                                <li class="p-4 flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="font-semibold text-text-light mr-4">5.</span>
+                                        <img src="https://placehold.co/40x40/475569/ffffff?text=D" class="rounded-full"
+                                            alt="User Avatar">
+                                        <div class="ml-3">
+                                            <p class="font-semibold text-text-dark">Divita</p>
+                                            <p class="text-sm text-text-light">Level 8 - Active Contributor</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-teal-600">3,950 pts</span>
+                                </li>
+                                <li class="p-4 flex items-center justify-between bg-slate-50">
+                                    <div class="flex items-center">
+                                        <span class="font-semibold text-text-light mr-4">6.</span>
+                                        <img src="https://placehold.co/40x40/475569/ffffff?text=A" class="rounded-full"
+                                            alt="User Avatar">
+                                        <div class="ml-3">
+                                            <p class="font-semibold text-text-dark">Atharva</p>
+                                            <p class="text-sm text-text-light">Level 8 - Active Contributor</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-teal-600">3,720 pts</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1019,14 +1366,17 @@
         <section id="redeem-rewards" class="py-24">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="redeemTitle">Redeem Your Points</h3>
-                    <p class="mt-4 text-text-light text-lg max-w-2xl mx-auto" data-translate="redeemSubtitle">Turn your community efforts into tangible rewards. Here’s what you can get with your points.</p>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="redeemTitle">Redeem
+                        Your Points</h3>
+                    <p class="mt-4 text-text-light text-lg max-w-2xl mx-auto" data-translate="redeemSubtitle">Turn your
+                        community efforts into tangible rewards. Here’s what you can get with your points.</p>
                 </div>
 
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-2xl shadow-lg border text-center mb-8 reveal-on-scroll">
                         <p class="text-lg text-text-light" data-translate="yourBalance">Your Balance</p>
-                        <p class="text-5xl font-extrabold text-teal-600 mt-2">1250 <span class="text-3xl text-gray-500" data-translate="points">Points</span></p>
+                        <p class="text-5xl font-extrabold text-teal-600 mt-2">1250 <span class="text-3xl text-gray-500"
+                                data-translate="points">Points</span></p>
                     </div>
 
                     <div class="text-center reveal-on-scroll" style="transition-delay: 150ms;">
@@ -1039,106 +1389,137 @@
         </section>
 
         <section id="impact" class="py-24 bg-white">
-             <div class="container mx-auto px-6 text-center">
-                 <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="impactTitle">Our Community's Scoreboard</h3>
-                 <p class="mt-3 max-w-2xl mx-auto text-text-light" data-translate="impactSubtitle">Small actions, when multiplied by thousands of people, can transform a city.</p>
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="impactTitle">Our Community's
+                    Scoreboard</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-text-light" data-translate="impactSubtitle">Small actions, when
+                    multiplied by thousands of people, can transform a city.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                     <div class="bg-slate-50 p-8 rounded-2xl border">
-                         <i data-lucide="check-badge" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
-                         <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
-                         <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
+                    <div class="bg-slate-50 p-8 rounded-2xl border">
+                        <i data-lucide="check-badge" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
+                        <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
+                        <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
                     </div>
-                     <div class="bg-slate-50 p-8 rounded-2xl border">
-                         <i data-lucide="users" class="h-12 w-12 text-orange-500 mx-auto mb-4"></i>
-                         <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
-                         <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
+                    <div class="bg-slate-50 p-8 rounded-2xl border">
+                        <i data-lucide="users" class="h-12 w-12 text-orange-500 mx-auto mb-4"></i>
+                        <p class="text-5xl font-extrabold text-orange-600">25,000+</p>
+                        <p class="text-text-light font-semibold mt-2" data-translate="impact2">Active Citizens</p>
                     </div>
-                     <div class="bg-slate-50 p-8 rounded-2xl border">
-                         <i data-lucide="star" class="h-12 w-12 text-amber-500 mx-auto mb-4 fill-amber-400"></i>
-                         <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
-                         <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
+                    <div class="bg-slate-50 p-8 rounded-2xl border">
+                        <i data-lucide="star" class="h-12 w-12 text-amber-500 mx-auto mb-4 fill-amber-400"></i>
+                        <p class="text-5xl font-extrabold text-amber-600">4.9 <span class="text-3xl">/ 5</span></p>
+                        <p class="text-text-light font-semibold mt-2" data-translate="impact3">Average Rating</p>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <section id="testimonials" class="py-24 bg-slate-100">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="testimonialsTag">REAL STORIES, REAL IMPACT</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="testimonialsTitle">What Our Users Are Saying</h3>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="testimonialsTag">REAL
+                        STORIES, REAL IMPACT</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="testimonialsTitle">
+                        What Our Users Are Saying</h3>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="testimonial-card reveal-on-scroll">
-                        <p class="text-lg font-medium relative z-10" data-translate="testimonial1">"The overflowing garbage bin near my society was a constant problem. Reported it via CivicVoice, and the municipal team cleared it the very next day. This platform actually works!"</p>
+                        <p class="text-lg font-medium relative z-10" data-translate="testimonial1">"The overflowing
+                            garbage bin near my society was a constant problem. Reported it via CivicVoice, and the
+                            municipal team cleared it the very next day. This platform actually works!"</p>
                         <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Aditya Jha</p>
-                            <p class="text-sm text-teal-200" data-translate="testimonial1Location">Mayur Vihar Resident, Delhi</p>
+                            <p class="text-sm text-teal-200" data-translate="testimonial1Location">Mayur Vihar Resident,
+                                Delhi</p>
                         </div>
                     </div>
-                     <div class="testimonial-card reveal-on-scroll" style="transition-delay: 150ms;">
-                        <p class="text-lg font-medium relative z-10" data-translate="testimonial2">"As a municipal officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is invaluable. It helps us prioritize and resolve citizen grievances faster than ever."</p>
-                         <div class="mt-6 relative z-10">
+                    <div class="testimonial-card reveal-on-scroll" style="transition-delay: 150ms;">
+                        <p class="text-lg font-medium relative z-10" data-translate="testimonial2">"As a municipal
+                            officer, CivicVoice streamlines our workflow. The geotagged, photographic evidence is
+                            invaluable. It helps us prioritize and resolve citizen grievances faster than ever."</p>
+                        <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Yagik Garg</p>
-                            <p class="text-sm text-teal-200" data-translate="testimonial2Role">Municipal Corporation Official</p>
+                            <p class="text-sm text-teal-200" data-translate="testimonial2Role">Municipal Corporation
+                                Official</p>
                         </div>
                     </div>
-                     <div class="testimonial-card reveal-on-scroll" style="transition-delay: 300ms;">
-                        <p class="text-lg font-medium relative z-10" data-translate="testimonial3">"It's empowering to see my report getting upvoted by neighbours. We managed to get a new streetlight installed in our lane by showing collective demand through the app."</p>
-                         <div class="mt-6 relative z-10">
+                    <div class="testimonial-card reveal-on-scroll" style="transition-delay: 300ms;">
+                        <p class="text-lg font-medium relative z-10" data-translate="testimonial3">"It's empowering to
+                            see my report getting upvoted by neighbours. We managed to get a new streetlight installed
+                            in our lane by showing collective demand through the app."</p>
+                        <div class="mt-6 relative z-10">
                             <p class="font-bold text-white">Aryaman Prasar</p>
-                            <p class="text-sm text-teal-200" data-translate="testimonial3Location">Dwarka Community Member</p>
+                            <p class="text-sm text-teal-200" data-translate="testimonial3Location">Dwarka Community
+                                Member</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <section id="faq" class="py-24 bg-white">
             <div class="container mx-auto px-6 max-w-4xl">
                 <div class="text-center mb-16">
-                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="faqTag">HAVE QUESTIONS?</span>
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="faqTitle">Frequently Asked Questions</h3>
+                    <span class="text-teal-600 font-semibold tracking-wider" data-translate="faqTag">HAVE
+                        QUESTIONS?</span>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark mt-2" data-translate="faqTitle">Frequently
+                        Asked Questions</h3>
                 </div>
                 <div class="space-y-4">
                     <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll">
                         <div class="faq-question flex justify-between items-center p-6">
-                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq1Question">What kind of issues can I report?</h4>
+                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq1Question">What kind of
+                                issues can I report?</h4>
                             <i data-lucide="chevron-down" class="faq-arrow text-gray-500"></i>
                         </div>
                         <div class="faq-answer px-6 pb-4 text-text-light">
-                            <p data-translate="faq1Answer">You can report a wide range of non-emergency issues such as potholes, broken streetlights, garbage overflow, water logging, damaged public property, and more. If you're unsure, it's always best to report it.</p>
+                            <p data-translate="faq1Answer">You can report a wide range of non-emergency issues such as
+                                potholes, broken streetlights, garbage overflow, water logging, damaged public property,
+                                and more. If you're unsure, it's always best to report it.</p>
                         </div>
                     </div>
-                    <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll" style="transition-delay: 100ms;">
+                    <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll"
+                        style="transition-delay: 100ms;">
                         <div class="faq-question flex justify-between items-center p-6">
-                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq2Question">Is my data private?</h4>
+                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq2Question">Is my data
+                                private?</h4>
                             <i data-lucide="chevron-down" class="faq-arrow text-gray-500"></i>
                         </div>
                         <div class="faq-answer px-6 pb-4 text-text-light">
-                            <p data-translate="faq2Answer">Yes, absolutely. While the location and description of the issue are public, your personal information (name, contact details) is kept confidential and is only shared with the relevant municipal authorities for communication regarding your report.</p>
+                            <p data-translate="faq2Answer">Yes, absolutely. While the location and description of the
+                                issue are public, your personal information (name, contact details) is kept confidential
+                                and is only shared with the relevant municipal authorities for communication regarding
+                                your report.</p>
                         </div>
                     </div>
-                    <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll" style="transition-delay: 200ms;">
+                    <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 reveal-on-scroll"
+                        style="transition-delay: 200ms;">
                         <div class="faq-question flex justify-between items-center p-6">
-                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq3Question">Is the service available in my city?</h4>
+                            <h4 class="font-semibold text-lg text-text-dark" data-translate="faq3Question">Is the
+                                service available in my city?</h4>
                             <i data-lucide="chevron-down" class="faq-arrow text-gray-500"></i>
                         </div>
                         <div class="faq-answer px-6 pb-4 text-text-light">
-                            <p data-translate="faq3Answer">We are actively expanding our network of partner municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up to be notified when we launch in your city!</p>
+                            <p data-translate="faq3Answer">We are actively expanding our network of partner
+                                municipalities. Currently, we are operational in Delhi, Mumbai, and Bangalore. Sign up
+                                to be notified when we launch in your city!</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <section class="reveal-on-scroll">
             <div class="container mx-auto px-6 py-20">
                 <div class="bg-gradient-to-br from-teal-50 to-orange-50 rounded-3xl shadow-lg p-10 md:p-16 text-center">
-                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="ctaTitle">Ready to Make a Difference?</h3>
-                    <p class="mt-4 text-text-light max-w-2xl mx-auto text-lg" data-translate="ctaSubtitle">Join thousands of citizens improving our city, one report at a time. It's free, easy, and effective.</p>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-text-dark" data-translate="ctaTitle">Ready to Make a
+                        Difference?</h3>
+                    <p class="mt-4 text-text-light max-w-2xl mx-auto text-lg" data-translate="ctaSubtitle">Join
+                        thousands of citizens improving our city, one report at a time. It's free, easy, and effective.
+                    </p>
                     <div class="mt-8">
-                        <button class="btn btn-primary text-lg py-4 px-8" data-translate="ctaButton">Sign Up & Start Reporting</button>
+                        <button class="btn btn-primary text-lg py-4 px-8" data-translate="ctaButton">Sign Up & Start
+                            Reporting</button>
                     </div>
                 </div>
             </div>
@@ -1147,36 +1528,44 @@
 
     <footer class="bg-gray-900 text-white">
         <div class="container mx-auto px-6 py-12">
-             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
                 <div class="col-span-2 lg:col-span-1">
                     <h4 class="font-bold text-lg mb-4" data-translate="footerAppName">CivicVoice</h4>
                     <p class="text-gray-400 text-sm" data-translate="footerSlogan">Your Voice, Amplified.</p>
                 </div>
                 <div>
-                     <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerPlatform">Platform</h5>
+                    <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerPlatform">Platform</h5>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerFeatures">Features</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerGov">For Governments</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerSuccess">Success Stories</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerFeatures">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerGov">For
+                                Governments</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerSuccess">Success Stories</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerCompany">Company</h5>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerAbout">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerCareers">Careers</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerContact">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerAbout">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerCareers">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerContact">Contact</a></li>
                     </ul>
                 </div>
-                 <div>
+                <div>
                     <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerLegal">Legal</h5>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerPrivacy">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm" data-translate="footerTerms">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerPrivacy">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"
+                                data-translate="footerTerms">Terms of Service</a></li>
                     </ul>
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                     <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerConnect">Connect</h5>
+                    <h5 class="font-semibold mb-4 text-gray-300" data-translate="footerConnect">Connect</h5>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="twitter"></i></a>
                         <a href="#" class="text-gray-400 hover:text-white"><i data-lucide="facebook"></i></a>
@@ -1189,9 +1578,10 @@
             </div>
         </div>
     </footer>
-    
+
     <div id="chatbot-container" class="fixed bottom-8 right-8 z-50">
-        <div id="chatbot-window" class="hidden w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col transform translate-y-4 opacity-0">
+        <div id="chatbot-window"
+            class="hidden w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col transform translate-y-4 opacity-0">
             <div class="flex justify-between items-center p-4 bg-teal-600 text-white rounded-t-2xl">
                 <h3 class="font-bold">Civic Assistant</h3>
                 <button id="chatbot-close-btn" class="hover:text-gray-200">
@@ -1204,13 +1594,16 @@
                 </div>
             </div>
             <form id="chatbot-form" class="p-4 border-t flex items-center">
-                <input id="chatbot-input" type="text" placeholder="Ask a question..." class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500">
-                <button type="submit" class="ml-3 bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                <input id="chatbot-input" type="text" placeholder="Ask a question..."
+                    class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <button type="submit"
+                    class="ml-3 bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
                     <i data-lucide="send" class="h-5 w-5"></i>
                 </button>
             </form>
         </div>
-        <button id="chatbot-toggle-btn" class="bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center btn-primary">
+        <button id="chatbot-toggle-btn"
+            class="bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center btn-primary">
             <i data-lucide="message-circle" class="h-8 w-8"></i>
         </button>
     </div>
@@ -1218,17 +1611,22 @@
     <div id="login-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="modal-content bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+            <div
+                class="modal-content bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
                 <button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i data-lucide="x" class="h-6 w-6"></i>
                 </button>
                 <div>
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                            <button id="citizen-tab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-teal-500 text-teal-600" data-translate="modalCitizenTab">
+                            <button id="citizen-tab"
+                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-teal-500 text-teal-600"
+                                data-translate="modalCitizenTab">
                                 Citizen
                             </button>
-                            <button id="official-tab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-translate="modalOfficialTab">
+                            <button id="official-tab"
+                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                data-translate="modalOfficialTab">
                                 Official Login
                             </button>
                         </nav>
@@ -1236,50 +1634,73 @@
 
                     <div id="citizen-form">
                         <div id="citizen-step-1">
-                            <h3 class="text-2xl font-bold text-center text-gray-800 mt-6" data-translate="modalCitizenTitle">Welcome!</h3>
-                            <p class="text-center text-gray-500 mt-2" data-translate="modalCitizenSubtitle">Enter your details to login or sign up.</p>
+                            <h3 class="text-2xl font-bold text-center text-gray-800 mt-6"
+                                data-translate="modalCitizenTitle">Welcome!</h3>
+                            <p class="text-center text-gray-500 mt-2" data-translate="modalCitizenSubtitle">Enter your
+                                details to login or sign up.</p>
                             <form id="citizen-otp-form" class="mt-8 space-y-6">
                                 <div>
-                                    <label for="citizen-contact" class="block text-sm font-medium text-gray-700" data-translate="modalCitizenInputLabel">Phone Number or Gmail</label>
-                                    <input type="text" name="citizen-contact" id="citizen-contact" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 9876543210 or name@gmail.com">
+                                    <label for="citizen-contact" class="block text-sm font-medium text-gray-700"
+                                        data-translate="modalCitizenInputLabel">Phone Number or Gmail</label>
+                                    <input type="text" name="citizen-contact" id="citizen-contact"
+                                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                        placeholder="e.g., 9876543210 or name@gmail.com">
                                 </div>
-                                <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="modalCitizenButton">
+                                <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg"
+                                    data-translate="modalCitizenButton">
                                     Send OTP
                                 </button>
                             </form>
                         </div>
                         <div id="citizen-step-2" class="hidden">
-                             <h3 class="text-2xl font-bold text-center text-gray-800 mt-6" data-translate="modalOtpTitle">Enter OTP</h3>
-                             <p class="text-center text-gray-500 mt-2" data-translate="modalOtpSubtitle">An OTP has been sent to your device.</p>
-                             <form class="mt-8 space-y-6">
+                            <h3 class="text-2xl font-bold text-center text-gray-800 mt-6"
+                                data-translate="modalOtpTitle">Enter OTP</h3>
+                            <p class="text-center text-gray-500 mt-2" data-translate="modalOtpSubtitle">An OTP has been
+                                sent to your device.</p>
+                            <form class="mt-8 space-y-6">
                                 <div>
-                                    <label for="otp-input" class="block text-sm font-medium text-gray-700">One-Time Password</label>
-                                    <input type="text" name="otp-input" id="otp-input" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter the 6-digit code">
+                                    <label for="otp-input" class="block text-sm font-medium text-gray-700">One-Time
+                                        Password</label>
+                                    <input type="text" name="otp-input" id="otp-input"
+                                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                        placeholder="Enter the 6-digit code">
                                 </div>
-                                <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="modalOtpButton">
+                                <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg"
+                                    data-translate="modalOtpButton">
                                     Verify & Login
                                 </button>
-                                <button type="button" id="back-to-login-btn" class="btn btn-ghost w-full">Back to login</button>
-                             </form>
+                                <button type="button" id="back-to-login-btn" class="btn btn-ghost w-full">Back to
+                                    login</button>
+                            </form>
                         </div>
                     </div>
 
                     <div id="official-form" class="mt-6 hidden">
-                        <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="modalOfficialTitle">Official Portal</h3>
-                         <p class="text-center text-gray-500 mt-2" data-translate="modalOfficialSubtitle">Login with your employee credentials.</p>
+                        <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="modalOfficialTitle">
+                            Official Portal</h3>
+                        <p class="text-center text-gray-500 mt-2" data-translate="modalOfficialSubtitle">Login with your
+                            employee credentials.</p>
                         <form id="official-login-form" class="mt-8 space-y-6">
                             <div>
-                                <label for="employee-id" class="block text-sm font-medium text-gray-700" data-translate="modalOfficialInput1">Employee ID</label>
-                                <input type="text" name="employee-id" id="employee-id" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter your Employee ID">
+                                <label for="employee-id" class="block text-sm font-medium text-gray-700"
+                                    data-translate="modalOfficialInput1">Employee ID</label>
+                                <input type="text" name="employee-id" id="employee-id"
+                                    class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                    placeholder="Enter your Employee ID">
                             </div>
                             <div>
                                 <div class="flex justify-between">
-                                    <label for="password" class="block text-sm font-medium text-gray-700" data-translate="modalOfficialInput2">Password</label>
-                                    <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-500" data-translate="modalForgotPassword">Forgot password?</a>
+                                    <label for="password" class="block text-sm font-medium text-gray-700"
+                                        data-translate="modalOfficialInput2">Password</label>
+                                    <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-500"
+                                        data-translate="modalForgotPassword">Forgot password?</a>
                                 </div>
-                                <input type="password" name="password" id="password" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Enter your password">
+                                <input type="password" name="password" id="password"
+                                    class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                    placeholder="Enter your password">
                             </div>
-                            <button type="submit" class="btn btn-dark w-full flex justify-center py-3 text-lg" data-translate="modalOfficialButton">
+                            <button type="submit" class="btn btn-dark w-full flex justify-center py-3 text-lg"
+                                data-translate="modalOfficialButton">
                                 Login
                             </button>
                         </form>
@@ -1288,42 +1709,52 @@
             </div>
         </div>
     </div>
-    
+
     <div id="report-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="modal-content bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+            <div
+                class="modal-content bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
                 <button id="close-report-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i data-lucide="x" class="h-6 w-6"></i>
                 </button>
-                
+
                 <div id="report-form-content">
-                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="reportModalTitle">Report a Civic Issue</h3>
-                    
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="reportModalTitle">Report a
+                        Civic Issue</h3>
+
                     <div class="flex justify-center items-center my-6 space-x-4">
                         <div id="step-indicator-1" class="step-indicator flex items-center text-teal-600">
-                            <div class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">1</div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">
+                                1</div>
                             <span class="ml-2 font-semibold" data-translate="reportStep1">Details</span>
                         </div>
                         <div class="flex-1 h-0.5 bg-gray-200"></div>
                         <div id="step-indicator-2" class="step-indicator flex items-center text-gray-400">
-                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">2</div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">
+                                2</div>
                             <span class="ml-2 font-semibold" data-translate="reportStep2">Location</span>
                         </div>
                         <div class="flex-1 h-0.5 bg-gray-200"></div>
                         <div id="step-indicator-3" class="step-indicator flex items-center text-gray-400">
-                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">3</div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">
+                                3</div>
                             <span class="ml-2 font-semibold" data-translate="reportStep3">Submit</span>
                         </div>
                     </div>
-                    
+
                     <form id="report-form" class="mt-8 space-y-6">
                         <div id="form-step-1">
                             <div id="report-step-1-form">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label for="issue-category" class="block text-sm font-medium text-gray-700" data-translate="reportCategory">Issue Category</label>
-                                        <select id="issue-category" name="issue-category" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md border">
+                                        <label for="issue-category" class="block text-sm font-medium text-gray-700"
+                                            data-translate="reportCategory">Issue Category</label>
+                                        <select id="issue-category" name="issue-category"
+                                            class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md border">
                                             <option>Pothole</option>
                                             <option>Garbage Overflow</option>
                                             <option>Broken Streetlight</option>
@@ -1332,14 +1763,18 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700" data-translate="reportPhoto">Upload Photo</label>
-                                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                        <label class="block text-sm font-medium text-gray-700"
+                                            data-translate="reportPhoto">Upload Photo</label>
+                                        <div
+                                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                             <div class="space-y-1 text-center">
                                                 <i data-lucide="image" class="mx-auto h-12 w-12 text-gray-400"></i>
                                                 <div class="flex text-sm text-gray-600">
-                                                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none">
+                                                    <label for="file-upload"
+                                                        class="relative cursor-pointer bg-white rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none">
                                                         <span data-translate="reportUpload">Upload a file</span>
-                                                        <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                                        <input id="file-upload" name="file-upload" type="file"
+                                                            class="sr-only">
                                                     </label>
                                                 </div>
                                             </div>
@@ -1347,51 +1782,67 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="issue-description" class="block text-sm font-medium text-gray-700" data-translate="reportDescription">Description</label>
-                                    <textarea id="issue-description" name="issue-description" rows="3" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Provide a brief description of the issue..."></textarea>
+                                    <label for="issue-description" class="block text-sm font-medium text-gray-700"
+                                        data-translate="reportDescription">Description</label>
+                                    <textarea id="issue-description" name="issue-description" rows="3"
+                                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                        placeholder="Provide a brief description of the issue..."></textarea>
                                 </div>
                                 <div class="flex items-end">
-                                    <button type="button" id="record-voice-btn" class="btn btn-primary w-full flex justify-center items-center py-3 text-lg">
+                                    <button type="button" id="record-voice-btn"
+                                        class="btn btn-primary w-full flex justify-center items-center py-3 text-lg">
                                         <i data-lucide="mic" class="mr-2 h-5 w-5"></i>
                                         <span data-translate="reportByVoice">Record by Voice</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                         <div id="voice-recording-ui" class="hidden text-center py-8">
-                            <button id="stop-recording-btn" class="h-24 w-24 mx-auto bg-teal-600 rounded-full flex items-center justify-center text-white mic-pulse">
+                        <div id="voice-recording-ui" class="hidden text-center py-8">
+                            <button id="stop-recording-btn"
+                                class="h-24 w-24 mx-auto bg-teal-600 rounded-full flex items-center justify-center text-white mic-pulse">
                                 <i data-lucide="mic" class="h-12 w-12"></i>
                             </button>
-                            <p class="mt-4 text-lg font-semibold text-gray-700" data-translate="listening">Listening...</p>
+                            <p class="mt-4 text-lg font-semibold text-gray-700" data-translate="listening">Listening...
+                            </p>
                         </div>
-                        
+
                         <div id="form-step-2" class="hidden">
-                           <p class="text-center text-gray-500 mb-4" data-translate="reportLocationConfirm">Please confirm the location of the issue.</p>
-                           <div>
-                                <label for="address" class="block text-sm font-medium text-gray-700" data-translate="reportAddress">Address / Landmark</label>
-                                <input type="text" name="address" id="address" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., Near City Park, Main Street">
-                           </div>
-                           <button type="button" class="btn btn-ghost mt-4 w-full flex items-center justify-center text-sm">
-                               <i data-lucide="crosshair" class="h-5 w-5 mr-2"></i>
-                               <span data-translate="reportCurrentLocation">Use my current location</span>
-                           </button>
+                            <p class="text-center text-gray-500 mb-4" data-translate="reportLocationConfirm">Please
+                                confirm the location of the issue.</p>
+                            <div>
+                                <label for="address" class="block text-sm font-medium text-gray-700"
+                                    data-translate="reportAddress">Address / Landmark</label>
+                                <input type="text" name="address" id="address"
+                                    class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                    placeholder="e.g., Near City Park, Main Street">
+                            </div>
+                            <button type="button"
+                                class="btn btn-ghost mt-4 w-full flex items-center justify-center text-sm">
+                                <i data-lucide="crosshair" class="h-5 w-5 mr-2"></i>
+                                <span data-translate="reportCurrentLocation">Use my current location</span>
+                            </button>
                         </div>
 
                         <div id="form-step-3" class="hidden">
-                                <p class="text-center text-gray-500 mb-4" data-translate="reportContactInfo">Provide your contact information (optional) to receive updates.</p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <p class="text-center text-gray-500 mb-4" data-translate="reportContactInfo">Provide your
+                                contact information (optional) to receive updates.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label for="reporter-name" class="block text-sm font-medium text-gray-700" data-translate="formName">Your Name</label>
-                                    <input type="text" name="reporter-name" id="reporter-name" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                                    <label for="reporter-name" class="block text-sm font-medium text-gray-700"
+                                        data-translate="formName">Your Name</label>
+                                    <input type="text" name="reporter-name" id="reporter-name"
+                                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                                 </div>
                                 <div>
-                                    <label for="reporter-contact" class="block text-sm font-medium text-gray-700" data-translate="modalCitizenInputLabel">Phone or Email</label>
-                                    <input type="text" name="reporter-contact" id="reporter-contact" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                                    <label for="reporter-contact" class="block text-sm font-medium text-gray-700"
+                                        data-translate="modalCitizenInputLabel">Phone or Email</label>
+                                    <input type="text" name="reporter-contact" id="reporter-contact"
+                                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                                 </div>
                             </div>
                         </div>
                     </form>
-                    
+
                     <div class="mt-8 flex justify-between">
                         <button id="prev-step-btn" type="button" class="btn btn-secondary invisible">
                             Previous
@@ -1399,50 +1850,63 @@
                         <button id="next-step-btn" type="button" class="btn btn-primary">
                             Next Step
                         </button>
-                        <button id="submit-report-btn" type="submit" form="report-form" class="hidden btn btn-primary text-lg py-3 px-8">
+                        <button id="submit-report-btn" type="submit" form="report-form"
+                            class="hidden btn btn-primary text-lg py-3 px-8">
                             Submit Report
                         </button>
                     </div>
                 </div>
-                
+
                 <div id="report-success-message" class="hidden text-center py-10">
-                    <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
+                    <div
+                        class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
                         <i data-lucide="check-circle-2" class="h-12 w-12"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800" data-translate="reportSuccessTitle">Report Submitted!</h3>
-                    <p class="mt-3 text-text-light" data-translate="reportSuccessSub">Thank you for helping improve your community. Your report has been sent to the relevant department.</p>
-                    <p class="mt-4 font-semibold text-gray-800" data-translate="reportSuccessID">Your Tracking ID is:</p>
-                    <p class="mt-1 text-lg font-bold text-teal-600 bg-teal-50 rounded-md py-2 px-4 inline-block">CIVIC-XYZ-123</p>
+                    <h3 class="text-2xl font-bold text-gray-800" data-translate="reportSuccessTitle">Report Submitted!
+                    </h3>
+                    <p class="mt-3 text-text-light" data-translate="reportSuccessSub">Thank you for helping improve your
+                        community. Your report has been sent to the relevant department.</p>
+                    <p class="mt-4 font-semibold text-gray-800" data-translate="reportSuccessID">Your Tracking ID is:
+                    </p>
+                    <p class="mt-1 text-lg font-bold text-teal-600 bg-teal-50 rounded-md py-2 px-4 inline-block">
+                        CIVIC-XYZ-123</p>
                     <button id="close-success-btn" class="btn btn-dark mt-8 py-3 px-6">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div id="redeem-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="modal-content bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+            <div
+                class="modal-content bg-white w-full max-w-2xl p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
                 <button id="close-redeem-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i data-lucide="x" class="h-6 w-6"></i>
                 </button>
                 <div>
-                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="redeemModalTitle">Choose Your Reward</h3>
-                    <p class="text-center text-gray-500 mt-2" data-translate="redeemModalSubtitle">Select one of the options below to redeem your points.</p>
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="redeemModalTitle">Choose
+                        Your Reward</h3>
+                    <p class="text-center text-gray-500 mt-2" data-translate="redeemModalSubtitle">Select one of the
+                        options below to redeem your points.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                         <div class="feature-card text-center">
-                            <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
+                            <div
+                                class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
                                 <i data-lucide="banknote" class="h-10 w-10"></i>
                             </div>
-                            <h4 class="text-2xl font-bold text-text-dark" data-translate="redeemCashTitle">₹100 Cash Reward</h4>
+                            <h4 class="text-2xl font-bold text-text-dark" data-translate="redeemCashTitle">₹100 Cash
+                                Reward</h4>
                             <p class="text-lg font-semibold text-amber-600 my-2">1000 Points</p>
                             <button class="btn btn-primary mt-4" data-translate="redeemButton">Redeem</button>
                         </div>
                         <div class="feature-card text-center">
-                            <div class="flex items-center justify-center h-20 w-20 bg-blue-100 text-blue-600 rounded-full mx-auto mb-6">
+                            <div
+                                class="flex items-center justify-center h-20 w-20 bg-blue-100 text-blue-600 rounded-full mx-auto mb-6">
                                 <i data-lucide="shopping-cart" class="h-10 w-10"></i>
                             </div>
-                            <h4 class="text-xl font-bold text-text-dark" data-translate="redeemVoucherTitle">Shopping Voucher</h4>
+                            <h4 class="text-xl font-bold text-text-dark" data-translate="redeemVoucherTitle">Shopping
+                                Voucher</h4>
                             <p class="text-lg font-semibold text-amber-600 my-2">500 Points</p>
                             <button class="btn btn-primary mt-4" data-translate="redeemButton">Redeem</button>
                         </div>
@@ -1455,88 +1919,118 @@
     <div id="track-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="modal-content bg-white w-full max-w-lg p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+            <div
+                class="modal-content bg-white w-full max-w-lg p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
                 <button id="close-track-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i data-lucide="x" class="h-6 w-6"></i>
                 </button>
-                
+
                 <div id="track-input-view">
-                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackModalTitle">Track Your Report</h3>
-                    <p class="text-center text-gray-500 mt-2" data-translate="trackModalSubtitle">Enter the tracking ID you received after submission.</p>
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackModalTitle">Track Your
+                        Report</h3>
+                    <p class="text-center text-gray-500 mt-2" data-translate="trackModalSubtitle">Enter the tracking ID
+                        you received after submission.</p>
                     <form id="track-id-form" class="mt-8 space-y-4">
                         <div>
-                            <label for="tracking-id" class="block text-sm font-medium text-gray-700" data-translate="trackModalInputLabel">Tracking ID</label>
-                            <input type="text" name="tracking-id" id="tracking-id" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., CIVIC-XYZ-123">
+                            <label for="tracking-id" class="block text-sm font-medium text-gray-700"
+                                data-translate="trackModalInputLabel">Tracking ID</label>
+                            <input type="text" name="tracking-id" id="tracking-id"
+                                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                placeholder="e.g., CIVIC-XYZ-123">
                         </div>
-                        <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="trackModalButton">
+                        <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg"
+                            data-translate="trackModalButton">
                             Track Status
                         </button>
                     </form>
                 </div>
 
                 <div id="track-status-view" class="hidden">
-                     <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackStatusTitle">Report Status</h3>
-                     <p class="text-center text-gray-500 mt-2">Tracking ID: <span id="display-tracking-id" class="font-semibold text-teal-600"></span></p>
-                     <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-center text-gray-800" data-translate="trackStatusTitle">Report
+                        Status</h3>
+                    <p class="text-center text-gray-500 mt-2">Tracking ID: <span id="display-tracking-id"
+                            class="font-semibold text-teal-600"></span></p>
+                    <div class="mt-8">
                         <div id="tracking-step-1" class="tracking-step">
-                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                            <div
+                                class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
                                 <i data-lucide="file-plus-2" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep1">Reported</h4>
-                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep1Desc">Your report has been successfully submitted.</p>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep1">Reported
+                                </h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep1Desc">Your report has
+                                    been successfully submitted.</p>
                             </div>
                         </div>
-                        
-                        <div class="h-8"></div> <div id="tracking-step-2" class="tracking-step">
-                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
-                                 <i data-lucide="clipboard-check" class="h-5 w-5"></i>
+
+                        <div class="h-8"></div>
+                        <div id="tracking-step-2" class="tracking-step">
+                            <div
+                                class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                                <i data-lucide="clipboard-check" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep2">Acknowledged</h4>
-                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep2Desc">The relevant department has received your report.</p>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep2">
+                                    Acknowledged</h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep2Desc">The relevant
+                                    department has received your report.</p>
                             </div>
                         </div>
-                        
-                        <div class="h-8"></div> <div id="tracking-step-3" class="tracking-step">
-                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
-                                 <i data-lucide="wrench" class="h-5 w-5"></i>
+
+                        <div class="h-8"></div>
+                        <div id="tracking-step-3" class="tracking-step">
+                            <div
+                                class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                                <i data-lucide="wrench" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep3">In Progress</h4>
-                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep3Desc">Work has begun to resolve the issue.</p>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep3">In
+                                    Progress</h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep3Desc">Work has begun to
+                                    resolve the issue.</p>
                             </div>
                         </div>
-                        
-                        <div class="h-8"></div> <div id="tracking-step-4" class="tracking-step">
-                            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
-                               <i data-lucide="check-circle-2" class="h-5 w-5"></i>
+
+                        <div class="h-8"></div>
+                        <div id="tracking-step-4" class="tracking-step">
+                            <div
+                                class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                                <i data-lucide="check-circle-2" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep4">Resolved</h4>
-                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep4Desc">The issue has been fixed. Thank you!</p>
+                                <h4 class="step-label font-semibold text-gray-500" data-translate="trackStep4">Resolved
+                                </h4>
+                                <p class="text-sm text-gray-400 mt-1" data-translate="trackStep4Desc">The issue has been
+                                    fixed. Thank you!</p>
                             </div>
                         </div>
-                       </div>
-                     <button id="track-another-btn" class="btn btn-ghost w-full mt-8" data-translate="trackAnotherButton">Track Another Report</button>
+                    </div>
+                    <button id="track-another-btn" class="btn btn-ghost w-full mt-8"
+                        data-translate="trackAnotherButton">Track Another Report</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div id="assignment-modal" class="fixed inset-0 z-50 hidden">
         <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="modal-content bg-white w-full max-w-lg p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
-                <button id="close-assignment-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <div
+                class="modal-content bg-white w-full max-w-lg p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+                <button id="close-assignment-modal-btn"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i data-lucide="x" class="h-6 w-6"></i>
                 </button>
                 <div id="assignment-form-view">
-                    <h3 id="assignment-modal-title" class="text-2xl font-bold text-center text-gray-800" data-translate="assignModalTitle">Assign Report</h3>
+                    <h3 id="assignment-modal-title" class="text-2xl font-bold text-center text-gray-800"
+                        data-translate="assignModalTitle">Assign Report</h3>
                     <form id="assignment-form" class="mt-8 space-y-4">
                         <div>
-                            <label for="assign-department" class="block text-sm font-medium text-gray-700" data-translate="assignDeptLabel">Department</label>
-                            <select id="assign-department" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            <label for="assign-department" class="block text-sm font-medium text-gray-700"
+                                data-translate="assignDeptLabel">Department</label>
+                            <select id="assign-department"
+                                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                                 <option>Sanitation Department</option>
                                 <option>Public Works Department</option>
                                 <option>Electrical Department</option>
@@ -1544,28 +2038,36 @@
                             </select>
                         </div>
                         <div>
-                            <label for="assign-agent" class="block text-sm font-medium text-gray-700" data-translate="assignAgentLabel">Field Agent</label>
-                            <select id="assign-agent" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            <label for="assign-agent" class="block text-sm font-medium text-gray-700"
+                                data-translate="assignAgentLabel">Field Agent</label>
+                            <select id="assign-agent"
+                                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500">
                                 <option>Agent 1 - Ramesh Kumar</option>
                                 <option>Agent 2 - Sunita Sharma</option>
                                 <option>Agent 3 - Anil Singh</option>
                             </select>
                         </div>
                         <div>
-                            <label for="assign-notes" class="block text-sm font-medium text-gray-700" data-translate="assignNotesLabel">Notes (Optional)</label>
-                            <textarea id="assign-notes" rows="3" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Add specific instructions..."></textarea>
+                            <label for="assign-notes" class="block text-sm font-medium text-gray-700"
+                                data-translate="assignNotesLabel">Notes (Optional)</label>
+                            <textarea id="assign-notes" rows="3"
+                                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                placeholder="Add specific instructions..."></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg" data-translate="confirmAssignmentButton">
+                        <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg"
+                            data-translate="confirmAssignmentButton">
                             Confirm Assignment
                         </button>
                     </form>
                 </div>
                 <div id="assignment-success-view" class="hidden text-center py-10">
-                    <div class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
+                    <div
+                        class="flex items-center justify-center h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto mb-6">
                         <i data-lucide="check-circle-2" class="h-12 w-12"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800" data-translate="assignSuccessTitle">Task Assigned!</h3>
-                    <p class="mt-3 text-text-light" data-translate="assignSuccessSub">The relevant department and agent have been notified.</p>
+                    <p class="mt-3 text-text-light" data-translate="assignSuccessSub">The relevant department and agent
+                        have been notified.</p>
                 </div>
             </div>
         </div>
@@ -1574,7 +2076,105 @@
 
     <script>
         lucide.createIcons();
-        const API = "https://web-sih-1-msku.onrender.com/"
+        const API = "https://web-sih-1-msku.onrender.com/";
+        // --- State Management ---
+        let currentUser = null;
+
+        // --- Helper Functions ---
+        const updateLoginButton = () => {
+            const loginBtnDesktop = document.getElementById('citizen-login-btn-desktop');
+            if (currentUser) {
+                loginBtnDesktop.innerHTML = `<i data-lucide="user" class="h-5 w-5 mr-2"></i><span>${currentUser.contact}</span>`;
+                lucide.createIcons();
+                loginBtnDesktop.disabled = true;
+            } else {
+                loginBtnDesktop.innerHTML = `<i data-lucide="log-in" class="h-5 w-5 mr-2"></i><span data-translate="citizenLogin">Login</span>`;
+                lucide.createIcons();
+                loginBtnDesktop.disabled = false;
+            }
+        };
+
+        // --- Event Listeners ---
+        document.getElementById('citizen-otp-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const contact = document.getElementById('citizen-contact').value;
+            try {
+                const response = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contact }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('citizen-step-1').classList.add('hidden');
+                    document.getElementById('citizen-step-2').classList.remove('hidden');
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        document.querySelector('#citizen-step-2 form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const contact = document.getElementById('citizen-contact').value;
+            const otp = document.getElementById('otp-input').value;
+            try {
+                const response = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contact, otp }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('civic-voice-token', data.token);
+                    currentUser = { contact: data.contact, id: data._id };
+                    updateLoginButton();
+                    closeLoginModal();
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        document.getElementById('report-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('category', document.getElementById('issue-category').value);
+            formData.append('description', document.getElementById('issue-description').value);
+            formData.append('image', document.getElementById('file-upload').files[0]);
+            // You'll need to get longitude and latitude from your map or another source
+            formData.append('longitude', '77.3179'); // Example longitude
+            formData.append('latitude', '28.4089');  // Example latitude
+            formData.append('address', document.getElementById('address').value);
+
+
+            try {
+                const token = localStorage.getItem('civic-voice-token');
+                const response = await fetch('/api/reports', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('report-form-content').classList.add('hidden');
+                    document.getElementById('report-success-message').classList.remove('hidden');
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
         // Translations object
         const translations = {
             en: {
@@ -2099,9 +2699,9 @@
                 citySelect.disabled = true;
             }
         });
-        
+
         // --- MODAL LOGIC ---
-        
+
         // Generic Modal Open/Close
         const setupModal = (modalId, openBtns, closeBtnId) => {
             const modal = document.getElementById(modalId);
@@ -2126,13 +2726,13 @@
                     document.body.style.overflow = '';
                 }, 300);
             };
-            
+
             openBtns.forEach(btn => btn && btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 openModal();
             }));
-            if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-            if(modalOverlay) modalOverlay.addEventListener('click', closeModal);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
 
             return { modal, openModal, closeModal };
         };
@@ -2140,8 +2740,8 @@
         // Login Modal Specific Logic
         const citizenLoginBtns = [document.getElementById('citizen-login-btn-desktop'), document.getElementById('citizen-login-btn-mobile')];
         const { modal: loginModal, openModal: openLoginModal, closeModal: closeLoginModal } = setupModal('login-modal', [], 'close-login-modal-btn');
-        
-        const [citizenTab, officialTab, citizenForm, officialForm, citizenStep1, citizenStep2] = 
+
+        const [citizenTab, officialTab, citizenForm, officialForm, citizenStep1, citizenStep2] =
             ['citizen-tab', 'official-tab', 'citizen-form', 'official-form', 'citizen-step-1', 'citizen-step-2'].map(id => document.getElementById(id));
 
         const switchLoginTab = (showCitizen) => {
@@ -2149,7 +2749,7 @@
             const inactiveTab = showCitizen ? officialTab : citizenTab;
             activeTab.className = "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-teal-500 text-teal-600";
             inactiveTab.className = "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300";
-            
+
             citizenForm.classList.toggle('hidden', !showCitizen);
             officialForm.classList.toggle('hidden', showCitizen);
 
@@ -2174,11 +2774,11 @@
             citizenStep2.classList.add('hidden');
             citizenStep1.classList.remove('hidden');
         });
-        
+
         // --- Official Login Simulation ---
         const updateOfficialUI = () => {
-             document.querySelectorAll('.assign-task-btn').forEach(btn => {
-                 btn.classList.toggle('hidden', !isOfficialLoggedIn);
+            document.querySelectorAll('.assign-task-btn').forEach(btn => {
+                btn.classList.toggle('hidden', !isOfficialLoggedIn);
             });
         }
 
@@ -2198,12 +2798,12 @@
         // Report Modal Specific Logic
         const { closeModal: closeReportModal } = setupModal('report-modal', [document.getElementById('make-report-btn')], 'close-report-modal-btn');
         document.getElementById('close-success-btn').addEventListener('click', closeReportModal);
-        
+
         const reportFormContent = document.getElementById('report-form-content');
         const reportSuccessMessage = document.getElementById('report-success-message');
         const reportStep1Form = document.getElementById('report-step-1-form');
         const voiceRecordingUI = document.getElementById('voice-recording-ui');
-        
+
         const formSteps = [document.getElementById('form-step-1'), document.getElementById('form-step-2'), document.getElementById('form-step-3')];
         const stepIndicators = [document.getElementById('step-indicator-1'), document.getElementById('step-indicator-2'), document.getElementById('step-indicator-3')];
         const prevBtn = document.getElementById('prev-step-btn');
@@ -2217,7 +2817,7 @@
                 const circle = indicator.querySelector('div');
                 const text = indicator.querySelector('span');
                 const isActive = index <= currentStep;
-                
+
                 circle.classList.toggle('bg-teal-600', isActive);
                 circle.classList.toggle('text-white', isActive);
                 circle.classList.toggle('bg-gray-200', !isActive);
@@ -2229,27 +2829,27 @@
             nextBtn.classList.toggle('hidden', currentStep === formSteps.length - 1);
             submitBtn.classList.toggle('hidden', currentStep !== formSteps.length - 1);
         };
-        
+
         nextBtn.addEventListener('click', () => { if (currentStep < formSteps.length - 1) { currentStep++; updateFormSteps(); } });
         prevBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; updateFormSteps(); } });
-        
+
         document.getElementById('report-form').addEventListener('submit', (e) => {
             e.preventDefault();
             reportFormContent.classList.add('hidden');
             reportSuccessMessage.classList.remove('hidden');
         });
-        
+
         document.getElementById('record-voice-btn').addEventListener('click', () => {
             reportStep1Form.classList.add('hidden');
             voiceRecordingUI.classList.remove('hidden');
         });
-        
+
         document.getElementById('stop-recording-btn').addEventListener('click', () => {
             document.getElementById('issue-description').value = "Simulated voice input: 'There is a large pothole in the middle of the road which is causing traffic issues.'";
             voiceRecordingUI.classList.add('hidden');
             reportStep1Form.classList.remove('hidden');
         });
-        
+
         // Redeem & Track Modals
         setupModal('redeem-modal', [document.getElementById('open-redeem-modal-btn')], 'close-redeem-modal-btn');
         setupModal('track-modal', [document.getElementById('track-report-btn-desktop'), document.getElementById('track-report-btn-mobile')], 'close-track-modal-btn');
@@ -2264,7 +2864,7 @@
                 activeReportCard = e.currentTarget.closest('.report-card');
                 const reportId = activeReportCard.dataset.reportId;
                 document.getElementById('assignment-modal-title').textContent = `Assign Report: ${reportId}`;
-                
+
                 // Reset modal to its initial state
                 assignmentFormView.classList.remove('hidden');
                 assignmentSuccessView.classList.add('hidden');
@@ -2284,7 +2884,7 @@
                 statusText.textContent = `Assigned to ${agent}`;
                 statusText.classList.add('text-blue-600', 'font-bold');
             }
-            
+
             assignmentFormView.classList.add('hidden');
             assignmentSuccessView.classList.remove('hidden');
 
@@ -2322,9 +2922,9 @@
 
             let currentTrackingStep = 0;
             if (window.progressInterval) clearInterval(window.progressInterval);
-            
+
             const processStep = () => {
-                 if (currentTrackingStep < trackingSteps.length) {
+                if (currentTrackingStep < trackingSteps.length) {
                     if (currentTrackingStep > 0) {
                         trackingSteps[currentTrackingStep - 1].classList.remove('active');
                         trackingSteps[currentTrackingStep - 1].classList.add('completed');
@@ -2348,7 +2948,7 @@
 
         // Live Reports Tab Logic
         const [ongoingTab, solvedTab, ongoingGrid, solvedGrid] = ['ongoing-tab', 'solved-tab', 'ongoing-issues-grid', 'solved-issues-grid'].map(id => document.getElementById(id));
-        
+
         const switchLiveReportTab = (showOngoing) => {
             ongoingTab.classList.toggle('active', showOngoing);
             solvedTab.classList.toggle('active', !showOngoing);
@@ -2368,13 +2968,13 @@
                     element.innerHTML = langData[key];
                 }
             });
-             // After translating, we need to re-initialize icons in the map popups if any are open
+            // After translating, we need to re-initialize icons in the map popups if any are open
             // but for simplicity, we assume popups are closed or will be re-rendered on click.
             lucide.createIcons();
         };
 
         languageSelector.addEventListener('change', (e) => translatePage(e.target.value));
-        
+
         // Chatbot Logic
         const chatbotToggleButton = document.getElementById('chatbot-toggle-btn');
         const chatbotWindow = document.getElementById('chatbot-window');
@@ -2384,7 +2984,7 @@
         const chatbotMessages = document.getElementById('chatbot-messages');
 
         const toggleChatbot = (show) => {
-            if(show) {
+            if (show) {
                 chatbotWindow.classList.remove('hidden');
                 setTimeout(() => {
                     chatbotWindow.classList.remove('opacity-0', 'translate-y-4');
@@ -2410,7 +3010,7 @@
             userBubble.classList.add('chat-bubble-user', 'p-3', 'self-end', 'max-w-xs');
             userBubble.innerHTML = `<p class="text-sm">${message}</p>`;
             chatbotMessages.appendChild(userBubble);
-            
+
             chatbotInput.value = '';
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
@@ -2427,14 +3027,14 @@
         // --- Live Map Initialization ---
         const initLiveMap = () => {
             if (document.getElementById('live-map')._leaflet_id) { return; } // Prevent re-initialization
-            
-            const map = L.map('live-map').setView([22.5937, 78.9629], 5); 
+
+            const map = L.map('live-map').setView([22.5937, 78.9629], 5);
 
             const southWest = L.latLng(6.5546, 68.1113);
             const northEast = L.latLng(35.6745, 97.3956);
             const bounds = L.latLngBounds(southWest, northEast);
             map.setMaxBounds(bounds);
-            map.on('drag', function() { map.panInsideBounds(bounds, { animate: false }); });
+            map.on('drag', function () { map.panInsideBounds(bounds, { animate: false }); });
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -2453,7 +3053,7 @@
                 'Streetlight': createCustomIcon('lightbulb', 'bg-amber-500'),
                 'Water': createCustomIcon('droplets', 'bg-cyan-500')
             };
-            
+
             const issues = [
                 { id: 'CIVIC-DEL-001', lat: 28.6139, lng: 77.2090, category: 'Pothole', title: 'Major Pothole in Connaught Place, Delhi', status: 'Reported' },
                 { id: 'CIVIC-MUM-001', lat: 19.0760, lng: 72.8777, category: 'Garbage', title: 'Overflowing Bin in Bandra, Mumbai', status: 'In Progress' },
@@ -2461,13 +3061,13 @@
                 { id: 'CIVIC-KOL-001', lat: 22.5726, lng: 88.3639, category: 'Water', title: 'Water Logging near Howrah Bridge, Kolkata', status: 'Acknowledged' },
                 { id: 'CIVIC-CHN-001', lat: 13.0827, lng: 80.2707, category: 'Garbage', title: 'Illegal Dumping in T. Nagar, Chennai', status: 'Reported' },
                 { id: 'CIVIC-HYD-001', lat: 17.3850, lng: 78.4867, category: 'Pothole', title: 'Damaged Road in Jubilee Hills, Hyderabad', status: 'In Progress' },
-                { id: 'CIVIC-BHO-001', lat: 23.2599, lng: 77.4126, category: 'Streetlight', title: 'Faulty light in Arera Colony, Bhopal', status: 'Resolved'},
+                { id: 'CIVIC-BHO-001', lat: 23.2599, lng: 77.4126, category: 'Streetlight', title: 'Faulty light in Arera Colony, Bhopal', status: 'Resolved' },
                 { id: 'CIVIC-JAI-001', lat: 26.9124, lng: 75.7873, category: 'Water', title: 'Blocked drain in Malviya Nagar, Jaipur', status: 'Acknowledged' }
             ];
 
             const heatLayer = L.heatLayer([], { radius: 25 });
             const markerGroup = L.layerGroup();
-            
+
             const updateStats = (filteredIssues) => {
                 document.getElementById('stat-total').textContent = filteredIssues.length;
                 document.getElementById('stat-resolved').textContent = filteredIssues.filter(i => i.status === 'Resolved').length;
@@ -2479,7 +3079,7 @@
                 const category = document.getElementById('map-filter-category').value;
                 const status = document.getElementById('map-filter-status').value;
 
-                const filteredIssues = issues.filter(issue => 
+                const filteredIssues = issues.filter(issue =>
                     (category === 'all' || issue.category === category) &&
                     (status === 'all' || issue.status === status)
                 );
@@ -2495,21 +3095,21 @@
 
                 const heatPoints = filteredIssues.map(issue => [issue.lat, issue.lng]);
                 heatLayer.setLatLngs(heatPoints);
-                
+
                 updateStats(filteredIssues);
             };
 
             const togglePins = document.getElementById('toggle-pins');
             const toggleHeatmap = document.getElementById('toggle-heatmap');
-            
+
             togglePins.addEventListener('change', (e) => e.target.checked ? map.addLayer(markerGroup) : map.removeLayer(markerGroup));
             toggleHeatmap.addEventListener('change', (e) => e.target.checked ? map.addLayer(heatLayer) : map.removeLayer(heatLayer));
 
             document.getElementById('map-filter-category').addEventListener('change', updateMapLayers);
             document.getElementById('map-filter-status').addEventListener('change', updateMapLayers);
-            
+
             // Handle dynamically created assign buttons in popups
-            map.on('popupopen', function() {
+            map.on('popupopen', function () {
                 document.querySelectorAll('.assign-map-task-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
                         const reportId = e.target.dataset.reportId;
@@ -2535,16 +3135,5 @@
     </script>
 
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
