@@ -1,11 +1,55 @@
-// backend/controllers/reportController.js
-
 const Report = require('../models/reportModel');
 const User = require('../models/userModel');
+const { makeEmergencyCall } = require('../services/emergencyService'); // <-- Import the new service
 
-// @desc    Create a new report
-// @route   POST /api/reports
-// @access  Private (Citizen)
+// A new function to check for emergencies
+const checkAndTriggerEmergencyAlert = async (newReport) => {
+  const CRITICAL_CATEGORIES = ['Flooding', 'Landslide'];
+  if (!CRITICAL_CATEGORIES.includes(newReport.category)) {
+    return; // Not a critical category, so no need to check
+  }
+
+  const FIFTEEN_MINUTES_AGO = new Date(Date.now() - 15 * 60 * 1000);
+  const SEARCH_RADIUS_METERS = 500;
+  const REPORT_THRESHOLD = 5; // Trigger alert if more than 5 reports
+
+  try {
+    const [longitude, latitude] = newReport.location.coordinates;
+
+    // Find recent, nearby reports of the same critical category
+    const nearbyReports = await Report.find({
+      _id: { $ne: newReport._id }, // Exclude the current report itself
+      category: newReport.category,
+      createdAt: { $gte: FIFTEEN_MINUTES_AGO },
+      isEmergency: false, // Only consider reports not already marked as an emergency
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude]
+          },
+          $maxDistance: SEARCH_RADIUS_METERS
+        }
+      }
+    });
+
+    // If the number of reports exceeds our threshold
+    if (nearbyReports.length + 1 >= REPORT_THRESHOLD) {
+      console.log(`EMERGENCY DETECTED: ${newReport.category} at ${newReport.location.address}`);
+
+      // Mark all related reports as part of this emergency
+      const reportIds = [newReport._id, ...nearbyReports.map(r => r._id)];
+      await Report.updateMany({ _id: { $in: reportIds } }, { $set: { isEmergency: true } });
+
+      // Initiate the emergency call
+      await makeEmergencyCall(newReport);
+    }
+
+  } catch (error) {
+    console.error('Error during emergency check:', error.message);
+  }
+};
+
 const createReport = async (req, res) => {
   const { category, description, longitude, latitude, address } = req.body;
 
@@ -44,21 +88,21 @@ const createReport = async (req, res) => {
 // @route   GET /api/reports
 // @access  Public
 const getReports = async (req, res) => {
-    try {
-        const { status, category } = req.query;
-        const filter = {};
+  try {
+    const { status, category } = req.query;
+    const filter = {};
 
-        if (status) filter.status = status;
-        if (category) filter.category = category;
+    if (status) filter.status = status;
+    if (category) filter.category = category;
 
-        const reports = await Report.find(filter)
-            .populate('user', 'name')
-            .sort({ createdAt: -1 });
+    const reports = await Report.find(filter)
+      .populate('user', 'name')
+      .sort({ createdAt: -1 });
 
-        res.json(reports);
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error: ' + error.message });
-    }
+    res.json(reports);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error: ' + error.message });
+  }
 };
 
 // @desc    Get a single report by ID
@@ -115,26 +159,26 @@ const updateReportStatus = async (req, res) => {
 // @route   POST /api/reports/:id/upvote
 // @access  Private (Citizen)
 const upvoteReport = async (req, res) => {
-    try {
-        const report = await Report.findById(req.params.id);
-        if (!report) {
-            return res.status(404).json({ message: 'Report not found' });
-        }
-        
-        if (report.upvotes.includes(req.user._id)) {
-            // If user already upvoted, remove the upvote
-            report.upvotes.pull(req.user._id);
-        } else {
-            // Otherwise, add the upvote
-            report.upvotes.push(req.user._id);
-        }
-
-        await report.save();
-        res.json({ message: 'Vote registered', upvoteCount: report.upvotes.length });
-
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+  try {
+    const report = await Report.findById(req.params.id);
+    if (!report) {
+      return res.status(404).json({ message: 'Report not found' });
     }
+
+    if (report.upvotes.includes(req.user._id)) {
+      // If user already upvoted, remove the upvote
+      report.upvotes.pull(req.user._id);
+    } else {
+      // Otherwise, add the upvote
+      report.upvotes.push(req.user._id);
+    }
+
+    await report.save();
+    res.json({ message: 'Vote registered', upvoteCount: report.upvotes.length });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
 };
 
 module.exports = {

@@ -992,6 +992,8 @@
                                     <option value="Garbage">Garbage</option>
                                     <option value="Streetlight">Streetlight</option>
                                     <option value="Water">Water</option>
+                                    <!-- <option value="Flood">Flooding</option>
+                                    <option value="Landslide">Landslide</option> -->
                                 </select>
                             </div>
                             <div>
@@ -1396,7 +1398,7 @@
                     multiplied by thousands of people, can transform a city.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
                     <div class="bg-slate-50 p-8 rounded-2xl border">
-                        <i data-lucide="check-badge" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
+                        <i data-lucide="badge-check" class="h-12 w-12 text-teal-500 mx-auto mb-4"></i>
                         <p class="text-5xl font-extrabold text-teal-600">50,000+</p>
                         <p class="text-text-light font-semibold mt-2" data-translate="impact1">Issues Resolved</p>
                     </div>
@@ -1759,6 +1761,8 @@
                                             <option>Garbage Overflow</option>
                                             <option>Broken Streetlight</option>
                                             <option>Water Logging</option>
+                                            <option>Flooding</option>
+                                            <option>Landslide</option>
                                             <option>Other</option>
                                         </select>
                                     </div>
@@ -2076,8 +2080,175 @@
 
     <script>
         lucide.createIcons();
-        const API = "https://web-sih-1-msku.onrender.com/";
-        // --- State Management ---
+
+        // --- CONFIGURATION ---
+        // Make sure this matches the port your backend is running on
+        const API_BASE_URL = 'http://localhost:5000';
+
+        // --- VOICE RECORDING ---
+        let mediaRecorder;
+        let audioChunks = [];
+        const recordVoiceBtn = document.getElementById('record-voice-btn');
+        const stopRecordingBtn = document.getElementById('stop-recording-btn');
+        const issueDescriptionTextarea = document.getElementById('issue-description');
+
+        recordVoiceBtn.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    audioChunks = [];
+
+                    reportStep1Form.classList.add('hidden');
+                    voiceRecordingUI.classList.remove('hidden');
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        transcribeAudio(audioBlob);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error accessing microphone:', error);
+                    alert('Could not access microphone. Please check permissions.');
+                });
+        });
+
+        stopRecordingBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            voiceRecordingUI.classList.add('hidden');
+            reportStep1Form.classList.remove('hidden');
+        });
+
+        async function transcribeAudio(audioBlob) {
+            const token = localStorage.getItem('civic-voice-token');
+            if (!token) {
+                alert('You must be logged in to use voice transcription.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.webm');
+
+            issueDescriptionTextarea.value = "Transcribing, please wait...";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/speech-to-text`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                issueDescriptionTextarea.value = data.transcription;
+            } catch (error) {
+                console.error('Error transcribing audio:', error);
+                issueDescriptionTextarea.value = "Transcription failed. Please try again.";
+            }
+        }
+
+
+        // --- API CALLS ---
+        document.getElementById('citizen-otp-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const contact = document.getElementById('citizen-contact').value;
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contact }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('citizen-step-1').classList.add('hidden');
+                    document.getElementById('citizen-step-2').classList.remove('hidden');
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                alert('A server error occurred.');
+            }
+        });
+
+        document.querySelector('#citizen-step-2 form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const contact = document.getElementById('citizen-contact').value;
+            const otp = document.getElementById('otp-input').value;
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contact, otp }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('civic-voice-token', data.token);
+                    currentUser = { contact: data.contact, id: data._id };
+                    updateLoginButton();
+                    closeLoginModal();
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                alert('A server error occurred.');
+            }
+        });
+
+        document.getElementById('report-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('civic-voice-token');
+            if (!token) {
+                alert('You must be logged in to submit a report.');
+                openLoginModal();
+                return;
+            }
+
+            const formData = new FormData();
+            const imageFile = document.getElementById('file-upload').files[0];
+
+            if (!imageFile) {
+                alert('Please upload an image of the issue.');
+                return;
+            }
+
+            formData.append('category', document.getElementById('issue-category').value);
+            formData.append('description', issueDescriptionTextarea.value);
+            formData.append('image', imageFile);
+            formData.append('longitude', e.target.dataset.longitude || '77.3179'); // Fallback
+            formData.append('latitude', e.target.dataset.latitude || '28.4089');  // Fallback
+            formData.append('address', document.getElementById('address').value);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/reports`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData,
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('report-form-content').classList.add('hidden');
+                    document.querySelector('#report-success-message p.text-teal-600').textContent = data._id;
+                    document.getElementById('report-success-message').classList.remove('hidden');
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                alert('A server error occurred.');
+            }
+        });
+
         let currentUser = null;
 
         // --- Helper Functions ---
@@ -2112,8 +2283,8 @@
                     alert(data.message);
                 }
             } catch (error) {
-                console.error('Error sending OTP:', error);
-                alert('An error occurred. Please try again.');
+                console.error('Sending OTP:', error); // Need to fix this
+                alert('Sending OTP');
             }
         });
 
@@ -2137,8 +2308,8 @@
                     alert(data.message);
                 }
             } catch (error) {
-                console.error('Error verifying OTP:', error);
-                alert('An error occurred. Please try again.');
+                console.error('Logged in', error);
+                alert('Logged in'); // Need to fix this
             }
         });
 
@@ -3135,5 +3306,50 @@
     </script>
 
 </body>
+
+<div id="signup-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div
+            class="modal-content bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl relative transform opacity-0 translate-y-8">
+            <button id="close-signup-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="h-6 w-6"></i>
+            </button>
+            <div>
+                <h3 class="text-2xl font-bold text-center text-gray-800">Create Your Account</h3>
+                <p class="text-center text-gray-500 mt-2">Join to start making a difference.</p>
+                <form id="signup-form" class="mt-8 space-y-4">
+                    <div>
+                        <label for="signup-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" name="signup-name" id="signup-name" required
+                            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                            placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label for="signup-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" name="signup-email" id="signup-email" required
+                            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                            placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label for="signup-phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="tel" name="signup-phone" id="signup-phone" required
+                            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                            placeholder="9876543210">
+                    </div>
+                    <div>
+                        <label for="signup-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" name="signup-password" id="signup-password" required
+                            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                            placeholder="Create a strong password">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full flex justify-center py-3 text-lg">
+                        Sign Up
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </html>

@@ -1,5 +1,3 @@
-// backend/middleware/uploadMiddleware.js
-
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
@@ -24,7 +22,7 @@ const storage = new CloudinaryStorage({
       resource_type = 'image';
     } else if (isAudio) {
       folder = 'civicvoice-audio';
-      resource_type = 'video';
+      resource_type = 'video'; // Cloudinary treats audio as video
     }
 
     return {
@@ -35,18 +33,6 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/')) {
-        cb(null, true);
-    } else {
-        cb(new Error('File type not supported. Only images and audio are allowed.'), false);
-    }
-};
-
-const upload = multer({ 
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 1024 * 1024 * 10 } // 10MB file size limit
-});
+const upload = multer({ storage: storage });
 
 module.exports = { upload };

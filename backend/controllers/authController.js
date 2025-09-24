@@ -1,5 +1,3 @@
-// backend/controllers/authController.js
-
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const { sendSmsOtp } = require('../services/otpService');
@@ -39,11 +37,11 @@ const sendCitizenOtp = async (req, res) => {
 
         // Send the OTP
         if (!isEmail) {
-            // Make sure the phone number is in E.164 format for Twilio (e.g., +919876543210)
             const fullPhoneNumber = contact.startsWith('+') ? contact : `+91${contact}`;
-            await sendSmsOtp(fullPhoneNumber, otp);
+            // In a real app, you would uncomment the line below
+            // await sendSmsOtp(fullPhoneNumber, otp); 
+            console.log(`OTP for ${fullPhoneNumber} is ${otp}`); // For testing
         } else {
-            // Placeholder for a real email service
             console.log(`Email OTP for ${contact} is ${otp}`);
         }
 
@@ -93,6 +91,48 @@ const verifyCitizenOtp = async (req, res) => {
     }
 };
 
+// @desc    Register a new citizen with a password
+// @route   POST /api/auth/register
+// @access  Public
+const registerCitizen = async (req, res) => {
+    const { name, email, phone, password } = req.body;
+
+    if (!name || !email || !phone || !password) {
+        return res.status(400).json({ message: 'Please enter all fields' });
+    }
+
+    try {
+        const userExists = await User.findOne({ $or: [{ email }, { phone }] });
+
+        if (userExists) {
+            return res.status(400).json({ message: 'User with this email or phone already exists' });
+        }
+
+        const user = await User.create({
+            name,
+            email,
+            phone,
+            password,
+            role: 'citizen',
+        });
+
+        if (user) {
+            res.status(201).json({
+                _id: user._id,
+                name: user.name,
+                contact: user.email,
+                role: user.role,
+                token: generateToken(user._id),
+            });
+        } else {
+            res.status(400).json({ message: 'Invalid user data' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error: ' + error.message });
+    }
+};
+
+
 // @desc    Authenticate an official & get token
 // @route   POST /api/auth/login/official
 // @access  Public
@@ -118,4 +158,10 @@ const loginOfficial = async (req, res) => {
   }
 };
 
-module.exports = { sendCitizenOtp, verifyCitizenOtp, loginOfficial };
+// --- EXPORTS MUST BE AT THE END ---
+module.exports = {
+    sendCitizenOtp,
+    verifyCitizenOtp,
+    loginOfficial,
+    registerCitizen
+};
